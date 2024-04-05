@@ -6,15 +6,16 @@ process COATI{
 
     input:
     path(input_file)
-    val(meta)
 
     output:
     path("*.coati.fasta"), emit: fasta
 
     script:
 
+    prefix = input_file.baseName.tokenize('.')[0]
+
     """
-    coati alignpair $input_file --output ${meta.read_id}.coati.fasta
+    coati alignpair $input_file --output ${prefix}.coati.fasta
     """
 
 
