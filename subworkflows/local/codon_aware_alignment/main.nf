@@ -20,7 +20,7 @@ workflow CODON_ALIGNMENT{
     files = COATI_PREPROCESS_READS.out.pre_processed_fasta.flatten()
 
     COATI(
-        COATI_PREPROCESS_READS.out.pre_processed_fasta
+        files
         
     )
 
