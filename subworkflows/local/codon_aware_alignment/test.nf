@@ -11,6 +11,7 @@ workflow{
         reference_file
     )
 
-    CODON_ALIGNMENT.out.view()
+
+    // CODON_ALIGNMENT.out.view()
 
 }
