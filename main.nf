@@ -20,7 +20,6 @@ include { validateParameters; paramsSummaryLog; fromSamplesheet } from 'plugin/n
 
 //  include { INITIALISE          } from './subworkflows/local/initialise'
 
- include { FQ_LINT             } from './modules/nf-core/fq/lint/main'
 
  include {HIV_SEQ_PIPELINE} from './workflows/pipeline'
 
@@ -39,6 +38,8 @@ workflow MAIN_WORKFLOW {
     ch_versions = Channel.empty()
 
     // INITIALISE()
+
+    HIV_SEQ_PIPELINE()
 
     
 
