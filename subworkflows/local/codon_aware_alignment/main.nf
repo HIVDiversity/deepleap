@@ -4,6 +4,7 @@ include {KCALIGN as KCALIGN_KALIGN} from "../../../modules/local/kcalign/main"
 include {KCALIGN as KCALIGN_MUSCLE} from "../../../modules/local/kcalign/main"
 include {VIRULIGN} from "../../../modules/local/virulign/main"
 include {PRANK} from "../../../modules/local/prank/main"
+include {MACSE} from "../../../modules/local/macse/main"
 
 workflow CODON_ALIGNMENT{
     take:
@@ -15,27 +16,21 @@ workflow CODON_ALIGNMENT{
 
     input_file = file(input_file)
 
-    COATI_PREPROCESS_READS(
-        input_file,
-        reference_file
-    )
+    // COATI_PREPROCESS_READS(
+    //     input_file,
+    //     reference_file
+    // )
 
-    files = COATI_PREPROCESS_READS.out.pre_processed_fasta.flatten()
+    // files = COATI_PREPROCESS_READS.out.pre_processed_fasta.flatten()
 
-    COATI(
-        files
-    )
+    // COATI(
+    //     files
+    // )
 
     KCALIGN_KALIGN(
         input_file, 
         reference_file,
         "kalign"
-    )
-
-    KCALIGN_MUSCLE(
-        input_file, 
-        reference_file,
-        "muscle"
     )
 
     VIRULIGN(
@@ -47,12 +42,18 @@ workflow CODON_ALIGNMENT{
         input_file
     )
 
+    MACSE(
+        input_file
+    )
+
+
+
     emit:
-    coati = COATI.out
+    // coati = COATI.out
     kalign_kcalign = KCALIGN_KALIGN.out
     muscle_kcalign = KCALIGN_MUSCLE.out
     virulign = VIRULIGN.out.fasta
-
+    macse = MACSE.out.nt_fasta
 
     
 
