@@ -4,8 +4,10 @@ import groovy.json.JsonSlurper
 import org.apache.groovy.json.internal.LazyMap
 
 // include {CODON_ALIGNMENT} from "../subworkflows/local/codon_aware_alignment/main"
-include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
-include {PARSE_INPUT} from "../subworkflows/local/parse_input"
+// include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
+// include {PARSE_INPUT} from "../subworkflows/local/parse_input"
+
+include {PREPROCESS} from "../subworkflows/local/preprocessing/main"
 
 workflow HIV_SEQ_PIPELINE{
     
@@ -15,11 +17,19 @@ workflow HIV_SEQ_PIPELINE{
     // runChannel = channel.fromList(runList)
 
 
-    configChannel = channel.fromPath(params.config_file)
+    // configChannel = channel.fromPath(params.config_file)
 
-    runList = PARSE_INPUT(configChannel).runs
+    // runList = PARSE_INPUT(configChannel).runs
     
-    ALIGNER_COMPARISON(runList)  
+    // ALIGNER_COMPARISON(runList)  
+
+    input_files = channel.fromPath(params.input_files)
+    reference_file = channel.fromPath(params.reference_file)
+
+    PREPROCESS(
+        input_files,
+        reference_file
+    )
   
 
 }

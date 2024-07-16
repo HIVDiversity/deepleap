@@ -3,7 +3,7 @@ process COLLAPSE{
     label "alignment_utils"
 
     input:
-    samples
+    path(input_file)
     
 
     output:
@@ -11,10 +11,10 @@ process COLLAPSE{
     path("*.json"), emit: namefile
 
     script:
-
+    prefix = input_file.baseName.tokenize('.')[0]
 
     """
-    /usr/local/bin/python /app/main.py collapse $input_file ${samples[1].meta.run_id}.collapsed.fasta ${samples[1].meta.run_id}.names.json
+    /usr/local/bin/python /app/main.py collapse $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
     """
 }
 
@@ -32,7 +32,7 @@ process REVERSE{
     path("*.json"), emit: namefile
 
     script:
-
+    prefix = input_file.baseName.tokenize('.')[0]
 
     """
     /usr/local/bin/python /app/main.py collapse $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
@@ -52,7 +52,7 @@ process ADD_REF{
 
     script:
 
-
+    prefix = input_file.baseName.tokenize('.')[0]
     """
     /usr/local/bin/python /app/main.py add-ref $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
     """
@@ -95,7 +95,7 @@ process DEGAP{
     prefix = input_file.baseName.tokenize('.')[0]
 
     """
-    /usr/local/bin/python /app/main.py degap --remove-seq $input_file ${prefix}.degapped.fasta 
+    /usr/local/bin/python /app/main.py degap $input_file ${prefix}.degapped.fasta 
     """
 
 }

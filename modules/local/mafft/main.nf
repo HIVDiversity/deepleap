@@ -35,6 +35,6 @@ process MAFFT_ADD{
     prefix = input_file.baseName.tokenize('.')[0]
 
     """
-    mafft --add $input_file $ref_file > ${prefix}.mafft.fasta
+    mafft --add $ref_file  $input_file > ${prefix}.ref.mafft.fasta
     """
 }

@@ -13,9 +13,6 @@ workflow PREPROCESS{
 
     main:
 
-    input_sample = file(input_sample)
-    reference_file = file(reference_file)
-
     // MAFFT Align
     MAFFT(
         input_sample
