@@ -58,3 +58,44 @@ process ADD_REF{
     """
 
 }
+
+process TRIM_TO_SEQ{
+    tag "TODO"
+    label "alignment_utils"
+
+    input:
+    path(input_file)
+    path(ref_file)
+
+    output:
+    path("*.fasta"), emit: fasta
+
+    script:
+
+    prefix = input_file.baseName.tokenize('.')[0]
+
+    """
+    /usr/local/bin/python /app/main.py trim-to-seq --remove-seq $input_file $ref_file ${prefix}.trimmed.fasta 
+    """
+}
+
+process DEGAP{
+    tag "TODO"
+    label "alignment_utils"
+
+    input:
+    path(input_file)
+    path(ref_file)
+
+    output:
+    path("*.fasta"), emit: fasta
+
+    script:
+
+    prefix = input_file.baseName.tokenize('.')[0]
+
+    """
+    /usr/local/bin/python /app/main.py degap --remove-seq $input_file ${prefix}.degapped.fasta 
+    """
+
+}

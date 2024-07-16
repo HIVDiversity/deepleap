@@ -16,37 +16,6 @@ workflow CODON_ALIGNMENT{
 
     input_file = file(input_file)
 
-    // COATI_PREPROCESS_READS(
-    //     input_file,
-    //     reference_file
-    // )
-
-    // files = COATI_PREPROCESS_READS.out.pre_processed_fasta.flatten()
-
-    // COATI(
-    //     files
-    // )
-
-    KCALIGN_KALIGN(
-        input_file, 
-        reference_file,
-        "kalign"
-    )
-
-    VIRULIGN(
-        input_file,
-        reference_file
-    )
-
-    PRANK(
-        input_file
-    )
-
-    MACSE(
-        input_file
-    )
-
-
 
     emit:
     // coati = COATI.out

@@ -18,3 +18,23 @@ process MAFFT{
 
 
 }
+
+process MAFFT_ADD{
+    tag "TODO"
+    container "dlejeune/mafft:7.525"
+
+    input:
+    path(input_file)
+    path(ref_file)
+
+    output:
+    path("*.mafft.fasta"), emit: fasta
+
+    script:
+
+    prefix = input_file.baseName.tokenize('.')[0]
+
+    """
+    mafft --add $input_file $ref_file > ${prefix}.mafft.fasta
+    """
+}
