@@ -3,24 +3,29 @@ nextflow.enable.dsl=2
 import groovy.json.JsonSlurper
 import org.apache.groovy.json.internal.LazyMap
 
-// include {CODON_ALIGNMENT} from "../subworkflows/local/codon_aware_alignment/main"
-include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
-include {PARSE_INPUT} from "../subworkflows/local/parse_input"
 
-workflow HIV_SEQ_PIPELINE{
+workflow PARSE_INPUT{
+    take:
+    jsonSpec
+
     
+
+    main:
+
     
-    // runList = parseInputConfig(params.config_file)
-    
-    // runChannel = channel.fromList(runList)
+
+    jsonSpec.splitJson()
+        .map{it.value}
+        .flatMap()
+        .map{createRunTuple(it)}
+        .set{runs}
 
 
-    configChannel = channel.fromPath(params.config_file)
+    emit:
+    runs
 
-    runList = PARSE_INPUT(configChannel).runs
-    
-    ALIGNER_COMPARISON(runList)  
-  
+
+
 
 }
 
@@ -51,3 +56,6 @@ def parseInputConfig(configFile){
     return tupleList
 }
 
+def createRunTuple(jsonRow){
+    return [file(jsonRow["meta"]["file"]), convertToMap(jsonRow)]
+}

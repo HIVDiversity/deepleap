@@ -3,10 +3,31 @@ process COLLAPSE{
     label "alignment_utils"
 
     input:
+    samples
+    
+
+    output:
+    path("*.fasta"), emit: samples
+    path("*.json"), emit: namefile
+
+    script:
+
+
+    """
+    /usr/local/bin/python /app/main.py collapse $input_file ${samples[1].meta.run_id}.collapsed.fasta ${samples[1].meta.run_id}.names.json
+    """
+}
+
+process REVERSE{
+    tag "TODO"
+    label "alignment_utils"
+
+    input:
     path(input_file)
     val(prefix)
 
     output:
+
     path("*.fasta"), emit: fasta
     path("*.json"), emit: namefile
 
@@ -16,4 +37,24 @@ process COLLAPSE{
     """
     /usr/local/bin/python /app/main.py collapse $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
     """
+}
+
+process ADD_REF{
+    tag "TODO"
+    label "alignment_utils"
+
+    input:
+    path(input_file)
+    path(ref_file)
+
+    output:
+    path("*.fasta"), emit: fasta
+
+    script:
+
+
+    """
+    /usr/local/bin/python /app/main.py add-ref $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
+    """
+
 }
