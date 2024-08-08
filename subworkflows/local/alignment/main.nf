@@ -1,15 +1,16 @@
 
 include {MAFFT} from "../../../modules/local/mafft/main"
 include {ADJUST} from "../../../modules/local/adjust/main"
+include {EXPAND} from "../../../modules/local/aligment_utils/main"
 
 workflow CODON_ALIGNMENT{
     take:
-    input_file 
+    sample_tuple 
 
     main:
 
 
-    input_file = file(input_file)
+    input_file = file(sample_tuple[0])
 
     MAFFT(
         input_file
@@ -19,11 +20,16 @@ workflow CODON_ALIGNMENT{
         MAFFT.out.fasta
     )
 
+    EXPAND(
+        ADJUST.out.fasta,
+        sample_tuple[1]
+
+    )
+
 
 
 
     emit:
-    MAFFT.out.fasta
-    ADJUST.out.fasta
+    EXPAND.out.fasta
 
 }

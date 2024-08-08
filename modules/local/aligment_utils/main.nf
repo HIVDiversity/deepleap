@@ -115,7 +115,7 @@ process EXPAND{
     prefix = input_file.baseName.tokenize('.')[0]
 
     """
-    /usr/local/bin/python /app/main.py expand $input_file ${prefix}.expanded.fasta ${name_file}
+    /usr/local/bin/python /app/main.py expand $input_file ${name_file} ${prefix}.expanded.fasta 
     """
 
 }
