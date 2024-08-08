@@ -7,8 +7,7 @@ process COLLAPSE{
     
 
     output:
-    path("*.fasta"), emit: samples
-    path("*.json"), emit: namefile
+    tuple  path("*.fasta"), path("*.json") // Samples, Namefile
 
     script:
     prefix = input_file.baseName.tokenize('.')[0]

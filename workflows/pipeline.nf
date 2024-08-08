@@ -23,8 +23,16 @@ workflow HIV_SEQ_PIPELINE{
     
     // ALIGNER_COMPARISON(runList)  
 
-    input_files = channel.fromPath(params.input_files)
-    reference_file = channel.fromPath(params.reference_file)
+    
+    
+    def base_sample_dir = "/home/dlejeune/Documents/real_data/do_dump/pools"
+    def cap_num = "CAP008"
+    def file_selector =  "${base_sample_dir}/*/${cap_num}**-degapped.fasta"
+    
+    def input_files = files(file_selector)
+    def ch_input_files = channel.fromList(input_files)
+
+    def reference_file = channel.fromPath(params.reference_file)
 
     PREPROCESS(
         input_files,
