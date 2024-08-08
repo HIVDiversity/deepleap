@@ -10,10 +10,12 @@ workflow CODON_ALIGNMENT{
 
     input_file = file(input_file)
 
+    MAFFT(
+        input_file
+    )
+
 
     emit:
-    
-
-    
+    MAFFT.out.fasta
 
 }
