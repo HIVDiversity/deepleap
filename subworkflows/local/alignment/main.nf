@@ -1,5 +1,6 @@
 
 include {MAFFT} from "../../../modules/local/mafft/main"
+include {ADJUST} from "../../../modules/local/adjust/main"
 
 workflow CODON_ALIGNMENT{
     take:
@@ -14,8 +15,15 @@ workflow CODON_ALIGNMENT{
         input_file
     )
 
+    ADJUST (
+        MAFFT.out.fasta
+    )
+
+
+
 
     emit:
     MAFFT.out.fasta
+    ADJUST.out.fasta
 
 }

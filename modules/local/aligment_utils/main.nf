@@ -99,3 +99,24 @@ process DEGAP{
     """
 
 }
+
+process EXPAND{
+    tag "TODO"
+    label "alignment_utils"
+
+    input:
+    path(input_file)
+    path(name_file)
+
+    output:
+    path("*.fasta"), emit: fasta
+
+    script:
+
+    prefix = input_file.baseName.tokenize('.')[0]
+
+    """
+    /usr/local/bin/python /app/main.py expand $input_file ${prefix}.expanded.fasta ${name_file}
+    """
+
+}
