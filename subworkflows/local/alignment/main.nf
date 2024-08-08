@@ -10,7 +10,7 @@ workflow CODON_ALIGNMENT{
     main:
 
 
-    input_file = file(sample_tuple[0])
+    input_file = sample_tuple.map{it -> it[0]}
 
     MAFFT(
         input_file
@@ -22,7 +22,7 @@ workflow CODON_ALIGNMENT{
 
     EXPAND(
         ADJUST.out.fasta,
-        sample_tuple[1]
+        sample_tuple.map{it -> it[1]}
 
     )
 

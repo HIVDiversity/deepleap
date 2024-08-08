@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 import groovy.json.JsonSlurper
 import org.apache.groovy.json.internal.LazyMap
 
-// include {CODON_ALIGNMENT} from "../subworkflows/local/codon_aware_alignment/main"
+include {CODON_ALIGNMENT} from "../subworkflows/local/alignment/main"
 // include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
 // include {PARSE_INPUT} from "../subworkflows/local/parse_input"
 
@@ -38,6 +38,11 @@ workflow HIV_SEQ_PIPELINE{
         input_files,
         reference_file
     )
+    CODON_ALIGNMENT(
+        PREPROCESS.out.sample_tuple
+    )
+
+
   
 
 }

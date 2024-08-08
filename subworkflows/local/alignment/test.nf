@@ -8,7 +8,7 @@ workflow{
     input_channel = channel.of([input_file, name_file])
 
     CODON_ALIGNMENT(
-        [input_file, name_file]
+        input_channel
     )
 
 
