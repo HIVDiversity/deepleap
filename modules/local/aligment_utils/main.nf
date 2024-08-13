@@ -1,19 +1,18 @@
 process COLLAPSE{
-    tag "TODO"
+    tag "$meta.sample_id"
     label "alignment_utils"
 
     input:
-    path(input_file)
+    tuple path(input_file), val(meta)
     
 
     output:
-    tuple  path("*.fasta"), path("*.json") // Samples, Namefile
+    tuple  path("*.fasta"), path("*.json"), val(meta) // Samples, Namefile, Meta
 
     script:
-    prefix = input_file.baseName.tokenize('.')[0]
 
     """
-    /usr/local/bin/python /app/main.py collapse $input_file ${prefix}.collapsed.fasta ${prefix}.names.json
+    /usr/local/bin/python /app/main.py collapse $input_file ${meta.sample_id}.collapsed.fasta ${meta.sample_id}.names.json
     """
 }
 
@@ -59,42 +58,37 @@ process ADD_REF{
 }
 
 process TRIM_TO_SEQ{
-    tag "TODO"
+    tag "$meta.sample_id"
     label "alignment_utils"
 
     input:
-    path(input_file)
+    tuple path(input_file), val(meta)
     path(ref_file)
 
     output:
-    path("*.fasta"), emit: fasta
+    tuple path("*.fasta"), val(meta), emit: sample_tuple
 
     script:
 
-    prefix = input_file.baseName.tokenize('.')[0]
-
     """
-    /usr/local/bin/python /app/main.py trim-to-seq --remove-seq $input_file $ref_file ${prefix}.trimmed.fasta 
+    /usr/local/bin/python /app/main.py trim-to-seq --remove-seq $input_file $ref_file ${meta.sample_id}.trimmed.fasta 
     """
 }
 
 process DEGAP{
-    tag "TODO"
+    tag "$meta.sample_id"
     label "alignment_utils"
 
     input:
-    path(input_file)
-    path(ref_file)
+    tuple path(input_file), val(meta)
 
     output:
-    path("*.fasta"), emit: fasta
+    tuple path("*.fasta"), val(meta), emit: sample_tuple
 
     script:
 
-    prefix = input_file.baseName.tokenize('.')[0]
-
     """
-    /usr/local/bin/python /app/main.py degap $input_file ${prefix}.degapped.fasta 
+    /usr/local/bin/python /app/main.py degap $input_file ${meta.sample_id}.degapped.fasta 
     """
 
 }

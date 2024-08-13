@@ -8,37 +8,36 @@ include {DEGAP} from "../../../modules/local/aligment_utils/main.nf"
 workflow PREPROCESS{
 
     take:
-    input_sample
+    sample_tuple
     reference_file
 
     main:
 
     // MAFFT Align
     MAFFT(
-        input_sample
+        sample_tuple
     )
 
     // Add the reference sequence
     MAFFT_ADD(
-        MAFFT.out.fasta,
+        MAFFT.out.sample_tuple,
         reference_file
     )
 
     // Trim to the reference sequence
     TRIM_TO_SEQ(
-        MAFFT_ADD.out.fasta,
+        MAFFT_ADD.out.sample_tuple,
         reference_file
     )
 
     // Degap the resulting alignment
     DEGAP(
-        TRIM_TO_SEQ.out.fasta,
-        reference_file
+        TRIM_TO_SEQ.out.sample_tuple        
     )
 
     // Collapse Identical Reads
     COLLAPSE(
-        DEGAP.out.fasta
+        DEGAP.out.sample_tuple
     )
 
 

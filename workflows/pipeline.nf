@@ -6,6 +6,9 @@ import org.apache.groovy.json.internal.LazyMap
 include {CODON_ALIGNMENT} from "../subworkflows/local/alignment/main"
 // include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
 // include {PARSE_INPUT} from "../subworkflows/local/parse_input"
+include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
+
+include {parseSampleSheet} from "../bin/utils"
 
 include {PREPROCESS} from "../subworkflows/local/preprocessing/main"
 
@@ -29,18 +32,32 @@ workflow HIV_SEQ_PIPELINE{
     def cap_num = "CAP008"
     def file_selector =  "${base_sample_dir}/*/${cap_num}**-degapped.fasta"
     
-    def input_files = files(file_selector)
-    def ch_input_files = channel.fromList(input_files)
+    // def input_files = files(file_selector)
+    // def ch_input_files = channel.fromList(input_files)
 
+    
+    def samplesheet = file(params.samplesheet)
+    def sample_tuples = parseSampleSheet(samplesheet)
+
+
+    def ch_input_files = channel.fromList(sample_tuples)
     def reference_file = channel.fromPath(params.reference_file)
 
     PREPROCESS(
-        input_files,
+        ch_input_files, // tuple(file, meta)
         reference_file
     )
+    
     CODON_ALIGNMENT(
         PREPROCESS.out.sample_tuple
     )
+
+    MAFFT_ADD_PROFILE(
+        CODON_ALIGNMENT.out.collect()
+    )
+
+    emit:
+    final_alignment = MAFFT_ADD_PROFILE.out.fasta
 
 
   
@@ -73,4 +90,6 @@ def parseInputConfig(configFile){
 
     return tupleList
 }
+
+
 

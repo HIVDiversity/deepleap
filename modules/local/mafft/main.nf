@@ -1,41 +1,38 @@
 process MAFFT{
-    tag "TODO"
+    tag "$meta.sample_id"
     container "dlejeune/mafft:7.525"
 
     input:
-    path(input_file)
+    tuple path(input_file), val(meta)
 
     output:
-    path("*.mafft.fasta"), emit: fasta
+    tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
 
-    prefix = input_file.baseName.tokenize('.')[0]
+    
 
     """
-    mafft $input_file > ${prefix}.mafft.fasta
+    mafft $input_file > ${meta.sample_id}.mafft.fasta
     """
 
 
 }
 
 process MAFFT_ADD{
-    tag "TODO"
+    tag "$meta.sample_id"
     container "dlejeune/mafft:7.525"
 
     input:
-    path(input_file)
+    tuple path(input_file), val(meta)
     path(ref_file)
 
     output:
-    path("*.mafft.fasta"), emit: fasta
+    tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
-
-    prefix = input_file.baseName.tokenize('.')[0]
-
     """
-    mafft --add $ref_file  $input_file > ${prefix}.ref.mafft.fasta
+    mafft --add $ref_file  $input_file > ${meta.sample_id}.ref.mafft.fasta
     """
 }
 
