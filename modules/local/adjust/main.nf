@@ -1,19 +1,17 @@
 
 
 process ADJUST{
-    tag "TODO"
+    tag "$meta.sample_id"
 
     input:
-    path(input_file)
+    tuple path(input_file), val(meta)
 
     output:
-    path("*.corrected.fasta"), emit: fasta
+    tuple path("*.corrected.fasta"), val(meta), emit: sample_tuple
 
     script:
 
-    newFileName = input_file.baseName + ".corrected.fasta"
-
     """
-    python /home/dlejeune/masters/codon_align/codon_adjust.py ${input_file} ${newFileName}
+    python /home/dlejeune/masters/codon_align/codon_adjust.py ${input_file} ${meta.sample_id}.corrected.fasta
     """
 }

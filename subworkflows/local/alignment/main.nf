@@ -9,11 +9,8 @@ workflow CODON_ALIGNMENT{
 
     main:
 
-
-    input_file = sample_tuple.map{it -> it[0]}
-
     MAFFT(
-        input_file
+        sample_tuple
     )
 
     ADJUST (
