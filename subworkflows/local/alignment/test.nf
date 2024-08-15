@@ -3,15 +3,26 @@ include {CODON_ALIGNMENT} from "./main"
 
 workflow{
 
-    input_file = file("/home/dlejeune/masters/nf-test-data/alignment_test/collapsed_input.fasta")
-    name_file = file("/home/dlejeune/masters/nf-test-data/alignment_test/names.json")
-    input_channel = channel.of([input_file, name_file])
+    input_file_a = file("/home/dlejeune/masters/nf-test-data/test_alignment/ABC.collapsed.fasta")
+    namefile_a = file("/home/dlejeune/masters/nf-test-data/test_alignment/ABC.names.json")
+    meta_a = [sample_id: "ABC"]
+
+    input_file_b = file("/home/dlejeune/masters/nf-test-data/test_alignment/DEF.collapsed.fasta")
+    namefile_b = file("/home/dlejeune/masters/nf-test-data/test_alignment/DEF.names.json")
+    meta_b = [sample_id: "DEF"]
+
+    sample_tuples = channel.of([input_file_a, meta_a], [input_file_b, meta_b])
+    namefile_tuples = channel.of([namefile_a, meta_a], [namefile_b, meta_b])
+
+    sample_tuples.view()
+    
 
     CODON_ALIGNMENT(
-        input_channel
+        sample_tuples,
+        namefile_tuples
     )
 
 
-    // CODON_ALIGNMENT.out.view()
+    CODON_ALIGNMENT.out.view()
 
 }

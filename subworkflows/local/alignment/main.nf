@@ -5,7 +5,8 @@ include {EXPAND} from "../../../modules/local/aligment_utils/main"
 
 workflow CODON_ALIGNMENT{
     take:
-    sample_tuple 
+    sample_tuple // path(input), val(meta)
+    namefile_tuple // path(namefile), val(meta)
 
     main:
 
@@ -14,19 +15,19 @@ workflow CODON_ALIGNMENT{
     )
 
     ADJUST (
-        MAFFT.out.fasta
+        MAFFT.out.sample_tuple
     )
 
-    EXPAND(
-        ADJUST.out.fasta,
-        sample_tuple.map{it -> it[1]}
+    sample_namefile_ch = ADJUST.out.sample_tuple.join(namefile_tuple, by: 1)
 
+    EXPAND(
+        sample_namefile_ch
     )
 
 
 
 
     emit:
-    EXPAND.out.fasta
+    EXPAND.out.sample_tuple
 
 }

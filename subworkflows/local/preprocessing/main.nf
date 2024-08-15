@@ -42,7 +42,8 @@ workflow PREPROCESS{
 
 
     emit:
-    sample_tuple = COLLAPSE.out
+    sample_tuple = COLLAPSE.out.sample_tuple
+    namefile_tuple = COLLAPSE.out.namefile_tuple
 
 
 

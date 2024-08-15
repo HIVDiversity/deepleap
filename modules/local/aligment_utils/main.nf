@@ -7,7 +7,8 @@ process COLLAPSE{
     
 
     output:
-    tuple  path("*.fasta"), path("*.json"), val(meta) // Samples, Namefile, Meta
+    tuple  path("*.fasta"), val(meta) , emit: sample_tuple
+    tuple path("*.json"), val(meta), emit: namefile_tuple
 
     script:
 
@@ -94,22 +95,19 @@ process DEGAP{
 }
 
 process EXPAND{
-    tag "TODO"
+    tag "$meta.sample_id"
     label "alignment_utils"
 
     input:
-    path(input_file)
-    path(name_file)
+    tuple val(meta), path(input_file), path(name_file) // I think 
 
     output:
-    path("*.fasta"), emit: fasta
+    tuple path("*.fasta"), val(meta), emit: sample_tuple
 
     script:
 
-    prefix = input_file.baseName.tokenize('.')[0]
-
     """
-    /usr/local/bin/python /app/main.py expand $input_file ${name_file} ${prefix}.expanded.fasta 
+    /usr/local/bin/python /app/main.py expand ${input_file} ${name_file} ${meta.sample_id}.expanded.fasta 
     """
 
 }
