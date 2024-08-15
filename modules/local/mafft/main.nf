@@ -52,6 +52,8 @@ process MAFFT_ADD_PROFILE{
     file_one = input_files[0]
     other_files = input_files[1..-1]
     
+    println(file_one)
+    println(other_files)
 
     bash_other_files = "(" + other_files.join(" ") + ")"
 

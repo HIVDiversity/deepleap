@@ -41,7 +41,7 @@ workflow HIV_SEQ_PIPELINE{
 
 
     def ch_input_files = channel.fromList(sample_tuples)
-    def reference_file = channel.fromPath(params.reference_file)
+    def reference_file = channel.value(params.reference_file)
 
     PREPROCESS(
         ch_input_files, // tuple(file, meta)
@@ -49,11 +49,12 @@ workflow HIV_SEQ_PIPELINE{
     )
     
     CODON_ALIGNMENT(
-        PREPROCESS.out.sample_tuple
+        PREPROCESS.out.sample_tuple,
+        PREPROCESS.out.namefile_tuple
     )
 
     MAFFT_ADD_PROFILE(
-        CODON_ALIGNMENT.out.sample_tuple.map{it[0]}.collect()
+        CODON_ALIGNMENT.out.map{it[0]}.collect()
     )
 
     emit:
