@@ -53,7 +53,7 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     MAFFT_ADD_PROFILE(
-        CODON_ALIGNMENT.out.collect()
+        CODON_ALIGNMENT.out.sample_tuple.map{it[0]}.collect()
     )
 
     emit:

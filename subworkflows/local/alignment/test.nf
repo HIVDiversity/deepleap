@@ -13,8 +13,6 @@ workflow{
 
     sample_tuples = channel.of([input_file_a, meta_a], [input_file_b, meta_b])
     namefile_tuples = channel.of([namefile_a, meta_a], [namefile_b, meta_b])
-
-    sample_tuples.view()
     
 
     CODON_ALIGNMENT(
