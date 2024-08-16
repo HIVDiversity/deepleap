@@ -54,7 +54,13 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     MAFFT_ADD_PROFILE(
-        CODON_ALIGNMENT.out.map{it[0]}.collect()
+        CODON_ALIGNMENT.out.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
+            .flatten()
+            .collate(2)
+            .map{it[0]}
+            .collect()
+            .view()
+
     )
 
     emit:

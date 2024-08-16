@@ -14,30 +14,30 @@ workflow PREPROCESS{
     main:
 
     // MAFFT Align
-    MAFFT(
-        sample_tuple
-    )
+    // MAFFT(
+    //     sample_tuple
+    // )
 
-    // Add the reference sequence
-    MAFFT_ADD(
-        MAFFT.out.sample_tuple,
-        reference_file
-    )
+    // // Add the reference sequence
+    // MAFFT_ADD(
+    //     MAFFT.out.sample_tuple,
+    //     reference_file
+    // )
 
-    // Trim to the reference sequence
-    TRIM_TO_SEQ(
-        MAFFT_ADD.out.sample_tuple,
-        reference_file
-    )
+    // // Trim to the reference sequence
+    // TRIM_TO_SEQ(
+    //     MAFFT_ADD.out.sample_tuple,
+    //     reference_file
+    // )
 
-    // Degap the resulting alignment
-    DEGAP(
-        TRIM_TO_SEQ.out.sample_tuple        
-    )
+    // // Degap the resulting alignment
+    // DEGAP(
+    //     TRIM_TO_SEQ.out.sample_tuple        
+    // )
 
     // Collapse Identical Reads
     COLLAPSE(
-        DEGAP.out.sample_tuple
+        sample_tuple
     )
 
 
