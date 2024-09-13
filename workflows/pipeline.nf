@@ -11,6 +11,7 @@ include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
 include {parseSampleSheet} from "../bin/utils"
 
 include {PREPROCESS} from "../subworkflows/local/preprocessing/main"
+include {FILTER} from "../subworkflows/local/filter/main"
 
 workflow HIV_SEQ_PIPELINE{
     
@@ -43,8 +44,15 @@ workflow HIV_SEQ_PIPELINE{
     def ch_input_files = channel.fromList(sample_tuples)
     def reference_file = channel.value(params.reference_file)
 
-    PREPROCESS(
+    def ch_genbank_file = channel.value(params.genbank_file)
+
+    FILTER(
         ch_input_files, // tuple(file, meta)
+        ch_genbank_file
+    )
+
+    PREPROCESS(
+        FILTER.out.functionalNTSeqs, 
         reference_file
     )
     

@@ -111,3 +111,33 @@ process EXPAND{
     """
 
 }
+
+process FILTER_AGA{
+    tag "$meta.sample_id"
+    label "alignment_utils"
+
+    input:
+    path(input_files)
+    val(meta)
+
+    output:
+    tuple path("*.functional.nt.fasta"), val(meta), emit: functionalNTSeqs
+    path("*.functional.aa.fasta"), emit: functionalAASeqs
+    path("*.non_functional.nt.fasta"), emit: nonFunctionalNTSeqs
+    path("*.non_functional.aa.fasta"), emit: nonFunctionalAASeqs
+    path("*.metrics.json"), emit: metricFile
+
+    script:
+
+
+    def list_string = ""
+
+    for(value in input_files){
+        list_string += value + " "
+    }
+
+
+    """
+    /usr/local/bin/python /app/parse_aga_output.py ${meta.sample_id}.functional.aa.fasta ${meta.sample_id}.functional.nt.fasta ${meta.sample_id}.metrics.json ${meta.sample_id}.non_functional.aa.fasta ${meta.sample_id}.non_functional.nt.fasta ${meta.cds_name} ${list_string}
+    """
+}
