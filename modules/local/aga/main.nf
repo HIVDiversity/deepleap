@@ -1,6 +1,7 @@
 
 
 process AGA{
+    label "aga"
     input:
     val(sequence_record)
     path(genbank_file)
@@ -15,7 +16,7 @@ process AGA{
     """
     echo ">${sequence_record.id}" > ${sequence_record.id}.aga_in.fasta
     echo "${sequence_record.seqString}" >> ${sequence_record.id}.aga_in.fasta
-    /home/dlejeune/masters/aga/build/src/aga --global --strict-codon-boundaries --cds-aa-alignments ${sequence_record.id}.cds_aa_aln.fasta --cds-nt-alignments ${sequence_record.id}.cds_nt_aln.fasta --cds-stats-output ${sequence_record.id}.metrics.json ${genbank_file} ${sequence_record.id}.aga_in.fasta ${sequence_record.id}.aga.out.fasta
+    /app/aga --global --strict-codon-boundaries --cds-aa-alignments ${sequence_record.id}.cds_aa_aln.fasta --cds-nt-alignments ${sequence_record.id}.cds_nt_aln.fasta --cds-stats-output ${sequence_record.id}.metrics.json ${genbank_file} ${sequence_record.id}.aga_in.fasta ${sequence_record.id}.aga.out.fasta
     """
 
 }

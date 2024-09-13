@@ -1,6 +1,6 @@
 process MAFFT{
     tag "$meta.sample_id"
-    container "dlejeune/mafft:7.525"
+    label "mafft"
 
     input:
     tuple path(input_file), val(meta)
@@ -21,7 +21,7 @@ process MAFFT{
 
 process MAFFT_ADD{
     tag "$meta.sample_id"
-    container "dlejeune/mafft:7.525"
+    label "mafft"
 
     input:
     tuple path(input_file), val(meta)
@@ -39,7 +39,7 @@ process MAFFT_ADD{
 
 process MAFFT_ADD_PROFILE{
     tag "TODO"
-    container "dlejeune/mafft:7.525"
+    label "mafft"
 
     input:
     val(input_files)
