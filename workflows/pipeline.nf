@@ -52,7 +52,7 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     PREPROCESS(
-        FILTER.out.functionalNTSeqs, 
+        FILTER.out.sample_tuple, 
         reference_file
     )
     

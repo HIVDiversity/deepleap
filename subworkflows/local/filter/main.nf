@@ -28,6 +28,6 @@ workflow FILTER{
     )
 
     emit:
-    FILTER_AGA.out.functionalNTSeqs
+    sample_tuple = FILTER_AGA.out.functionalNTSeqs
 
 }
