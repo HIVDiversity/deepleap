@@ -64,7 +64,7 @@ process MAFFT_ADD_PROFILE{
 
     for file in \${file_arr[@]};
     do
-        mafft --add \$file output_file.fasta > temp_output_file.fasta;
+        mafft --thread -1 --add \$file output_file.fasta > temp_output_file.fasta;
         rm output_file.fasta;
         mv temp_output_file.fasta output_file.fasta;
     done
