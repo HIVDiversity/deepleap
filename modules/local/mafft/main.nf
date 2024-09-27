@@ -13,7 +13,7 @@ process MAFFT{
     
 
     """
-    mafft --threads -1 --localpair --maxiterate 1000 $input_file > ${meta.sample_id}.mafft.fasta
+    mafft --thread -1 --localpair --maxiterate 1000 $input_file > ${meta.sample_id}.mafft.fasta
     """
 
 
