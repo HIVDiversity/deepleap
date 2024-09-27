@@ -2,6 +2,7 @@
 
 process ADJUST{
     tag "$meta.sample_id"
+    label "codon_adjust"
 
     input:
     tuple path(input_file), val(meta)
@@ -12,6 +13,6 @@ process ADJUST{
     script:
 
     """
-    python /home/dlejeune/masters/codon_align/codon_adjust.py ${input_file} ${meta.sample_id}.corrected.fasta
+    python /app/codon_adjust.py ${input_file} ${meta.sample_id}.corrected.fasta
     """
 }
