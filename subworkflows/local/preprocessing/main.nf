@@ -1,5 +1,5 @@
 
-include {COLLAPSE} from "../../../modules/local/aligment_utils/main.nf"
+include {COLLAPSE} from "../../../modules/local/collapse_expand_fasta/main.nf"
 include {MAFFT} from "../../../modules/local/mafft/main.nf"
 include {MAFFT_ADD} from "../../../modules/local/mafft/main.nf"
 include {TRIM_TO_SEQ} from "../../../modules/local/aligment_utils/main.nf"
