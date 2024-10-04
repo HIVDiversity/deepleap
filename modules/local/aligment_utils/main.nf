@@ -122,7 +122,7 @@ process FILTER_AGA{
 
     output:
     tuple path("*.functional.nt.fasta"), val(meta), emit: functionalNTSeqs
-    path("*.functional.aa.fasta"), emit: functionalAASeqs
+    tuple path("*.functional.aa.fasta"), val(meta) , emit: functionalAASeqs
     path("*.non_functional.nt.fasta"), emit: nonFunctionalNTSeqs
     path("*.non_functional.aa.fasta"), emit: nonFunctionalAASeqs
     path("*.metrics.json"), emit: metricFile

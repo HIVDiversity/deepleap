@@ -28,6 +28,7 @@ workflow FILTER{
     )
 
     emit:
-    sample_tuple = FILTER_AGA.out.functionalNTSeqs
+    sample_tuple = FILTER_AGA.out.functionalAASeqs
+    functional_nucleotide_seqs = FILTER_AGA.out.functionalNTSeqs
 
 }
