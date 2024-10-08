@@ -9,7 +9,6 @@ workflow PREPROCESS{
 
     take:
     sample_tuple
-    reference_file
 
     main:
 

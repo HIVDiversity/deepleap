@@ -14,20 +14,20 @@ workflow CODON_ALIGNMENT{
         sample_tuple
     )
 
-    ADJUST (
-        MAFFT.out.sample_tuple
-    )
+    // ADJUST (
+    //     MAFFT.out.sample_tuple
+    // )
 
-    sample_namefile_ch = ADJUST.out.sample_tuple.join(namefile_tuple, by: 1)
+    // sample_namefile_ch = ADJUST.out.sample_tuple.join(namefile_tuple, by: 1)
 
-    EXPAND(
-        sample_namefile_ch
-    )
+    // EXPAND(
+    //     sample_namefile_ch
+    // )
 
 
 
 
     emit:
-    EXPAND.out.sample_tuple
+    MAFFT.out.sample_tuple
 
 }

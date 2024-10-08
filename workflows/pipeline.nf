@@ -12,55 +12,44 @@ include {parseSampleSheet} from "../bin/utils"
 
 include {PREPROCESS} from "../subworkflows/local/preprocessing/main"
 include {FILTER} from "../subworkflows/local/filter/main"
+include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
+include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
+
 
 workflow HIV_SEQ_PIPELINE{
     
-    
-    // runList = parseInputConfig(params.config_file)
-    
-    // runChannel = channel.fromList(runList)
-
-
-    // configChannel = channel.fromPath(params.config_file)
-
-    // runList = PARSE_INPUT(configChannel).runs
-    
-    // ALIGNER_COMPARISON(runList)  
-
-    
-    
-    def base_sample_dir = "/home/dlejeune/Documents/real_data/do_dump/pools"
-    def cap_num = "CAP008"
-    def file_selector =  "${base_sample_dir}/*/${cap_num}**-degapped.fasta"
-    
-    // def input_files = files(file_selector)
-    // def ch_input_files = channel.fromList(input_files)
-
     
     def samplesheet = file(params.samplesheet)
     def sample_tuples = parseSampleSheet(samplesheet)
 
 
     def ch_input_files = channel.fromList(sample_tuples)
-    def reference_file = channel.value(params.reference_file)
-
     def ch_genbank_file = channel.value(params.genbank_file)
 
+    // Runs AGA and discards "non-functional" sequences
     FILTER(
         ch_input_files, // tuple(file, meta)
         ch_genbank_file
     )
 
+    // Collapses the identical sequences
     PREPROCESS(
         FILTER.out.sample_tuple, 
-        reference_file
     )
     
+    // Runs MAFFT 
     CODON_ALIGNMENT(
         PREPROCESS.out.sample_tuple,
         PREPROCESS.out.namefile_tuple
     )
 
+    // Reverse translate the individual MAFFT alignments
+    REVERSE_TRANSLATE(
+        CODON_ALIGNMENT.out.join(FILTER.out.functional_nucleotide_seqs, by: 1)
+
+    )
+
+    // Align the different profiles
     MAFFT_ADD_PROFILE(
         CODON_ALIGNMENT.out.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
             .flatten()
@@ -71,8 +60,15 @@ workflow HIV_SEQ_PIPELINE{
 
     )
 
+    // Reverse translate the profile alignment
+
+    // REVERSE_TRANSLATE_PROFILE(
+    //     MAFFT_ADD_PROFILE.out.fasta.map{it: [ [sample_id:"None"], it]}
+    // )
+
     emit:
-    final_alignment = MAFFT_ADD_PROFILE.out.fasta
+    // final_alignment = REVERSE_TRANSLATE_PROFILE.out.sample_tuple
+    final_alignment = REVERSE_TRANSLATE.out.sample_tuple
 
 
   
