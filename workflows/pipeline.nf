@@ -15,6 +15,7 @@ include {FILTER} from "../subworkflows/local/filter/main"
 include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
 include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
 
+include {COLLAPSE} from "../../../modules/local/collapse_expand_fasta/main.nf"
 
 workflow HIV_SEQ_PIPELINE{
     
@@ -33,14 +34,14 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     // Collapses the identical sequences
-    PREPROCESS(
-        FILTER.out.sample_tuple, 
+    COLLAPSE(
+        FILTER.out.filtered_aga_output
     )
     
     // Runs MAFFT 
     CODON_ALIGNMENT(
-        PREPROCESS.out.sample_tuple,
-        PREPROCESS.out.namefile_tuple
+        COLLAPSE.out.sample_tuple,
+        COLLAPSE.out.namefile_tuple
     )
 
     // Reverse translate the individual MAFFT alignments
