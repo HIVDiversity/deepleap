@@ -15,7 +15,7 @@ include {FILTER} from "../subworkflows/local/filter/main"
 include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
 include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
 
-include {COLLAPSE} from "../../../modules/local/collapse_expand_fasta/main.nf"
+include {COLLAPSE} from "../modules/local/collapse_expand_fasta/main.nf"
 
 workflow HIV_SEQ_PIPELINE{
     
