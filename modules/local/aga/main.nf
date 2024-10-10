@@ -1,22 +1,32 @@
 
 
 process AGA{
+    tag "${meta.sample_id}"
     label "aga"
+
+    
     input:
-    val(sequence_record)
+    tuple path(sample), val(meta)
     path(genbank_file)
 
     output:
-    path("*.cds_nt_aln.fasta"), emit: nt_alignment
-    path("*.cds_aa_aln.fasta"), emit: aa_alignment
-    path("*.json"), emit: metrics
+    path("*${meta.cds_name}.nt.fasta"), emit: nt_alignment
+    path("*${meta.cds_name}.aa.fasta"), emit: aa_alignment
+    path("*.aga_metrics.csv"), emit: metrics
 
     script:
 
     """
-    echo ">${sequence_record.id}" > ${sequence_record.id}.aga_in.fasta
-    echo "${sequence_record.seqString}" >> ${sequence_record.id}.aga_in.fasta
-    /app/aga --global --strict-codon-boundaries --cds-aa-alignments ${sequence_record.id}.cds_aa_aln.fasta --cds-nt-alignments ${sequence_record.id}.cds_nt_aln.fasta --cds-stats-output ${sequence_record.id}.metrics.json ${genbank_file} ${sequence_record.id}.aga_in.fasta ${sequence_record.id}.aga.out.fasta
+   
+    /app/aga \\
+    --global \\
+    --strict-codon-boundaries \\
+    --cds-aa-alignments ./ \\
+    --cds-nt-alignments ./ \\
+    --cds-stats-output ${meta.sample_id}.aga_metrics.csv \\
+    ${genbank_file} \\
+    ${sample} \\
+    ${meta.sample_id}.aga.out.fasta
     """
 
 }
