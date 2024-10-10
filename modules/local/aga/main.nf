@@ -10,9 +10,9 @@ process AGA{
     path(genbank_file)
 
     output:
-    path("*${meta.cds_name}.nt.fasta"), emit: nt_alignment
-    path("*${meta.cds_name}.aa.fasta"), emit: aa_alignment
-    path("*.aga_metrics.csv"), emit: metrics
+    tuple path("*${meta.cds_name}.nt.fasta"), val(meta), emit: nt_alignment
+    
+    tuple path("*${meta.cds_name}.aa.fasta"), path("*.aga_metrics.csv"),val(meta), emit: aa_alignment
 
     script:
 

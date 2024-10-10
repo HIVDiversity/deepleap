@@ -1,6 +1,6 @@
 
 include {AGA} from "../../../modules/local/aga/main"
-include {FILTER_AGA} from "../../../modules/local/aligment_utils/main"
+include {FILTER_AGA_OUTPUT} from "../../../modules/local/filter_aga/main"
 
 workflow FILTER{
     take:
@@ -9,26 +9,18 @@ workflow FILTER{
 
     main:
 
-    
-    def splitReadChannel = sample_tuple.map{it[0]}.splitFasta(by: 1, record: [id: true, seqString: true])
-    def sample_meta = sample_tuple.map{it[1]}
-
     AGA(
-        splitReadChannel,
+        sample_tuple,
         genbankFile
 
     )
 
-
-    def allFileChannel = channel.empty().mix(AGA.out.nt_alignment).mix(AGA.out.aa_alignment).mix(AGA.out.metrics).collect()
-
-    FILTER_AGA(
-        allFileChannel,
-        sample_meta
+    FILTER_AGA_OUTPUT(
+        AGA.out.aa_alignment
     )
 
     emit:
-    sample_tuple = FILTER_AGA.out.functionalAASeqs
-    functional_nucleotide_seqs = FILTER_AGA.out.functionalNTSeqs
+    filtered_aga_output = FILTER_AGA_OUTPUT.out.filtered_tuples
+    aga_nt_alignments = AGA.out.nt_alignment
 
 }
