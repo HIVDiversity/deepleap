@@ -46,7 +46,7 @@ workflow HIV_SEQ_PIPELINE{
 
     // Reverse translate the individual MAFFT alignments
     REVERSE_TRANSLATE(
-        CODON_ALIGNMENT.out.join(FILTER.out.functional_nucleotide_seqs, by: 1)
+        CODON_ALIGNMENT.out.join(FILTER.out.aga_nt_alignments, by: 1)
 
     )
 
