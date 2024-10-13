@@ -9,11 +9,17 @@ process COLLAPSE {
     output:
     tuple  path("*.fasta"), val(meta) , emit: sample_tuple
     tuple path("*.json"), val(meta), emit: namefile_tuple
-
+    
     script:
+    //TODO: the hardcoded ENV and AA values in the -p flag should be parameterised
 
     """
-    /usr/local/bin/collapse-expand-fasta $input_file ${meta.sample_id}.collapsed.fasta ${meta.sample_id}.names.json ${meta.sample_id}_CLPSD
+    /usr/local/bin/collapse-expand-fasta \\
+    -i $input_file \\
+    -o ${meta.sample_id}.collapsed.fasta \\
+    -n ${meta.sample_id}.names.json \\
+    -p ${meta.sample_id}_ENV_AA \\
+    -s 
     """
 
 }
