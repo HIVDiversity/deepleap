@@ -3,7 +3,7 @@ process REVERSE_TRANSLATE{
     label "reverse_translate"
 
     input:
-    tuple val(meta), path(aligned_aa_file), path(nt_file)
+    tuple val(meta), path(aligned_aa_file), path(nt_file), path(name_file)
     
 
     output:
@@ -12,7 +12,11 @@ process REVERSE_TRANSLATE{
     script:
 
     """
-    /usr/local/bin/reverse-translate ${aligned_aa_file} ${nt_file} ${meta.sample_id}.rev_trn.fasta
+    /usr/local/bin/reverse-translate \\
+    -i ${aligned_aa_file} \\
+    -n ${nt_file} \\
+    -m ${name_file} \\
+    -o ${meta.sample_id}.rev_trn.fasta
     """
 
 }

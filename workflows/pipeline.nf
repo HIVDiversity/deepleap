@@ -45,8 +45,17 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     // Reverse translate the individual MAFFT alignments
+    // Important to note is that we want to join three channels, but need to reorder their contents
+    // CODON_ALIGNMENT -> (path, meta)
+    // FILTER.out.aga_nt_alignments -> (path, meta)
+    // namefile_tuple -> (path, meta)
+    // After joining CODON_ALIGNMENT and nt_alignments: (meta, path, path)
+    // So we need to rearrange the namefile_tuple to have (meta, path)
     REVERSE_TRANSLATE(
-        CODON_ALIGNMENT.out.join(FILTER.out.aga_nt_alignments, by: 1)
+        CODON_ALIGNMENT.out
+            .join(FILTER.out.aga_nt_alignments, by: 1)
+            .join(COLLAPSE.out.namefile_tuple
+                .map{it -> [it[1], it[0]]})
 
     )
 
