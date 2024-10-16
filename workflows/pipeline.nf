@@ -16,6 +16,7 @@ include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
 include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
 
 include {COLLAPSE} from "../modules/local/collapse_expand_fasta/main.nf"
+include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
 
 workflow HIV_SEQ_PIPELINE{
     
@@ -35,7 +36,8 @@ workflow HIV_SEQ_PIPELINE{
 
     // Collapses the identical sequences
     COLLAPSE(
-        FILTER.out.filtered_aga_output
+        FILTER.out.filtered_aga_output,
+        channel.value("ENV_AA")
     )
     
     // Runs MAFFT 
@@ -57,6 +59,12 @@ workflow HIV_SEQ_PIPELINE{
             .join(COLLAPSE.out.namefile_tuple
                 .map{it -> [it[1], it[0]]})
 
+    )
+
+    // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
+     COLLAPSE_REVERSED_SEQS(
+        FILTER.out.filtered_aga_output,
+        channel.value("ENV_NT")
     )
 
     // Align the different profiles

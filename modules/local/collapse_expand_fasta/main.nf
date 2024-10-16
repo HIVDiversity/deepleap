@@ -4,6 +4,7 @@ process COLLAPSE {
 
     input:
     tuple path(input_file), val(meta)
+    val(prefix) // This is actually the bit to put after the sample ID
     
 
     output:
@@ -16,9 +17,9 @@ process COLLAPSE {
     """
     /usr/local/bin/collapse-expand-fasta \\
     -i $input_file \\
-    -o ${meta.sample_id}.collapsed.fasta \\
+    -o ${meta.sample_id}_${prefix}.collapsed.fasta \\
     -n ${meta.sample_id}.names.json \\
-    -p ${meta.sample_id}_ENV_AA \\
+    -p ${meta.sample_id}_${prefix} \\
     -s 
     """
 
