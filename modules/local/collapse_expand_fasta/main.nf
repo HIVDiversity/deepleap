@@ -5,6 +5,7 @@ process COLLAPSE {
     input:
     tuple path(input_file), val(meta)
     val(prefix) // This is actually the bit to put after the sample ID
+    val(strip_gaps)
     
 
     output:
@@ -12,6 +13,10 @@ process COLLAPSE {
     tuple path("*.json"), val(meta), emit: namefile_tuple
     
     script:
+    def gap_flag = ""
+    if (strip_gaps){
+        gap_flag = "-s"
+    }
     //TODO: the hardcoded ENV and AA values in the -p flag should be parameterised
 
     """
@@ -20,7 +25,7 @@ process COLLAPSE {
     -o ${meta.sample_id}_${prefix}.collapsed.fasta \\
     -n ${meta.sample_id}.names.json \\
     -p ${meta.sample_id}_${prefix} \\
-    -s 
+    ${gap_flag} 
     """
 
 }

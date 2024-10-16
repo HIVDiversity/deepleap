@@ -37,7 +37,8 @@ workflow HIV_SEQ_PIPELINE{
     // Collapses the identical sequences
     COLLAPSE(
         FILTER.out.filtered_aga_output,
-        channel.value("ENV_AA")
+        channel.value("ENV_AA"),
+        channel.value(true) // do strip the gaps
     )
     
     // Runs MAFFT 
@@ -63,11 +64,12 @@ workflow HIV_SEQ_PIPELINE{
 
     // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
      COLLAPSE_REVERSED_SEQS(
-        FILTER.out.filtered_aga_output,
-        channel.value("ENV_NT")
+        REVERSE_TRANSLATE.out.sample_tuple
+        channel.value("ENV_NT"),
+        channel.value(false) // don't strip the gaps
     )
 
-    // Align the different profiles
+    // Align the different profiles in nt space. 
     MAFFT_ADD_PROFILE(
         CODON_ALIGNMENT.out.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
             .flatten()
