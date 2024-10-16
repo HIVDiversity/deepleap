@@ -64,7 +64,7 @@ workflow HIV_SEQ_PIPELINE{
 
     // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
      COLLAPSE_REVERSED_SEQS(
-        REVERSE_TRANSLATE.out.sample_tuple
+        REVERSE_TRANSLATE.out.sample_tuple,
         channel.value("ENV_NT"),
         channel.value(false) // don't strip the gaps
     )
