@@ -3,16 +3,14 @@ nextflow.enable.dsl=2
 import groovy.json.JsonSlurper
 import org.apache.groovy.json.internal.LazyMap
 
-include {CODON_ALIGNMENT} from "../subworkflows/local/alignment/main"
-// include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
-// include {PARSE_INPUT} from "../subworkflows/local/parse_input"
 include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
 include {MAFFT} from "../modules/local/mafft/main"
 
 include {parseSampleSheet} from "../bin/utils"
 
-include {PREPROCESS} from "../subworkflows/local/preprocessing/main"
+
 include {FILTER} from "../subworkflows/local/filter/main"
+
 include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
 include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
 
@@ -72,7 +70,7 @@ workflow HIV_SEQ_PIPELINE{
     // We should perform a profile alignment of the Amino Acids
     // Then we want to reverse translate that whole thing
     MAFFT_ADD_PROFILE(
-        CODON_ALIGNMENT.out.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
+        MAFFT.out.sample_tuple.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
             .flatten()
             .collate(2)
             .map{it[0]}
