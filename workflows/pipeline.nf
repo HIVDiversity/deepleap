@@ -7,6 +7,7 @@ include {CODON_ALIGNMENT} from "../subworkflows/local/alignment/main"
 // include {ALIGNER_COMPARISON} from "../subworkflows/local/alignment_scoring/main"
 // include {PARSE_INPUT} from "../subworkflows/local/parse_input"
 include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
+include {MAFFT} from "../modules/local/mafft/main"
 
 include {parseSampleSheet} from "../bin/utils"
 
@@ -41,11 +42,10 @@ workflow HIV_SEQ_PIPELINE{
         channel.value(true) // do strip the gaps
     )
     
-    // Runs MAFFT 
-    CODON_ALIGNMENT(
-        COLLAPSE.out.sample_tuple,
-        COLLAPSE.out.namefile_tuple
+    MAFFT(
+        COLLAPSE.out.sample_tuple
     )
+
 
     // Reverse translate the individual MAFFT alignments
     // Important to note is that we want to join three channels, but need to reorder their contents
@@ -55,7 +55,7 @@ workflow HIV_SEQ_PIPELINE{
     // After joining CODON_ALIGNMENT and nt_alignments: (meta, path, path)
     // So we need to rearrange the namefile_tuple to have (meta, path)
     REVERSE_TRANSLATE(
-        CODON_ALIGNMENT.out
+        MAFFT.out.sample_tuple
             .join(FILTER.out.aga_nt_alignments, by: 1)
             .join(COLLAPSE.out.namefile_tuple
                 .map{it -> [it[1], it[0]]})
@@ -69,7 +69,8 @@ workflow HIV_SEQ_PIPELINE{
         channel.value(false) // don't strip the gaps
     )
 
-    // Align the different profiles in nt space. 
+    // We should perform a profile alignment of the Amino Acids
+    // Then we want to reverse translate that whole thing
     MAFFT_ADD_PROFILE(
         CODON_ALIGNMENT.out.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
             .flatten()
