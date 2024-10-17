@@ -8,7 +8,6 @@ include {MAFFT} from "../modules/local/mafft/main"
 
 include {parseSampleSheet} from "../bin/utils"
 
-
 include {FILTER} from "../subworkflows/local/filter/main"
 
 include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
