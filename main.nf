@@ -10,7 +10,7 @@
 nextflow.enable.dsl = 2
 
 
-// include { validateParameters; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
+include {paramsSummaryLog } from 'plugin/nf-schema'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,7 @@ nextflow.enable.dsl = 2
 
 
 // Print parameter summary log to screen before running
-// log.info paramsSummaryLog(workflow)
+log.info paramsSummaryLog(workflow)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
