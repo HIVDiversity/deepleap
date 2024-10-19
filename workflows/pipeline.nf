@@ -66,17 +66,17 @@ workflow HIV_SEQ_PIPELINE{
         channel.value(false) // don't strip the gaps
     )
 
-    // We should perform a profile alignment of the Amino Acids
-    // Then we want to reverse translate that whole thing
-    MAFFT_ADD_PROFILE(
-        MAFFT.out.sample_tuple.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
-            .flatten()
-            .collate(2)
-            .map{it[0]}
-            .collect()
-            .view()
+    // // We should perform a profile alignment of the Amino Acids
+    // // Then we want to reverse translate that whole thing
+    // MAFFT_ADD_PROFILE(
+    //     MAFFT.out.sample_tuple.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
+    //         .flatten()
+    //         .collate(2)
+    //         .map{it[0]}
+    //         .collect()
+    //         .view()
 
-    )
+    // )
 
     // Reverse translate the profile alignment
 
