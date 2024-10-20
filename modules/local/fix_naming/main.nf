@@ -10,8 +10,13 @@ process FIX_NAMES{
     path("*.log"), emit: log
 
     script:
+    // TODO: Again, paramaterize the sequence prefix here. 
 
     """
-    
+    /usr/local/bin/fix-seq-naming \\
+    -i ${sample} \\
+    -o ${meta.sample_id}.renamed.fasta \\
+    -n ${meta.sample_id}.names.json \\
+    -s ENV_NT
     """
 }

@@ -16,6 +16,8 @@ include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/
 include {COLLAPSE} from "../modules/local/collapse_expand_fasta/main.nf"
 include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
 
+include {FIX_NAMES} from "../modules/local/fix_naming/main"
+
 workflow HIV_SEQ_PIPELINE{
     
     
@@ -26,9 +28,14 @@ workflow HIV_SEQ_PIPELINE{
     def ch_input_files = channel.fromList(sample_tuples)
     def ch_genbank_file = channel.value(params.genbank_file)
 
+    // Fix the sample names by stripping gaps and applying various rules to the names
+    FIX_NAMES(
+        ch_input_files
+    )
+
     // Runs AGA and discards "non-functional" sequences
     FILTER(
-        ch_input_files, // tuple(file, meta)
+        FIX_NAMES.out.sample_tuple, // tuple(file, meta)
         ch_genbank_file
     )
 
