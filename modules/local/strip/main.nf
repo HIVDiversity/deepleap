@@ -1,4 +1,5 @@
 process STRIP{
+    tag "${meta.sample_id}"
     
     input:
     tuple path(sample), val(meta)
