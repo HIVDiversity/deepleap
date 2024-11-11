@@ -13,7 +13,7 @@ include {FILTER} from "../subworkflows/local/filter/main"
 include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
 include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
 
-include {COLLAPSE} from "../modules/local/collapse_expand_fasta/main.nf"
+include {COLLAPSE as COLLAPSE_AA_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
 include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
 
 workflow HIV_SEQ_PIPELINE{
@@ -33,14 +33,14 @@ workflow HIV_SEQ_PIPELINE{
     )
 
     // Collapses the identical sequences
-    COLLAPSE(
+    COLLAPSE_AA_SEQS(
         FILTER.out.filtered_aga_output,
         channel.value("ENV_AA"), // FIXME: This is not good
         channel.value(true) // do strip the gaps
     )
     
     MAFFT(
-        COLLAPSE.out.sample_tuple
+        COLLAPSE_AA_SEQS.out.sample_tuple
     )
 
 
@@ -54,7 +54,7 @@ workflow HIV_SEQ_PIPELINE{
     REVERSE_TRANSLATE(
         MAFFT.out.sample_tuple
             .join(FILTER.out.aga_nt_alignments, by: 1)
-            .join(COLLAPSE.out.namefile_tuple
+            .join(COLLAPSE_AA_SEQS.out.namefile_tuple
                 .map{it -> [it[1], it[0]]})
 
     )
