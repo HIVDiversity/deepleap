@@ -6,7 +6,7 @@ import org.apache.groovy.json.internal.LazyMap
 
 workflow PARSE_INPUT{
     take:
-    jsonSpec
+    samplesheet
 
     
 
@@ -29,33 +29,16 @@ workflow PARSE_INPUT{
 
 }
 
-def convertToMap(def obj) {
-    if (obj instanceof LazyMap) {
-        obj.collectEntries { key, value -> [(key): convertToMap(value)] }
-    } else if (obj instanceof List) {
-        obj.collect { item -> convertToMap(item) }
-    } else {
-        obj
-    }
-}
+def process_samplesheet(File samplesheet){
+    output_list = []
 
-
-def parseInputConfig(configFile){
-    def inputFile = new File(configFile.toString())
-    def jsonDict = new JsonSlurper().parseText(inputFile.text)
-
-    def tupleList = []
-
-    for (entry in jsonDict["runs"]){
-        temp_file = file(entry["meta"]["file"])
-        temp_meta = convertToMap(entry)
-
-        tupleList.add(new Tuple(temp_file, temp_meta))
+    for (entry in samplesheet.splitCsv(header: true)){
+        def new_output = []
+        new_output.add(file(entry.remove("sample_path")))
+        new_output.add(entry)
+        output_list.add(new_output)
     }
 
-    return tupleList
-}
+    return output_list
 
-def createRunTuple(jsonRow){
-    return [file(jsonRow["meta"]["file"]), convertToMap(jsonRow)]
 }
