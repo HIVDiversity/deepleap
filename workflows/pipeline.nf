@@ -35,7 +35,7 @@ workflow HIV_SEQ_PIPELINE{
     // Collapses the identical sequences
     COLLAPSE(
         FILTER.out.filtered_aga_output,
-        channel.value("ENV_AA"),
+        channel.value("ENV_AA"), // FIXME: This is not good
         channel.value(true) // do strip the gaps
     )
     
