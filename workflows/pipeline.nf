@@ -5,6 +5,7 @@ import org.apache.groovy.json.internal.LazyMap
 
 include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
 include {MAFFT} from "../modules/local/mafft/main"
+include {MUSCLE} from "../modules/local/muscle/main"
 
 include {parseSampleSheet} from "../bin/utils"
 
@@ -39,9 +40,23 @@ workflow HIV_SEQ_PIPELINE{
         channel.value(true) // do strip the gaps
     )
     
-    MAFFT(
+    def aligner = params.aligner.toUpperCase()
+
+    if (aligner == "MAFFT"){
+        MAFFT(
+            COLLAPSE_AA_SEQS.out.sample_tuple
+        )
+
+        alignment_output_ch = MAFFT.out.sample_tuple
+
+    }else if (aligner == "MUSCLE"){
+        MUSCLE(
         COLLAPSE_AA_SEQS.out.sample_tuple
-    )
+        )
+
+        alignment_output_ch = MUSCLE.out.sample_tuple
+
+    }
 
 
     // Reverse translate the individual MAFFT alignments
@@ -52,7 +67,7 @@ workflow HIV_SEQ_PIPELINE{
     // After joining CODON_ALIGNMENT and nt_alignments: (meta, path, path)
     // So we need to rearrange the namefile_tuple to have (meta, path)
     REVERSE_TRANSLATE(
-        MAFFT.out.sample_tuple
+        alignment_output_ch
             .join(FILTER.out.aga_nt_alignments, by: 1)
             .join(COLLAPSE_AA_SEQS.out.namefile_tuple
                 .map{it -> [it[1], it[0]]})
