@@ -19,8 +19,7 @@ process AGA{
     """
    
     /app/aga \\
-    --global \\
-    --strict-codon-boundaries \\
+    --local \\
     --cds-aa-alignments  ${meta.sample_id}.aa.fasta \\
     --cds-nt-alignments ${meta.sample_id}.nt.fasta \\
     --cds-name ${meta.cds_name} \\
