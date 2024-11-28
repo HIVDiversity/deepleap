@@ -6,7 +6,8 @@ include {STRIP} from "../../../modules/local/strip/main"
 workflow FILTER{
     take:
     sample_tuple // path(input), val(meta)
-    genbankFile
+    genbankFile, // File
+    regionsOfInterest, // list(String)
 
     main:
 
@@ -15,9 +16,23 @@ workflow FILTER{
         genbankFile
 
     )
+    // Since AGA produces multiple files, we need to split to each have their own meta and report files.
+    def aaSeqsOfInterest = AGA
+                            .out
+                            .aa_alignment
+                            .flatMap {splitRegionFilesToLists(it)}
+                            .filter({it[2].region in regionsOfInterest})
+                            .filter({it[2].region_type == "PROTEIN"}) // Hardcoded, but we can change
 
+    def ntSeqsOfInterest = AGA
+                            .out
+                            .nt_alignment
+                            .flatMap {splitRegionFilesToLists(it)}
+                            .filter({it[2].region in regionsOfInterest})
+                            .filter({it[2].region_type == "PROTEIN"}) // Hardcoded, but we can change
+    
     FILTER_AGA_OUTPUT(
-        AGA.out.aa_alignment
+        aaSeqsOfInterest
     )
 
     STRIP(
@@ -27,6 +42,52 @@ workflow FILTER{
 
     emit:
     filtered_aga_output = STRIP.out.sample_tuple
-    aga_nt_alignments = AGA.out.nt_alignment
+    aga_nt_alignments = ntSeqsOfInterest
 
+}
+
+// Function to check if any substring in a list exists in a filename
+boolean isRegionOfInterest(String filename, List<String> substrings) {
+    if (filename == null || substrings == null || substrings.isEmpty()) {
+        return false // Return false if filename or substrings are null or empty
+    }
+    // Check if any substring in the list is found in the filename
+    return substrings.any { substring -> filename.contains(substring) }
+}
+
+
+
+
+List splitRegionFilesToLists(List input){
+    outputList = []
+    files = input[0]
+    
+    for (file in files){
+        splitName = file.name.split("\\.")[0].split("_")
+        region = splitName[-1]
+        seqType = "UNKNOWN"
+        regionType = "UNKNOWN"
+        
+        if (file.name.contains("_NT_")){
+            seqType = "NT"
+        }else if (file.name.contains("_AA_")){
+            seqType = "AA"
+        }
+
+        if (file.name.contains("_PROT_")){
+            regionType = "PROTEIN"
+        }else if (file.name.contains("_CDS_")){
+            regionType = "CDS"
+        }
+    
+        newMetaDict = [*:input[2]]
+        newMetaDict["region"] = region
+        newMetaDict["seq_type"] = seqType
+        newMetaDict["region_type"] = regionType
+
+        newList = [file, input[1], newMetaDict]
+        outputList.add(newList)
+    }
+    
+    return outputList
 }

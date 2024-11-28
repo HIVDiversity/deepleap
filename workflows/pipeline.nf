@@ -18,7 +18,14 @@ include {COLLAPSE as COLLAPSE_AA_SEQS} from "../modules/local/collapse_expand_fa
 include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
 
 workflow HIV_SEQ_PIPELINE{
-    
+
+    if (!params.regions_of_interest){
+        println "No regions of interest provided. Exiting."
+        exit 1
+    }
+
+    def regionsOfInterest = params.regions_of_interest.split(",")
+    def regionsOfInterest_ch = channel.value(regionsOfInterest)
     
     def samplesheet = file(params.samplesheet)
     def sample_tuples = parseSampleSheet(samplesheet)
@@ -30,7 +37,8 @@ workflow HIV_SEQ_PIPELINE{
     // Runs AGA and discards "non-functional" sequences
     FILTER(
         ch_input_files, // tuple(file, meta)
-        ch_genbank_file
+        ch_genbank_file, // file
+        regionsOfInterest_ch // value(list(String))
     )
 
     // Collapses the identical sequences

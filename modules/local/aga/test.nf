@@ -21,6 +21,8 @@ workflow  {
     )
 
    
+    AGA.out.nt_alignment.view()
+    AGA.out.aa_alignment.view()
 
 
         
