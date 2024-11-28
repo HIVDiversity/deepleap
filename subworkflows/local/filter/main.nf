@@ -46,16 +46,6 @@ workflow FILTER{
 
 }
 
-// Function to check if any substring in a list exists in a filename
-boolean isRegionOfInterest(String filename, List<String> substrings) {
-    if (filename == null || substrings == null || substrings.isEmpty()) {
-        return false // Return false if filename or substrings are null or empty
-    }
-    // Check if any substring in the list is found in the filename
-    return substrings.any { substring -> filename.contains(substring) }
-}
-
-
 
 
 List splitRegionFilesToLists(List input){
