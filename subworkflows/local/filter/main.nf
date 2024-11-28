@@ -65,7 +65,7 @@ List splitRegionFilesToLists(List input){
         }
 
         if (file.name.contains("_PROT_")){
-            regionType = "PROTEIN"
+            regionType = "PROT"
         }else if (file.name.contains("_CDS_")){
             regionType = "CDS"
         }
