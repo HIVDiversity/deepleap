@@ -22,14 +22,14 @@ workflow FILTER{
                             .aa_alignment
                             .flatMap {splitRegionFilesToLists(it)}
                             .filter({it[2].region in regionsOfInterest})
-                            .filter({it[2].region_type == "PROTEIN"}) // Hardcoded, but we can change
+                            .filter({it[2].region_type == "PROT"}) // Hardcoded, but we can change
 
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
                             .flatMap {splitRegionFilesToLists(it)}
                             .filter({it[2].region in regionsOfInterest})
-                            .filter({it[2].region_type == "PROTEIN"}) // Hardcoded, but we can change
+                            .filter({it[2].region_type == "PROT"}) // Hardcoded, but we can change
     
     FILTER_AGA_OUTPUT(
         aaSeqsOfInterest
