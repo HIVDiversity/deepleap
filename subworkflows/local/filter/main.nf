@@ -6,8 +6,8 @@ include {STRIP} from "../../../modules/local/strip/main"
 workflow FILTER{
     take:
     sample_tuple // path(input), val(meta)
-    genbankFile, // File
-    regionsOfInterest, // list(String)
+    genbankFile // File
+    regionsOfInterest // list(String)
 
     main:
 
@@ -21,15 +21,15 @@ workflow FILTER{
                             .out
                             .aa_alignment
                             .flatMap {splitRegionFilesToLists(it)}
-                            .filter({it[2].region in regionsOfInterest})
-                            .filter({it[2].region_type == "PROT"}) // Hardcoded, but we can change
+                            .filter {it[2].region in regionsOfInterest}
+                            .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
 
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
                             .flatMap {splitRegionFilesToLists(it)}
-                            .filter({it[2].region in regionsOfInterest})
-                            .filter({it[2].region_type == "PROT"}) // Hardcoded, but we can change
+                            .filter {it[2].region in regionsOfInterest}
+                            .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
     
     FILTER_AGA_OUTPUT(
         aaSeqsOfInterest
