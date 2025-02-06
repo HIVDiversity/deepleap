@@ -2,6 +2,8 @@
 include {AGA} from "../../../modules/local/aga/main"
 include {FILTER_AGA_OUTPUT} from "../../../modules/local/filter_aga/main"
 include {STRIP} from "../../../modules/local/strip/main"
+include {AGA_SIEVE} from "../../../modules/local/aga_output_sieve/main"
+include {SEQTK_SUBSEQ} from "../../../modules/local/seqtk/subseq/main"
 
 workflow FILTER{
     take:
@@ -23,10 +25,9 @@ workflow FILTER{
                             .aa_alignment
                             .flatMap {splitRegionFilesToLists(it)}
                             // .filter {it[2].region in regionsOfInterest}
-                            .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
+                            .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
 
-    aaSeqsOfInterest.view()
-    
+        
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
@@ -35,17 +36,37 @@ workflow FILTER{
                             .filter {it[2].region in regionsOfInterest}
                             .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
     
-    FILTER_AGA_OUTPUT(
-        aaSeqsOfInterest
+    // We now extract only the reports, since we don't need to pass the files into the filtering function.
+    def reports = aaSeqsOfInterest
+                    .map{[it[1], it[2]]}
+    
+    def seqsOnly = aaSeqsOfInterest
+                    .map{[it[0], it[2]]}
+    reports.view()
+    // Now we need to get the names of the sequences that pass our filters
+    AGA_SIEVE(
+        reports
     )
 
-    STRIP(
-        FILTER_AGA_OUTPUT.out.filtered_tuples,
-        channel.value(".") // We want to remove any dots from the alignments.
+    // Next we join the output of the sieve with the files again....
+
+    def seqsWithListToKeep = seqsOnly.join(AGA_SIEVE.out.names_to_keep, by:1)
+
+    seqsWithListToKeep.view()
+
+    SEQTK_SUBSEQ(
+        seqsWithListToKeep
     )
+
+    // AGA_SIEVE.names_to_keep
+
+    // STRIP(
+    //     FILTER_AGA_OUTPUT.out.filtered_tuples,
+    //     channel.value(".") // We want to remove any dots from the alignments.
+    // )
 
     emit:
-    filtered_aga_output = STRIP.out.sample_tuple
+    filtered_aga_output = SEQTK_SUBSEQ.out.filtered_tuples
     aga_nt_alignments = ntSeqsOfInterest
 
 }
