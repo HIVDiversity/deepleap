@@ -16,17 +16,21 @@ workflow FILTER{
         genbankFile
 
     )
+    
     // Since AGA produces multiple files, we need to split to each have their own meta and report files.
     def aaSeqsOfInterest = AGA
                             .out
                             .aa_alignment
                             .flatMap {splitRegionFilesToLists(it)}
-                            .filter {it[2].region in regionsOfInterest}
+                            // .filter {it[2].region in regionsOfInterest}
                             .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
 
+    aaSeqsOfInterest.view()
+    
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
+                            .collect()
                             .flatMap {splitRegionFilesToLists(it)}
                             .filter {it[2].region in regionsOfInterest}
                             .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
@@ -53,6 +57,7 @@ List splitRegionFilesToLists(List input){
     files = input[0]
     
     for (file in files){
+        // TODO: this is dangerous since it depends on the filename being correctly formatted. We could look at using a "contains" check for all the provided regions
         splitName = file.name.split("\\.")[0].split("_")
         region = splitName[-1]
         seqType = "UNKNOWN"
