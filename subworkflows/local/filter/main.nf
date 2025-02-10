@@ -50,7 +50,9 @@ workflow FILTER{
 
     // Next we join the output of the sieve with the files again....
 
-    def seqsWithListToKeep = seqsOnly.join(AGA_SIEVE.out.names_to_keep, by:1)
+    def seqsWithListToKeep = seqsOnly
+                                .join(AGA_SIEVE.out.names_to_keep, by:1)
+                                .map {[it[1],it[2],it[0]]}  // This is necessary since we need to transform from [meta, path, path] to [path, path, meta]
 
     seqsWithListToKeep.view()
 
