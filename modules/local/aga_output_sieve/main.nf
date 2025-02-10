@@ -16,7 +16,7 @@ process AGA_SIEVE{
     --region-type ${meta.region_type} \\
     --seq-type ${meta.seq_type} \\
     --min-stop-codons 0 \\
-    --min-stop-codons 1 \\
+    --max-stop-codons 1 \\
     --frameshifts 0 \\
     --min-coverage 0 \\
     ${aga_metrics} \\
