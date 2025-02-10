@@ -48,13 +48,11 @@ workflow FILTER{
         reports
     )
 
-    // Next we join the output of the sieve with the files again....
-
+    // Next we join the output of the sieve with the files again
     def seqsWithListToKeep = seqsOnly
                                 .join(AGA_SIEVE.out.names_to_keep, by:1)
                                 .map {[it[1],it[2],it[0]]}  // This is necessary since we need to transform from [meta, path, path] to [path, path, meta]
 
-    seqsWithListToKeep.view()
 
     SEQTK_SUBSEQ(
         seqsWithListToKeep
@@ -62,13 +60,13 @@ workflow FILTER{
 
     // AGA_SIEVE.names_to_keep
 
-    // STRIP(
-    //     FILTER_AGA_OUTPUT.out.filtered_tuples,
-    //     channel.value(".") // We want to remove any dots from the alignments.
-    // )
+    STRIP(
+        SEQTK_SUBSEQ.out.filtered_tuples,
+        channel.value(".") // We want to remove any dots from the alignments.
+    )
 
     emit:
-    filtered_aga_output = SEQTK_SUBSEQ.out.filtered_tuples
+    filtered_aga_output = STRIP.out.sample_tuple
     aga_nt_alignments = ntSeqsOfInterest
 
 }
