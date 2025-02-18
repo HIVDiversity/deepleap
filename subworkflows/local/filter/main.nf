@@ -18,13 +18,14 @@ workflow FILTER{
         genbankFile
 
     )
+
+     AGA.out.aa_alignment.view()
     
     // Since AGA produces multiple files, we need to split to each have their own meta and report files.
     def aaSeqsOfInterest = AGA
                             .out
                             .aa_alignment
                             .flatMap {splitRegionFilesToLists(it)}
-                            // .filter {it[2].region in regionsOfInterest}
                             .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
 
         
@@ -33,16 +34,17 @@ workflow FILTER{
                             .nt_alignment
                             .collect()
                             .flatMap {splitRegionFilesToLists(it)}
-                            .filter {it[2].region in regionsOfInterest}
-                            .filter {it[2].region_type == "PROT"} // Hardcoded, but we can change
+                            .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
     
+    
+    // aaSeqsOfInterest.view()
     // We now extract only the reports, since we don't need to pass the files into the filtering function.
     def reports = aaSeqsOfInterest
                     .map{[it[1], it[2]]}
     
     def seqsOnly = aaSeqsOfInterest
                     .map{[it[0], it[2]]}
-    reports.view()
+    // reports.view()
     // Now we need to get the names of the sequences that pass our filters
     AGA_SIEVE(
         reports
@@ -104,6 +106,8 @@ List splitRegionFilesToLists(List input){
         newList = [file, input[1], newMetaDict]
         outputList.add(newList)
     }
+
+    // println outputList
     
     return outputList
 }

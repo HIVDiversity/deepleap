@@ -66,7 +66,7 @@ workflow HIV_SEQ_PIPELINE{
 
     }
 
-
+    // alignment_output_ch.view() 
     // Reverse translate the individual MAFFT alignments
     // Important to note is that we want to join three channels, but need to reorder their contents
     // CODON_ALIGNMENT -> (path, meta)
