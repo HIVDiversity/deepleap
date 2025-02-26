@@ -13,8 +13,7 @@ process AGA_SIEVE{
 
     """
     /app/.venv/bin/python /app/src/main.py \\
-    --region-type ${meta.region_type} \\
-    --seq-type ${meta.seq_type} \\
+    --seq-type AA \\
     --min-stop-codons 0 \\
     --max-stop-codons 1 \\
     --frameshifts 0 \\
@@ -22,6 +21,6 @@ process AGA_SIEVE{
     ${aga_metrics} \\
     ${meta.sample_id}_annotated_report.csv \\
     ${meta.sample_id}_names_to_keep.txt \\
-    ${meta.region}
+    ${meta.cds_name}
     """
 }

@@ -25,28 +25,20 @@ workflow FILTER{
     def aaSeqsOfInterest = AGA
                             .out
                             .aa_alignment
-                            .collect()
-                            .map {splitRegionFilesToLists(it)}
-                            .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
 
-    // aaSeqsOfInterest.view()
 
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
-                            .collect()
-                            .flatMap {splitRegionFilesToLists(it)}
-                            .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
     
     
-    // aaSeqsOfInterest.view()
     // We now extract only the reports, since we don't need to pass the files into the filtering function.
     def reports = aaSeqsOfInterest
                     .map{[it[1], it[2]]}
     
     def seqsOnly = aaSeqsOfInterest
                     .map{[it[0], it[2]]}
-    // reports.view()
+    reports.view()
     // Now we need to get the names of the sequences that pass our filters
     AGA_SIEVE(
         reports
@@ -57,7 +49,7 @@ workflow FILTER{
                                 .join(AGA_SIEVE.out.names_to_keep, by:1)
                                 .map {[it[1],it[2],it[0]]}  // This is necessary since we need to transform from [meta, path, path] to [path, path, meta]
 
-
+    seqsWithListToKeep.view()
     SEQTK_SUBSEQ(
         seqsWithListToKeep
     )
@@ -111,12 +103,12 @@ List splitRegionFilesToLists(List input){
         newList = [file, report, newMetaDict]
         outputList.add(newList)
 
-        println "New List:"
-        println newList
+        // println "New List:"
+        // println newList
     }
 
-    println "outputList:"
-    println outputList
+    // println "outputList:"
+    // println outputList
     
     return outputList
 }
