@@ -19,16 +19,18 @@ workflow FILTER{
 
     )
 
-     AGA.out.aa_alignment.view()
+    //  AGA.out.aa_alignment.view()
     
     // Since AGA produces multiple files, we need to split to each have their own meta and report files.
     def aaSeqsOfInterest = AGA
                             .out
                             .aa_alignment
-                            .flatMap {splitRegionFilesToLists(it)}
+                            .collect()
+                            .map {splitRegionFilesToLists(it)}
                             .filter {it[2].region == "envelope-polyprotein"} // Hardcoded, but we can change
 
-        
+    // aaSeqsOfInterest.view()
+
     def ntSeqsOfInterest = AGA
                             .out
                             .nt_alignment
@@ -77,7 +79,10 @@ workflow FILTER{
 
 List splitRegionFilesToLists(List input){
     outputList = []
-    files = input[0]
+    
+    files = input[0].clone()
+    report = input[1]
+    meta_dict = input[2].clone()
     
     for (file in files){
         // TODO: this is dangerous since it depends on the filename being correctly formatted. We could look at using a "contains" check for all the provided regions
@@ -98,16 +103,20 @@ List splitRegionFilesToLists(List input){
             regionType = "CDS"
         }
     
-        newMetaDict = [*:input[2]]
+        newMetaDict = [*:meta_dict]
         newMetaDict["region"] = region
         newMetaDict["seq_type"] = seqType
         newMetaDict["region_type"] = regionType
 
-        newList = [file, input[1], newMetaDict]
+        newList = [file, report, newMetaDict]
         outputList.add(newList)
+
+        println "New List:"
+        println newList
     }
 
-    // println outputList
+    println "outputList:"
+    println outputList
     
     return outputList
 }
