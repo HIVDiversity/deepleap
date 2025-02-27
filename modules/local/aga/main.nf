@@ -10,9 +10,9 @@ process AGA{
     path(genbank_file)
 
     output:
-    tuple path("*.nt.fasta"), val(meta), emit: nt_alignment
+    tuple path("*_NT_*${meta["cds_name"]}.fasta"), val(meta), emit: nt_alignment
     
-    tuple path("*.aa.fasta"), path("*.aga_metrics.csv"),val(meta), emit: aa_alignment
+    tuple path("*_AA_*${meta["cds_name"]}.fasta"), path("*.csv"), val(meta), emit: aa_alignment
 
     script:
 
@@ -20,13 +20,13 @@ process AGA{
    
     /app/aga \\
     --local \\
-    --cds-aa-alignments  ${meta.sample_id}.aa.fasta \\
-    --cds-nt-alignments ${meta.sample_id}.nt.fasta \\
-    --cds-name ${meta.cds_name} \\
-    --cds-stats-output ${meta.sample_id}.aga_metrics.csv \\
+    --cds-output . \\
+    --protein-output . \\
+    --report-output . \\
+    --output-prefix ${meta.sample_id} \\
     ${genbank_file} \\
     ${sample} \\
-    ${meta.sample_id}.aga.out.fasta
+    ${meta.sample_id}.aga.out.unwantedfasta
     """
 
 }
