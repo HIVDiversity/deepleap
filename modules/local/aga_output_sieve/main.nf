@@ -21,6 +21,6 @@ process AGA_SIEVE{
     ${aga_metrics} \\
     ${meta.sample_id}_annotated_report.csv \\
     ${meta.sample_id}_names_to_keep.txt \\
-    ${meta.cds_name}
+    ${meta.region_of_interest}
     """
 }
