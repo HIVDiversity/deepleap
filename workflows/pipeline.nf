@@ -1,5 +1,5 @@
 nextflow.enable.dsl=2
-
+import java.nio.file.Paths
 import groovy.json.JsonSlurper
 import org.apache.groovy.json.internal.LazyMap
 
@@ -19,16 +19,30 @@ include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_exp
 
 workflow HIV_SEQ_PIPELINE{
 
-    if (!params.regions_of_interest){
+    if (!params.region_of_interest){
         println "No regions of interest provided. Exiting."
         exit 1
     }
 
-    def regionsOfInterest = params.regions_of_interest.split(",")
-    def regionsOfInterest_ch = channel.value(regionsOfInterest)
+
+
+    if (!params.sample_base_dir){
+        println "No sample base directory specified. Exiting"
+        exit 1
+    }
+
+    def sampleBaseDir = file(params.sample_base_dir)
+
+
+    def regionOfInterest = params.region_of_interest
+    def regionOfInterest_ch = channel.value(regionOfInterest)
+
+    def additionalMetadata = [
+        "region_of_interest": regionOfInterest
+    ]
     
     def samplesheet = file(params.samplesheet)
-    def sample_tuples = parseSampleSheet(samplesheet)
+    def sample_tuples = parseSampleSheet(samplesheet, sampleBaseDir, additionalMetadata)
 
 
     def ch_input_files = channel.fromList(sample_tuples)
@@ -38,7 +52,7 @@ workflow HIV_SEQ_PIPELINE{
     FILTER(
         ch_input_files, // tuple(file, meta)
         ch_genbank_file, // file
-        regionsOfInterest_ch // value(list(String))
+        regionOfInterest_ch // value(list(String))
     )
 
     // Collapses the identical sequences
