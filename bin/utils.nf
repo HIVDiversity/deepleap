@@ -1,5 +1,5 @@
 def parseSampleSheet(Path samplesheet, Path sampleDir, otherMetadata){
-    output_list = []
+    def output_list = []
 
     for (entry in samplesheet.splitCsv(header: true)){
         def new_output = []
