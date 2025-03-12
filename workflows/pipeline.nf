@@ -24,10 +24,14 @@ workflow HIV_SEQ_PIPELINE{
         }
 
 
-
         if (!params.sample_base_dir){
             println "No sample base directory specified. Exiting"
             exit 1
+        }
+
+        // If the region shorthand isn't provided, we set it to the uppercase of the first three letters of the region of interest
+        if (!params.region_shorthand){
+            params.region_shorthand = params.region_of_interest[0..2].toUpperCase()
         }
 
         def sampleBaseDir = file(params.sample_base_dir)
@@ -54,10 +58,12 @@ workflow HIV_SEQ_PIPELINE{
             regionOfInterest_ch // value(list(String))
         )
 
+        def sequenceLabels = params.region_shorthand + "_AA"
+
         // Collapses the identical sequences
         COLLAPSE_AA_SEQS(
             FILTER.out.filtered_aga_output,
-            channel.value("ENV_AA"), // FIXME: This is not good
+            channel.value(sequenceLabels),
             channel.value(true) // do strip the gaps
         )
         
@@ -94,11 +100,12 @@ workflow HIV_SEQ_PIPELINE{
                     .map{it -> [it[1], it[0]]})
 
         )
-
+        
+        def seqLabels_revTrn = params.region_shorthand + "_NT"
         // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
         COLLAPSE_REVERSED_SEQS(
             REVERSE_TRANSLATE.out.sample_tuple,
-            channel.value("ENV_NT"),
+            channel.value(seqLabels_revTrn),
             channel.value(false) // don't strip the gaps
         )
 

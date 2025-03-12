@@ -17,7 +17,7 @@ process COLLAPSE {
     if (strip_gaps){
         gap_flag = "-s"
     }
-    //TODO: the hardcoded ENV and AA values in the -p flag should be parameterised
+    //TODO: this code should be updated to automatically set the sequence type...
 
     """
     /usr/local/bin/collapse-expand-fasta \\
