@@ -29,9 +29,10 @@ workflow HIV_SEQ_PIPELINE{
             exit 1
         }
 
+        def regionShorthand = params.region_shorthand
         // If the region shorthand isn't provided, we set it to the uppercase of the first three letters of the region of interest
-        if (!params.region_shorthand){
-            params.region_shorthand = params.region_of_interest[0..2].toUpperCase()
+        if (!regionShorthand){
+            regionShorthand = params.region_of_interest[0..2].toUpperCase()
         }
 
         def sampleBaseDir = file(params.sample_base_dir)
@@ -56,7 +57,7 @@ workflow HIV_SEQ_PIPELINE{
             ch_genbank_file, // file
         )
 
-        def sequenceLabels = params.region_shorthand + "_AA"
+        def sequenceLabels = regionShorthand + "_AA"
 
         // Collapses the identical sequences
         COLLAPSE_AA_SEQS(
@@ -99,7 +100,7 @@ workflow HIV_SEQ_PIPELINE{
 
         )
         
-        def seqLabels_revTrn = params.region_shorthand + "_NT"
+        def seqLabels_revTrn = regionShorthand + "_NT"
         // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
         COLLAPSE_REVERSED_SEQS(
             REVERSE_TRANSLATE.out.sample_tuple,
