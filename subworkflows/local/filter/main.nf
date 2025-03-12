@@ -18,8 +18,6 @@ workflow FILTER{
         genbankFile
 
     )
-
-    //  AGA.out.aa_alignment.view()
     
     // Since AGA produces multiple files, we need to split to each have their own meta and report files.
     def aaSeqsOfInterest = AGA
@@ -38,7 +36,7 @@ workflow FILTER{
     
     def seqsOnly = aaSeqsOfInterest
                     .map{[it[0], it[2]]}
-    reports.view()
+
     // Now we need to get the names of the sequences that pass our filters
     AGA_SIEVE(
         reports
@@ -49,7 +47,7 @@ workflow FILTER{
                                 .join(AGA_SIEVE.out.names_to_keep, by:1)
                                 .map {[it[1],it[2],it[0]]}  // This is necessary since we need to transform from [meta, path, path] to [path, path, meta]
 
-    seqsWithListToKeep.view()
+    
     SEQTK_SUBSEQ(
         seqsWithListToKeep
     )
