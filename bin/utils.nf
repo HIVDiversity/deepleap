@@ -1,7 +1,7 @@
 def parseSampleSheet(Path samplesheet, Path sampleDir, otherMetadata){
     def output_list = []
 
-    for (entry in samplesheet.splitCsv(header: true)){
+    samplesheet.splitCsv(header: true).each{entry ->
         def new_output = []
         
         // Check if the user provided a path for this sample
@@ -9,12 +9,14 @@ def parseSampleSheet(Path samplesheet, Path sampleDir, otherMetadata){
 
         def filename = entry.remove("filename")
         def samplePath = sampleDir.resolve(filename)
+        
         new_output.add(file(samplePath))
         entry = entry + otherMetadata
         new_output.add(entry)
         
         
-        output_list.add(new_output)   
+        output_list.add(new_output)
+        
     }
 
     return output_list
