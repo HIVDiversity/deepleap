@@ -38,7 +38,6 @@ workflow HIV_SEQ_PIPELINE{
 
 
         def regionOfInterest = params.region_of_interest
-        def regionOfInterest_ch = channel.value(regionOfInterest)
 
         def additionalMetadata = [
             "region_of_interest": regionOfInterest
@@ -55,7 +54,6 @@ workflow HIV_SEQ_PIPELINE{
         FILTER(
             ch_input_files, // tuple(file, meta)
             ch_genbank_file, // file
-            regionOfInterest_ch // value(list(String))
         )
 
         def sequenceLabels = params.region_shorthand + "_AA"

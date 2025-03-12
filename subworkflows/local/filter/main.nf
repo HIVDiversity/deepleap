@@ -9,7 +9,6 @@ workflow FILTER{
     take:
     sample_tuple // path(input), val(meta)
     genbankFile // File
-    regionsOfInterest // list(String)
 
     main:
 
