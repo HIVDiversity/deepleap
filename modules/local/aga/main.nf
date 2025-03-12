@@ -19,7 +19,7 @@ process AGA{
     """
    
     /app/aga \\
-    --local \\
+    ${task.ext.args ?: ''} \\
     --cds-output . \\
     --protein-output . \\
     --report-output . \\
