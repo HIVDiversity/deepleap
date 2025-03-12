@@ -69,46 +69,46 @@ workflow FILTER{
 
 
 
-List splitRegionFilesToLists(List input){
-    outputList = []
+// List splitRegionFilesToLists(List input){
+//     outputList = []
     
-    files = input[0].clone()
-    report = input[1]
-    meta_dict = input[2].clone()
+//     files = input[0].clone()
+//     report = input[1]
+//     meta_dict = input[2].clone()
     
-    for (file in files){
-        // TODO: this is dangerous since it depends on the filename being correctly formatted. We could look at using a "contains" check for all the provided regions
-        splitName = file.name.split("\\.")[0].split("_")
-        region = splitName[-1]
-        seqType = "UNKNOWN"
-        regionType = "UNKNOWN"
+//     for (file in files){
+//         // TODO: this is dangerous since it depends on the filename being correctly formatted. We could look at using a "contains" check for all the provided regions
+//         splitName = file.name.split("\\.")[0].split("_")
+//         region = splitName[-1]
+//         seqType = "UNKNOWN"
+//         regionType = "UNKNOWN"
         
-        if (file.name.contains("_NT_")){
-            seqType = "NT"
-        }else if (file.name.contains("_AA_")){
-            seqType = "AA"
-        }
+//         if (file.name.contains("_NT_")){
+//             seqType = "NT"
+//         }else if (file.name.contains("_AA_")){
+//             seqType = "AA"
+//         }
 
-        if (file.name.contains("_PROT_")){
-            regionType = "PROT"
-        }else if (file.name.contains("_CDS_")){
-            regionType = "CDS"
-        }
+//         if (file.name.contains("_PROT_")){
+//             regionType = "PROT"
+//         }else if (file.name.contains("_CDS_")){
+//             regionType = "CDS"
+//         }
     
-        newMetaDict = [*:meta_dict]
-        newMetaDict["region"] = region
-        newMetaDict["seq_type"] = seqType
-        newMetaDict["region_type"] = regionType
+//         newMetaDict = [*:meta_dict]
+//         newMetaDict["region"] = region
+//         newMetaDict["seq_type"] = seqType
+//         newMetaDict["region_type"] = regionType
 
-        newList = [file, report, newMetaDict]
-        outputList.add(newList)
+//         newList = [file, report, newMetaDict]
+//         outputList.add(newList)
 
-        // println "New List:"
-        // println newList
-    }
+//         // println "New List:"
+//         // println newList
+//     }
 
-    // println "outputList:"
-    // println outputList
+//     // println "outputList:"
+//     // println outputList
     
-    return outputList
-}
+//     return outputList
+// }

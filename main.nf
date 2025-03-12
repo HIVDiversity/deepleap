@@ -25,9 +25,7 @@ include {getWorkflowVersion} from './subworkflows/nf-core/utils_nextflow_pipelin
  include {HIV_SEQ_PIPELINE} from './workflows/pipeline'
 
 
-// Print parameter summary log to screen before running
-log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
-log.info paramsSummaryLog(workflow)
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,8 +34,6 @@ log.info paramsSummaryLog(workflow)
 */
 
 workflow MAIN_WORKFLOW {
-
-    ch_versions = Channel.empty()
 
     HIV_SEQ_PIPELINE()
 
@@ -50,5 +46,9 @@ workflow MAIN_WORKFLOW {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 workflow {
+    // Print parameter summary log to screen before running
+    log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
+    log.info paramsSummaryLog(workflow)
+
     MAIN_WORKFLOW ()
 }
