@@ -9,11 +9,9 @@ process MAFFT{
     tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
-
     
-
     """
-    mafft --thread -1 --localpair --maxiterate 1000 $input_file > ${meta.sample_id}.mafft.fasta
+    mafft --thread -1 ${task.ext.args} $input_file > ${meta.sample_id}.mafft.fasta
     """
 
 

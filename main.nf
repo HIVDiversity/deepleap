@@ -11,7 +11,7 @@ nextflow.enable.dsl = 2
 
 
 include {paramsSummaryLog} from 'plugin/nf-schema'
-include {getWorkflowVersion} from './subworkflows/nf-core/utils_nextflow_pipeline/main'
+// include {getWorkflowVersion} from './subworkflows/nf-core/utils_nextflow_pipeline/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +47,7 @@ workflow MAIN_WORKFLOW {
 */
 workflow {
     // Print parameter summary log to screen before running
-    log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
+    // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
     log.info paramsSummaryLog(workflow)
 
     MAIN_WORKFLOW ()
