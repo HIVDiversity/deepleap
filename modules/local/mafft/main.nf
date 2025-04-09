@@ -17,6 +17,23 @@ process MAFFT{
 
 }
 
+process MAFFT_FAST_ALIGN{
+    tag "$meta.sample_id"
+    label "mafft"
+
+    input:
+    tuple path(input_file), val(meta)
+
+    output:
+    tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
+
+    script:
+    
+    """
+    mafft --thread -1 --retree 2 --maxiterate 1000 $input_file > ${meta.sample_id}.mafft.fasta
+    """
+}
+
 process MAFFT_ADD{
     tag "$meta.sample_id"
     label "mafft"
