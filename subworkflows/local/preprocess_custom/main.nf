@@ -1,6 +1,7 @@
 include {GET_CONSENSUS} from "../../../modules/local/preprocessing/consensus/main"
 include { TRIM_CONSENSUS } from '../../../modules/local/preprocessing/trim_consensus/main.nf'
 include { TRIM_SEQUENCES } from '../../../modules/local/preprocessing/trim_sequences/main.nf'
+include { MAFFT_FAST_ALIGN } from '../../../modules/local/mafft/main.nf'
 
 workflow PREPROCESS_CUSTOM{
 
@@ -9,9 +10,13 @@ workflow PREPROCESS_CUSTOM{
     reference_ch // File
     
     main:
+
+    MAFFT_FAST_ALIGN(
+        sample_tuples
+    )
     
     GET_CONSENSUS(
-        sample_tuples
+        MAFFT_FAST_ALIGN.out.sample_tuple
     )
 
     TRIM_CONSENSUS(
