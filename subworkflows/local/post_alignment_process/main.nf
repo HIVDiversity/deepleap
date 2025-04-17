@@ -18,7 +18,14 @@ workflow POST_ALIGNMENT_PROCESS {
         sequence_and_namefiles
     )
 
+    def aa_and_nt_seqs = EXPAND.out.sample_tuple
+        .join(nt_tuples, by: 1)
+        .map { it -> [it[1], it[2], it[0]] }
+
     REVERSE_TRANSLATE(
-        EXPAND.out.sample_tuple
+        aa_and_nt_seqs
     )
+
+    emit:
+    revserse_translated_tuples = REVERSE_TRANSLATE.out.sample_tuple
 }
