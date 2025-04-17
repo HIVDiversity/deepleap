@@ -1,0 +1,35 @@
+include { MAFFT } from "../../../modules/local/mafft/main"
+include { MUSCLE } from "../../../modules/local/muscle/main"
+include { MUSCLE_SUPER_FIVE } from "../../../modules/local/muscle/main"
+workflow ALIGN {
+    take:
+    sample_tuple // FASTA, META
+
+    main:
+
+    def aligner = params.aligner.toUpperCase()
+
+    if (aligner == "MAFFT") {
+        MAFFT(
+            sample_tuple
+        )
+
+        alignment_output_ch = MAFFT.out.sample_tuple
+    }
+    else if (aligner == "MUSCLE") {
+        MUSCLE(
+            sample_tuple
+        )
+
+        alignment_output_ch = MUSCLE.out.sample_tuple
+    }
+    else if (aligner == "MUSCLE-FAST") {
+        MUSCLE_SUPER_FIVE(
+            sample_tuple
+        )
+        alignment_output_ch = MUSCLE_SUPER_FIVE.out.sample_tuple
+    }
+
+    emit:
+    aligned_tuple = alignment_output_ch
+}
