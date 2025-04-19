@@ -1,5 +1,5 @@
-process MAFFT{
-    tag "$meta.sample_id"
+process MAFFT {
+    tag "${meta.sample_id}"
     label "mafft"
 
     input:
@@ -9,16 +9,14 @@ process MAFFT{
     tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
-    
-    """
-    mafft --thread -1 ${task.ext.args} $input_file > ${meta.sample_id}.mafft.fasta
-    """
 
-
+    """
+    mafft --thread -1 ${task.ext.args} ${input_file} > ${meta.sample_id}.mafft.fasta
+    """
 }
 
-process MAFFT_FAST_ALIGN{
-    tag "$meta.sample_id"
+process MAFFT_FAST_ALIGN {
+    tag "${meta.sample_id}"
     label "mafft"
 
     input:
@@ -28,60 +26,58 @@ process MAFFT_FAST_ALIGN{
     tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
-    
+
     """
-    mafft --thread -1 --retree 2 --maxiterate 1000 $input_file > ${meta.sample_id}.mafft.fasta
+    mafft --thread -1 --retree 2 --maxiterate 1000 ${input_file} > ${meta.sample_id}.mafft.fasta
     """
 }
 
-process MAFFT_ADD{
-    tag "$meta.sample_id"
+process MAFFT_ADD {
+    tag "${meta.sample_id}"
     label "mafft"
 
     input:
     tuple path(input_file), val(meta)
-    path(ref_file)
+    path ref_file
 
     output:
     tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
 
     script:
     """
-    mafft --add $ref_file  $input_file > ${meta.sample_id}.ref.mafft.fasta
+    mafft --add ${ref_file}  ${input_file} > ${meta.sample_id}.ref.mafft.fasta
     """
 }
 
 
-process MAFFT_ADD_PROFILE{
-    tag "TODO"
+process MAFFT_ADD_PROFILE {
+    tag "${grouping_id}"
     label "mafft"
 
     input:
-    val(input_files)
+    tuple val(grouping_id), file(input_files), val(metadatas)
 
     output:
-    path("output_file.fasta"), emit: fasta
+    tuple path("*.fasta"), val(grouping_id), emit: profile_alignment_tuple
 
     script:
-    
+
     file_one = input_files[0]
     other_files = input_files[1..-1]
-    
-    println(file_one)
-    println(other_files)
+    def output_file = "${grouping_id}.profile_aligned.fasta"
 
     bash_other_files = "(" + other_files.join(" ") + ")"
 
     """
-    cp $file_one output_file.fasta;
+    cp ${file_one} ${output_file};
 
-    file_arr=$bash_other_files;
+    file_arr=${bash_other_files};
 
     for file in \${file_arr[@]};
     do
-        mafft --thread -1 --add \$file output_file.fasta > temp_output_file.fasta;
-        rm output_file.fasta;
-        mv temp_output_file.fasta output_file.fasta;
+        mafft --thread -1 --add \$file ${output_file} > temp_${output_file};
+        rm ${output_file};
+        mv temp_${output_file} ${output_file};
     done
     """
 }

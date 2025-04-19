@@ -31,7 +31,7 @@ workflow PREPROCESS_CUSTOM{
     )
 
     emit:
-    processed_aa_seqs = TRIM_SEQUENCES.out.sample_tuple
+    preprocessed_nt_seqs = TRIM_SEQUENCES.out.sample_tuple
 
     
 }

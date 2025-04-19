@@ -15,7 +15,7 @@ process TRIM_SEQUENCES{
     --query-sequences ${sequences}\
     --output-file ${meta.sample_id}.trimmed.fasta\
     --consensus-sequence ${trimmed_consensus}\
-    --output-type AA\
+    --output-type NT\
     ${task.ext.args}
 
     """

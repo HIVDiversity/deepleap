@@ -10,3 +10,4 @@ testing*
 *.sif
 *.tar.gz
 .env
+log/
