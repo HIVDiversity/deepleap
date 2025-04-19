@@ -1,169 +1,150 @@
-nextflow.enable.dsl=2
+nextflow.enable.dsl = 2
 
-include {MAFFT_ADD_PROFILE} from "../modules/local/mafft/main"
-include {MAFFT} from "../modules/local/mafft/main"
-include {MUSCLE} from "../modules/local/muscle/main"
+include { MAFFT_ADD_PROFILE } from "../modules/local/mafft/main"
+include { MAFFT } from "../modules/local/mafft/main"
+include { MUSCLE } from "../modules/local/muscle/main"
 
-include {parseSampleSheet} from "../bin/utils"
+include { parseSampleSheet } from "../bin/utils"
 
-include {FILTER} from "../subworkflows/local/filter/main"
+include { FILTER } from "../subworkflows/local/filter/main"
 
-include {REVERSE_TRANSLATE} from "../modules/local/reverse-translate/main"
-include {REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE} from "../modules/local/reverse-translate/main"
+include { REVERSE_TRANSLATE } from "../modules/local/reverse-translate/main"
+include { REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE } from "../modules/local/reverse-translate/main"
 
-include {COLLAPSE as COLLAPSE_AA_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
-include {COLLAPSE as COLLAPSE_REVERSED_SEQS} from "../modules/local/collapse_expand_fasta/main.nf"
-
-workflow HIV_SEQ_PIPELINE{
-
-    main:
-
-        if (!params.region_of_interest){
-            println "No regions of interest provided. Exiting."
-            exit 1
-        }
+include { COLLAPSE as COLLAPSE_AA_SEQS } from "../modules/local/collapse_expand_fasta/main.nf"
+include { COLLAPSE as COLLAPSE_REVERSED_SEQS } from "../modules/local/collapse_expand_fasta/main.nf"
 
 
-        if (!params.sample_base_dir){
-            println "No sample base directory specified. Exiting"
-            exit 1
-        }
+include { PREPROCESS_AGA } from "../subworkflows/local/preprocess_aga/main"
+include { PREPROCESS_CUSTOM } from "../subworkflows/local/preprocess_custom/main"
+include { FILTER_FUNCTIONAL_SEQUENCES } from "../subworkflows/local/functional_filter/main"
+include { PRE_ALIGNMENT_PROCESSING } from "../subworkflows/local/pre_alignment_process/main"
+include { ALIGN } from "../subworkflows/local/align/main"
+include { POST_ALIGNMENT_PROCESS } from "../subworkflows/local/post_alignment_process/main"
+include { MULTI_TIMEPOINT_ALIGNMENT } from "../subworkflows/local/multi_timepoint_alignment/main"
 
-        def regionShorthand = params.region_shorthand
-        // If the region shorthand isn't provided, we set it to the uppercase of the first three letters of the region of interest
-        if (!regionShorthand){
-            regionShorthand = params.region_of_interest[0..2].toUpperCase()
-        }
+workflow HIV_SEQ_PIPELINE {
 
-        def sampleBaseDir = file(params.sample_base_dir)
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Pipeline Setup - make sure all the param are here
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (!params.region_of_interest) {
+        println("No regions of interest provided. Exiting.")
+        exit(1)
+    }
+
+    if (!params.sample_base_dir) {
+        println("No sample base directory specified. Exiting")
+        exit(1)
+    }
+
+    def regionShorthand = params.region_shorthand
+
+    // If the region shorthand isn't provided, we set it to the uppercase of the first three letters of the region of interest
+    if (!regionShorthand) {
+        regionShorthand = params.region_of_interest[0..2].toUpperCase()
+    }
+
+    def sampleBaseDir = file(params.sample_base_dir)
+    def regionOfInterest = params.region_of_interest
+    def preprocessing_type = params.preprocess
+    def multi_timepoint_alignment = params.multi_timepoint_alignment
+
+    // This allow for flexibility - we can add some information to the metadata dictionary from the 
+    // pipeline params
+    def additionalMetadata = [
+        "region_of_interest": regionOfInterest
+    ]
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // BUILD SAMPLESHEET
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def samplesheet = file(params.samplesheet)
+    def sample_tuples = parseSampleSheet(samplesheet, sampleBaseDir, additionalMetadata)
 
 
-        def regionOfInterest = params.region_of_interest
-
-        def additionalMetadata = [
-            "region_of_interest": regionOfInterest
-        ]
-        
-        def samplesheet = file(params.samplesheet)
-        def sample_tuples = parseSampleSheet(samplesheet, sampleBaseDir, additionalMetadata)
+    def ch_input_files = channel.fromList(sample_tuples)
+    def ch_reference_file = channel.value(params.reference_file)
 
 
-        def ch_input_files = channel.fromList(sample_tuples)
-        def ch_genbank_file = channel.value(params.genbank_file)
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // PROCESSING STARTS HERE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        // Runs AGA and discards "non-functional" sequences
-        FILTER(
-            ch_input_files, // tuple(file, meta)
-            ch_genbank_file, // file
+    println(sample_tuples)
+
+    if (preprocessing_type == "AGA") {
+        PREPROCESS_AGA(
+            ch_input_files,
+            ch_reference_file,
         )
 
-        def sequenceLabels = regionShorthand + "_AA"
-
-        // Collapses the identical sequences
-        COLLAPSE_AA_SEQS(
-            FILTER.out.filtered_aga_output,
-            channel.value(sequenceLabels),
-            channel.value(true) // do strip the gaps
-        )
-        
-        def aligner = params.aligner.toUpperCase()
-
-        if (aligner == "MAFFT"){
-            MAFFT(
-                COLLAPSE_AA_SEQS.out.sample_tuple
-            )
-
-            alignment_output_ch = MAFFT.out.sample_tuple
-
-        }else if (aligner == "MUSCLE"){
-            MUSCLE(
-            COLLAPSE_AA_SEQS.out.sample_tuple
-            )
-
-            alignment_output_ch = MUSCLE.out.sample_tuple
-
-        }
-
-        // alignment_output_ch.view() 
-        // Reverse translate the individual MAFFT alignments
-        // Important to note is that we want to join three channels, but need to reorder their contents
-        // CODON_ALIGNMENT -> (path, meta)
-        // FILTER.out.aga_nt_alignments -> (path, meta)
-        // namefile_tuple -> (path, meta)
-        // After joining CODON_ALIGNMENT and nt_alignments: (meta, path, path)
-        // So we need to rearrange the namefile_tuple to have (meta, path)
-        REVERSE_TRANSLATE(
-            alignment_output_ch
-                .join(FILTER.out.aga_nt_alignments, by: 1)
-                .join(COLLAPSE_AA_SEQS.out.namefile_tuple
-                    .map{it -> [it[1], it[0]]})
-
-        )
-        
-        def seqLabels_revTrn = regionShorthand + "_NT"
-        // Collapse the resulting NT alignments (since rev translate inadvertently expands them)
-        COLLAPSE_REVERSED_SEQS(
-            REVERSE_TRANSLATE.out.sample_tuple,
-            channel.value(seqLabels_revTrn),
-            channel.value(false) // don't strip the gaps
+        preprocessed_files_nt = PREPROCESS_AGA.out.preprocessed_nt_seqs
+    }
+    else if (preprocessing_type == "CUSTOM") {
+        PREPROCESS_CUSTOM(
+            ch_input_files,
+            ch_reference_file,
         )
 
-        // // We should perform a profile alignment of the Amino Acids
-        // // Then we want to reverse translate that whole thing
-        // MAFFT_ADD_PROFILE(
-        //     MAFFT.out.sample_tuple.toSortedList { a, b -> a[1].visit_id <=> b[1].visit_id }
-        //         .flatten()
-        //         .collate(2)
-        //         .map{it[0]}
-        //         .collect()
-        //         .view()
+        preprocessed_files_nt = PREPROCESS_CUSTOM.out.preprocessed_nt_seqs
+    }
+    else {
+        println("Preprocessing type not reconized.")
+        exit(1)
+    }
 
-        // )
+    FILTER_FUNCTIONAL_SEQUENCES(
+        preprocessed_files_nt
+    )
 
-        // Reverse translate the profile alignment
+    PRE_ALIGNMENT_PROCESSING(
+        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples
+    )
 
-        // REVERSE_TRANSLATE_PROFILE(
-        //     MAFFT_ADD_PROFILE.out.fasta.map{it: [ [sample_id:"None"], it]}
-        // )
+    ALIGN(
+        PRE_ALIGNMENT_PROCESSING.out.translated_collapsed_tuples
+    )
 
-    emit:
-        // final_alignment = REVERSE_TRANSLATE_PROFILE.out.sample_tuple
-        final_alignment = REVERSE_TRANSLATE.out.sample_tuple
+    POST_ALIGNMENT_PROCESS(
+        ALIGN.out.aligned_tuple,
+        PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
+        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+    )
 
-
-  
-
+    if (multi_timepoint_alignment) {
+        MULTI_TIMEPOINT_ALIGNMENT(
+            ALIGN.out.aligned_tuple
+        )
+    }
 }
 
-def convertToMap(def obj) {
+def convertToMap(obj) {
     if (obj instanceof org.apache.groovy.json.internal.LazyMap) {
         obj.collectEntries { key, value -> [(key): convertToMap(value)] }
-    } else if (obj instanceof List) {
+    }
+    else if (obj instanceof List) {
         obj.collect { item -> convertToMap(item) }
-    } else {
+    }
+    else {
         obj
     }
 }
 
 
-def parseInputConfig(configFile){
+def parseInputConfig(configFile) {
     def inputFile = new File(configFile.toString())
     def jsonDict = new groovy.json.JsonSlurper().parseText(inputFile.text)
 
     def tupleList = []
 
-    jsonDict["runs"].each{entry ->
+    jsonDict["runs"].each { entry ->
 
         def temp_file = file(entry["meta"]["file"])
         def temp_meta = convertToMap(entry)
 
         tupleList.add(new Tuple(temp_file, temp_meta))
-
-
     }
 
     return tupleList
 }
-
-
-

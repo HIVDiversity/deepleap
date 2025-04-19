@@ -1,4 +1,4 @@
-include {FUNCTIONAL_FILTER} from "../../../modules/local/functional_filter/main"
+include { FUNCTIONAL_FILTER } from "../../../modules/local/functional_filter/main"
 
 workflow FILTER_FUNCTIONAL_SEQUENCES {
     take:
@@ -9,7 +9,6 @@ workflow FILTER_FUNCTIONAL_SEQUENCES {
     FUNCTIONAL_FILTER(
         sample_tuple
     )
-    
 
     emit:
     filtered_samples = FUNCTIONAL_FILTER.out.filtered_tuples

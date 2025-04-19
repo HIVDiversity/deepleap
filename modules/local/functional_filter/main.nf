@@ -6,16 +6,16 @@ process FUNCTIONAL_FILTER {
 
     output:
     tuple path("*.functional.fasta"), val(meta), emit: filtered_tuples
-    path("*.rejected.fasta"), emit: rejected_records
-    path("*.csv"), emit: report
+    path ("*.rejected.fasta"), emit: rejected_records
+    path ("*.csv"), emit: report
 
     script:
     """
     python /app/src/functional_filter/main.py ${sequences} ${meta.sample_id}.functional.fasta \
-    --output-type FASTA \
-    --output-rejected ${meta.sample_id}.rejected.fasta \
-    --report-path ${meta.sample_id}.functional_report.csv \
-    --no-strip-gaps \
+    --output-type FASTA\
+    --output-rejected ${meta.sample_id}.rejected.fasta\
+    --report-path ${meta.sample_id}.functional_report.csv\
+    --no-strip-gaps\
     ${task.ext.args}
     """
 }
