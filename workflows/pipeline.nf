@@ -71,8 +71,6 @@ workflow HIV_SEQ_PIPELINE {
     // PROCESSING STARTS HERE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    println(sample_tuples)
-
     if (preprocessing_type == "AGA") {
         PREPROCESS_AGA(
             ch_input_files,
