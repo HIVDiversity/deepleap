@@ -112,7 +112,9 @@ workflow HIV_SEQ_PIPELINE {
 
     if (multi_timepoint_alignment) {
         MULTI_TIMEPOINT_ALIGNMENT(
-            ALIGN.out.aligned_tuple
+            ALIGN.out.aligned_tuple,
+            FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+            PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
         )
     }
 }
