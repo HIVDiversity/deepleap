@@ -9,10 +9,10 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
     // TODO: Also have a step to concat all the pre-nt files so that reverse-translating is possible
     def input_ch = sample_tuples
         .map { file, metadata ->
-            [metadata['sample_id'], file, metadata]
+            [metadata['cap_name'], file, metadata]
         }
         .groupTuple()
-        .map { sample_id, files, metadatas ->
+        .map { cap_id, files, metadatas ->
             // Create pairs of [file, metadata] for sorting
             def pairs = files.indices.collect { i -> [files[i], metadatas[i]] }
 
@@ -23,8 +23,10 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
             def sorted_files = sorted_pairs.collect { it[0] }
             def sorted_metadata = sorted_pairs.collect { it[1] }
 
-            return [sample_id, sorted_files, sorted_metadata]
+            return [cap_id, sorted_files, sorted_metadata]
         }
+
+    input_ch.view()
 
     MAFFT_ADD_PROFILE(
         input_ch
