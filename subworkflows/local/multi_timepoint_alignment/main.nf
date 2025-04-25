@@ -23,7 +23,7 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
             def sorted_files = sorted_pairs.collect { it[0] }
             def sorted_metadata = sorted_pairs.collect { it[1] }
 
-            return [cap_id, sorted_files, sorted_metadata]
+            return [cap_id, sorted_files, sorted_metadata] 
         }
 
     input_ch.view()
