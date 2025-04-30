@@ -10,7 +10,7 @@
 nextflow.enable.dsl = 2
 
 
-include {paramsSummaryLog} from 'plugin/nf-schema'
+include { validateParameters ; paramsSummaryLog ; samplesheetToList } from 'plugin/nf-schema'
 // include {getWorkflowVersion} from './subworkflows/nf-core/utils_nextflow_pipeline/main'
 
 /*
@@ -22,7 +22,7 @@ include {paramsSummaryLog} from 'plugin/nf-schema'
 //  include { INITIALISE          } from './subworkflows/local/initialise'
 
 
- include {HIV_SEQ_PIPELINE} from './workflows/pipeline'
+include { HIV_SEQ_PIPELINE } from './workflows/pipeline'
 
 
 
@@ -36,8 +36,6 @@ include {paramsSummaryLog} from 'plugin/nf-schema'
 workflow MAIN_WORKFLOW {
 
     HIV_SEQ_PIPELINE()
-
-    
 }
 
 /*
@@ -48,7 +46,8 @@ workflow MAIN_WORKFLOW {
 workflow {
     // Print parameter summary log to screen before running
     // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
-    log.info paramsSummaryLog(workflow)
+    validateParameters()
+    log.info(paramsSummaryLog(workflow))
 
-    MAIN_WORKFLOW ()
+    MAIN_WORKFLOW()
 }

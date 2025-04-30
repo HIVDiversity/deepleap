@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/dlejeune/nf-codon-alignment//nextflow_schema.json",
+  "title": "dlejeune/nf-codon-alignment pipeline parameters",
+  "description": "TODO",
+  "type": "object",
+  "$defs": {
+    "input_output_options": {
+      "title": "Input/output options",
+      "type": "object",
+      "fa_icon": "fas fa-terminal",
+      "description": "Define where the pipeline should find input data and save output data.",
+      "required": ["input", "outdir"],
+      "properties": {
+        "input": {
+          "type": "string",
+          "format": "file-path",
+          "exists": true,
+          "schema": "assets/schema_input.json",
+          "mimetype": "text/csv",
+          "pattern": "^\\S+\\.csv$",
+          "description": "Path to comma-separated file containing information about the samples in the experiment.",
+          "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+          "fa_icon": "fas fa-file-csv"
+        },
+        "outdir": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+          "fa_icon": "fas fa-folder-open",
+          "default": "./results/test"
+        }
+      }
+    },
+    "generic_options": {
+      "title": "Generic options",
+      "type": "object",
+      "fa_icon": "fas fa-file-import",
+      "description": "Less common options for the pipeline, typically set in a config file.",
+      "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+      "properties": {
+        "version": {
+          "type": "boolean",
+          "description": "Display version and exit.",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
+        },
+        "trace_report_suffix": {
+          "type": "string",
+          "fa_icon": "far calendar",
+          "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+          "hidden": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/input_output_options"
+    },
+    {
+      "$ref": "#/$defs/generic_options"
+    }
+  ],
+  "properties": {
+    "run_name": {
+      "type": "string",
+      "default": "test"
+    },
+    "publish_dir_mode": {
+      "type": "string",
+      "default": "copy"
+    },
+    "monochrome_logs": {
+      "type": "boolean"
+    },
+    "max_memory": {
+      "type": "string",
+      "default": "128.GB"
+    },
+    "max_cpus": {
+      "type": "integer",
+      "default": 16
+    },
+    "max_time": {
+      "type": "string",
+      "default": "240.h"
+    },
+    "aligner": {
+      "type": "string",
+      "default": "MAFFT"
+    },
+    "preprocess": {
+      "type": "string",
+      "default": "AGA"
+    },
+    "multi_timepoint_alignment": {
+      "type": "boolean"
+    },
+    "regions_of_interest": {
+      "type": "string"
+    },
+    "log_dir": {
+      "type": "string",
+      "default": "./results/test/logs"
+    },
+    "mafft_args": {
+      "type": "string",
+      "default": "--localpair --maxiterate 1000"
+    },
+    "mafft_fast_align_args": {
+      "type": "string",
+      "default": "--retree 1 --maxiterate 0"
+    },
+    "iqtree_args": {
+      "type": "string"
+    },
+    "aga_args": {
+      "type": "string",
+      "default": "--local"
+    },
+    "aga_filter_min_stop_codons": {
+      "type": "integer",
+      "default": 0
+    },
+    "aga_filter_max_stop_codons": {
+      "type": "integer",
+      "default": 1
+    },
+    "aga_filter_frameshifts": {
+      "type": "integer",
+      "default": 0
+    },
+    "aga_filter_min_coverage": {
+      "type": "integer",
+      "default": 0
+    },
+    "aga_filter_seq_type": {
+      "type": "string",
+      "default": "AA"
+    },
+    "aga_strip_char": {
+      "type": "string",
+      "default": "."
+    },
+    "region_shorthand": {
+      "type": "string"
+    },
+    "kmer_size": {
+      "type": "integer",
+      "default": 10
+    },
+    "ff_max_stop_pct": {
+      "type": "integer",
+      "default": 100
+    },
+    "ff_include_no_stop_codons": {
+      "type": "boolean",
+      "default": true
+    },
+    "ff_include_frameshifts": {
+      "type": "boolean"
+    },
+    "ff_acceptable_pct_loss": {
+      "type": "number",
+      "default": 0.2
+    },
+    "prs_ts_operating_mode": {
+      "type": "string",
+      "default": "double-match"
+    },
+    "slurm_queue": {
+      "type": "string",
+      "default": "Main"
+    }
+  }
+}
