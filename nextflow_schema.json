@@ -10,18 +10,20 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": ["input", "outdir"],
+      "required": ["samplesheet", "reference_file", "outdir"],
       "properties": {
-        "input": {
+        "samplesheet": {
           "type": "string",
+          "description": "The CSV file that specifies the various samples and metadata to feed into the pipeline",
           "format": "file-path",
-          "exists": true,
-          "schema": "assets/schema_input.json",
           "mimetype": "text/csv",
-          "pattern": "^\\S+\\.csv$",
-          "description": "Path to comma-separated file containing information about the samples in the experiment.",
-          "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
           "fa_icon": "fas fa-file-csv"
+        },
+        "reference_file": {
+          "type": "string",
+          "fa_icon": "fas fa-file-import",
+          "description": "The reference that contains the gene or CDS of interest. Note that this file type depends on the pre-processing mode selected.",
+          "format": "file-path"
         },
         "outdir": {
           "type": "string",
@@ -32,6 +34,136 @@
         }
       }
     },
+    "operating_modes": {
+      "title": "Operating Modes",
+      "type": "object",
+      "description": "Paramters that change the operating mode of the pipeline",
+      "default": "",
+      "properties": {
+        "aligner": {
+          "type": "string",
+          "default": "MAFFT",
+          "description": "What aligner to use for the main alignment",
+          "enum": ["MAFFT", "MUSCLE"],
+          "fa_icon": "fas fa-align-center"
+        },
+        "preprocess": {
+          "type": "string",
+          "default": "AGA",
+          "enum": ["AGA", "CUSTOM"],
+          "description": "The preprocessing strategy to use"
+        },
+        "multi_timepoint_alignment": {
+          "type": "boolean",
+          "description": "This run should produce timepoint-stacked alignments"
+        }
+      },
+      "fa_icon": "fas fa-code-branch"
+    },
+    "custom_preprocess_arguments": {
+      "title": "Custom Preprocess Arguments",
+      "type": "object",
+      "description": "Arguments that alter how the vaious preprocessing steps in the CUSTOM operating mode work",
+      "default": "",
+      "fa_icon": "fas fa-frog",
+      "properties": {
+        "kmer_size": {
+          "type": "integer",
+          "default": 10,
+          "description": "The k-mer size that is used when matching the trimmed consensus to the untrimmed sequences to get the functional region",
+          "fa_icon": "fas fa-poll-h"
+        },
+        "prs_ts_operating_mode": {
+          "type": "string",
+          "default": "double-match",
+          "fa_icon": "fas fa-broadcast-tower",
+          "description": "What mode to use for trimming the sequences to the trimmed consensus",
+          "enum": ["single-match", "double-match"]
+        }
+      }
+    },
+    "filtering_options": {
+      "title": "Filtering Options",
+      "type": "object",
+      "description": "Options passed onto the functional filter",
+      "default": "",
+      "properties": {
+        "ff_max_stop_pct": {
+          "type": "integer",
+          "default": 100,
+          "description": "The maximum percentage along the read that a stop codon can find itself"
+        },
+        "ff_include_no_stop_codons": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow sequences that do not contain any stop codons to be considered functional"
+        },
+        "ff_include_frameshifts": {
+          "type": "boolean",
+          "description": "Include sequences that potentially contain a frameshift to be considered functional"
+        },
+        "ff_acceptable_pct_loss": {
+          "type": "number",
+          "default": 0.2,
+          "description": "An acceptable proportion (0-1) of the median protein length that can be lost before a sequence is considered non-functional",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "fa_icon": "fas fa-filter"
+    },
+    "miscellaneous_process_arguments": {
+      "title": "Miscellaneous Process Arguments",
+      "type": "object",
+      "description": "Arguments that can be supplied to the various third-party tools in the pipeline",
+      "default": "",
+      "fa_icon": "fas fa-ellipsis-h",
+      "properties": {
+        "mafft_fast_align_args": {
+          "type": "string",
+          "default": "--retree 1 --maxiterate 0",
+          "description": "When using the custom pre-processing mode, what args to supply to MAFFT"
+        },
+        "mafft_args": {
+          "type": "string",
+          "default": "--localpair --maxiterate 1000",
+          "description": "Arguments to supply to MAFFT if using it as the aligner"
+        },
+        "aga_args": {
+          "type": "string",
+          "default": "--local",
+          "description": "If using the AGA preprocessing, what arguments to supply to AGA"
+        },
+        "iqtree_args": {
+          "type": "string",
+          "description": "If building trees, what args to supply to IQTREE"
+        }
+      }
+    },
+    "compute_options": {
+      "title": "Compute Options",
+      "type": "object",
+      "description": "Parameters affecting computational resources",
+      "default": "",
+      "fa_icon": "fas fa-desktop",
+      "properties": {
+        "max_memory": {
+          "type": "string",
+          "default": "128.GB",
+          "description": "The maximum amount of memory to be allocated to a process"
+        },
+        "max_cpus": {
+          "type": "integer",
+          "default": 16,
+          "description": "The maximum number of CPU cores that can be allocated to a process"
+        },
+        "max_time": {
+          "type": "string",
+          "default": "240.h",
+          "description": "The maximum amount of time that a process can be allowed to run for until it is killed"
+        }
+      }
+    },
     "generic_options": {
       "title": "Generic options",
       "type": "object",
@@ -39,19 +171,46 @@
       "description": "Less common options for the pipeline, typically set in a config file.",
       "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
       "properties": {
+        "run_name": {
+          "type": "string",
+          "default": "test",
+          "description": "A  human-readable identifier for this run",
+          "fa_icon": "far fa-address-card"
+        },
+        "slurm_queue": {
+          "type": "string",
+          "default": "Main",
+          "description": "If running on an HPC with slurm, what queue to use",
+          "fa_icon": "fas fa-store-alt"
+        },
+        "log_dir": {
+          "type": "string",
+          "default": "./results/test/logs",
+          "description": "Where to copy pipeline logs to",
+          "hidden": true,
+          "fa_icon": "fas fa-sticky-note"
+        },
+        "publish_dir_mode": {
+          "type": "string",
+          "default": "copy",
+          "description": "The mode to handle output files. It is recommended not to touch this unless you know what you are doing",
+          "hidden": true,
+          "fa_icon": "far fa-copy"
+        },
+        "trace_report_suffix": {
+          "type": "string",
+          "fa_icon": "fas fa-braille",
+          "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+          "hidden": true
+        },
         "version": {
           "type": "boolean",
           "description": "Display version and exit.",
           "fa_icon": "fas fa-question-circle",
           "hidden": true
-        },
-        "trace_report_suffix": {
-          "type": "string",
-          "fa_icon": "far calendar",
-          "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
-          "hidden": true
         }
-      }
+      },
+      "required": ["run_name"]
     }
   },
   "allOf": [
@@ -59,69 +218,37 @@
       "$ref": "#/$defs/input_output_options"
     },
     {
+      "$ref": "#/$defs/operating_modes"
+    },
+    {
+      "$ref": "#/$defs/custom_preprocess_arguments"
+    },
+    {
+      "$ref": "#/$defs/filtering_options"
+    },
+    {
+      "$ref": "#/$defs/miscellaneous_process_arguments"
+    },
+    {
+      "$ref": "#/$defs/compute_options"
+    },
+    {
       "$ref": "#/$defs/generic_options"
     }
   ],
   "properties": {
-    "run_name": {
-      "type": "string",
-      "default": "test"
-    },
-    "publish_dir_mode": {
-      "type": "string",
-      "default": "copy"
-    },
-    "monochrome_logs": {
-      "type": "boolean"
-    },
-    "max_memory": {
-      "type": "string",
-      "default": "128.GB"
-    },
-    "max_cpus": {
-      "type": "integer",
-      "default": 16
-    },
-    "max_time": {
-      "type": "string",
-      "default": "240.h"
-    },
-    "aligner": {
-      "type": "string",
-      "default": "MAFFT"
-    },
-    "preprocess": {
-      "type": "string",
-      "default": "AGA"
-    },
-    "multi_timepoint_alignment": {
-      "type": "boolean"
-    },
-    "regions_of_interest": {
+    "region_shorthand": {
       "type": "string"
-    },
-    "log_dir": {
-      "type": "string",
-      "default": "./results/test/logs"
-    },
-    "mafft_args": {
-      "type": "string",
-      "default": "--localpair --maxiterate 1000"
-    },
-    "mafft_fast_align_args": {
-      "type": "string",
-      "default": "--retree 1 --maxiterate 0"
-    },
-    "iqtree_args": {
-      "type": "string"
-    },
-    "aga_args": {
-      "type": "string",
-      "default": "--local"
     },
     "aga_filter_min_stop_codons": {
       "type": "integer",
       "default": 0
+    },
+    "monochrome_logs": {
+      "type": "boolean"
+    },
+    "regions_of_interest": {
+      "type": "string"
     },
     "aga_filter_max_stop_codons": {
       "type": "integer",
@@ -142,36 +269,6 @@
     "aga_strip_char": {
       "type": "string",
       "default": "."
-    },
-    "region_shorthand": {
-      "type": "string"
-    },
-    "kmer_size": {
-      "type": "integer",
-      "default": 10
-    },
-    "ff_max_stop_pct": {
-      "type": "integer",
-      "default": 100
-    },
-    "ff_include_no_stop_codons": {
-      "type": "boolean",
-      "default": true
-    },
-    "ff_include_frameshifts": {
-      "type": "boolean"
-    },
-    "ff_acceptable_pct_loss": {
-      "type": "number",
-      "default": 0.2
-    },
-    "prs_ts_operating_mode": {
-      "type": "string",
-      "default": "double-match"
-    },
-    "slurm_queue": {
-      "type": "string",
-      "default": "Main"
     }
   }
 }
