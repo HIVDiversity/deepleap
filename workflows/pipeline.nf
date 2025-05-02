@@ -92,6 +92,8 @@ workflow HIV_SEQ_PIPELINE {
         exit(1)
     }
 
+    // TODO - Strip illegal characters from the pre-processing?
+
     FILTER_FUNCTIONAL_SEQUENCES(
         preprocessed_files_nt
     )

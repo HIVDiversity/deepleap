@@ -10,7 +10,12 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": ["samplesheet", "reference_file", "outdir"],
+      "required": [
+        "samplesheet",
+        "reference_file",
+        "outdir",
+        "sample_base_dir"
+      ],
       "properties": {
         "samplesheet": {
           "type": "string",
@@ -18,6 +23,12 @@
           "format": "file-path",
           "mimetype": "text/csv",
           "fa_icon": "fas fa-file-csv"
+        },
+        "sample_base_dir": {
+          "type": "string",
+          "fa_icon": "far fa-folder",
+          "description": "The directory where lookups for the files specified in the samplesheet will be made",
+          "format": "directory-path"
         },
         "reference_file": {
           "type": "string",
@@ -82,6 +93,35 @@
         }
       }
     },
+    "aga_preprocess_arguments": {
+      "title": "AGA Preprocess Arguments",
+      "type": "object",
+      "description": "Arguments altering how AGA functions when using it as the preprocessing strategy",
+      "default": "",
+      "help_text": "",
+      "fa_icon": "fas fa-cat",
+      "properties": {
+        "region_of_interest": {
+          "type": "string",
+          "description": "The name of the CDS or protein that is to be extracted from the supplied files. Still required if not using AGA as a pre-processing step"
+        },
+        "region_shorthand": {
+          "type": "string",
+          "description": "What to shorten the region name to"
+        },
+        "aga_strip_char": {
+          "type": "string",
+          "default": ".",
+          "description": "Not currently used and may be changed in the future"
+        },
+        "aga_args": {
+          "type": "string",
+          "default": "--local",
+          "description": "If using the AGA preprocessing, what arguments to supply to AGA"
+        }
+      },
+      "required": ["region_of_interest"]
+    },
     "filtering_options": {
       "title": "Filtering Options",
       "type": "object",
@@ -128,11 +168,6 @@
           "type": "string",
           "default": "--localpair --maxiterate 1000",
           "description": "Arguments to supply to MAFFT if using it as the aligner"
-        },
-        "aga_args": {
-          "type": "string",
-          "default": "--local",
-          "description": "If using the AGA preprocessing, what arguments to supply to AGA"
         },
         "iqtree_args": {
           "type": "string",
@@ -197,6 +232,10 @@
           "hidden": true,
           "fa_icon": "far fa-copy"
         },
+        "monochrome_logs": {
+          "type": "boolean",
+          "hidden": true
+        },
         "trace_report_suffix": {
           "type": "string",
           "fa_icon": "fas fa-braille",
@@ -224,6 +263,9 @@
       "$ref": "#/$defs/custom_preprocess_arguments"
     },
     {
+      "$ref": "#/$defs/aga_preprocess_arguments"
+    },
+    {
       "$ref": "#/$defs/filtering_options"
     },
     {
@@ -235,40 +277,5 @@
     {
       "$ref": "#/$defs/generic_options"
     }
-  ],
-  "properties": {
-    "region_shorthand": {
-      "type": "string"
-    },
-    "aga_filter_min_stop_codons": {
-      "type": "integer",
-      "default": 0
-    },
-    "monochrome_logs": {
-      "type": "boolean"
-    },
-    "regions_of_interest": {
-      "type": "string"
-    },
-    "aga_filter_max_stop_codons": {
-      "type": "integer",
-      "default": 1
-    },
-    "aga_filter_frameshifts": {
-      "type": "integer",
-      "default": 0
-    },
-    "aga_filter_min_coverage": {
-      "type": "integer",
-      "default": 0
-    },
-    "aga_filter_seq_type": {
-      "type": "string",
-      "default": "AA"
-    },
-    "aga_strip_char": {
-      "type": "string",
-      "default": "."
-    }
-  }
+  ]
 }
