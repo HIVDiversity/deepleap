@@ -16,6 +16,9 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
     // TODO: Add a step to join namefiles together so that uncollapsing is possible
     // TODO: Also have a step to concat all the pre-nt files so that reverse-translating is possible
 
+    // TODO: We make sure that the channels that only have a single file, ie the files that don't get sent through the profile alignment
+    // get merged back into the queue such that they can be all output into the same directory...
+
     // This step converts [[file, meta], [file, meta]] into
     // [CAPXYZ, [file_0, file_1, file_2], metadata]
     // With file_i where i is the visit code
@@ -37,9 +40,14 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
 
             return [cap_id, sorted_files, sorted_metadata]
         }
+        .branch { cap_id, sorted_files, sorted_metadata ->
+            accepted: sorted_files.size() > 1
+            rejected: true
+        }
 
+    def rejected_files = sample_input_ch.rejected.map { cap_id, sorted_files, sorted_metadata -> [sorted_files[0], cap_id] }
     MAFFT_ADD_PROFILE(
-        sample_input_ch
+        sample_input_ch.accepted
     )
 
     // We need to concatenate the JSON namefiles so that we can expand the profile alignments
@@ -77,6 +85,7 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
 
 
     def expand_input_ch = MAFFT_ADD_PROFILE.out.profile_alignment_tuple
+        .mix(rejected_files)
         .join(CONCAT_JSON_FILES.out.json_tuple, by: 1)
         .map { grouping_key, profile_file, json_files -> [profile_file, json_files, ["sample_id": grouping_key]] }
 
