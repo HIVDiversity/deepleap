@@ -38,8 +38,6 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
             return [cap_id, sorted_files, sorted_metadata]
         }
 
-    sample_input_ch.view()
-
     MAFFT_ADD_PROFILE(
         sample_input_ch
     )
