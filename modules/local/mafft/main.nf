@@ -61,7 +61,6 @@ process MAFFT_ADD_PROFILE {
     tuple path("*.fasta"), val(grouping_id), emit: profile_alignment_tuple
 
     script:
-    println(input_files)
     file_one = input_files[0]
     other_files = input_files[1..-1]
     def output_file = "CAP${grouping_id}.profile_aligned.fasta"
