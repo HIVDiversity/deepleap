@@ -15,7 +15,7 @@ process FUNCTIONAL_FILTER {
     --output-type FASTA\
     --output-rejected ${meta.sample_id}.rejected.fasta\
     --report-path ${meta.sample_id}.functional_report.csv\
-    --no-strip-gaps\
+    --strip-gaps\
     ${task.ext.args}
     """
 }
