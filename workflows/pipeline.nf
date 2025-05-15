@@ -6,7 +6,6 @@ include { MUSCLE } from "../modules/local/muscle/main"
 
 include { parseSampleSheet } from "../bin/utils"
 
-include { FILTER } from "../subworkflows/local/filter/main"
 include { PREPROCESS_AGA } from "../subworkflows/local/preprocess_aga/main"
 include { PREPROCESS_CUSTOM } from "../subworkflows/local/preprocess_custom/main"
 include { FILTER_FUNCTIONAL_SEQUENCES } from "../subworkflows/local/functional_filter/main"
