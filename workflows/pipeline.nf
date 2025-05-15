@@ -1,9 +1,5 @@
 nextflow.enable.dsl = 2
 
-include { MAFFT_ADD_PROFILE } from "../modules/local/mafft/main"
-include { MAFFT } from "../modules/local/mafft/main"
-include { MUSCLE } from "../modules/local/muscle/main"
-
 include { parseSampleSheet } from "../bin/utils"
 
 include { PREPROCESS_AGA } from "../subworkflows/local/preprocess_aga/main"
