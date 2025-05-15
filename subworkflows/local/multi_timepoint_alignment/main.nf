@@ -3,7 +3,7 @@ include { CONCAT_JSON_FILES } from "../../../modules/local/utils/concat_json/mai
 include { CONCAT_FASTA_FILES } from "../../../modules/local/utils/concat_fasta/main"
 include { EXPAND } from "../../../modules/local/collapse_expand_fasta/expand/main"
 include { COLLAPSE } from "../../../modules/local/collapse_expand_fasta/collapse/main"
-include { REVERSE_TRANSLATE } from "../../../modules/local/pipeline-utils-rs/reverse-translate/main"
+include { REVERSE_TRANSLATE } from "../../../modules/local/pipeline_utils_rs/reverse-translate/main"
 
 
 workflow MULTI_TIMEPOINT_ALIGNMENT {
