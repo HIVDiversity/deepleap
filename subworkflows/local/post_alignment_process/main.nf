@@ -1,5 +1,5 @@
 include { EXPAND } from "../../../modules/local/collapse_expand_fasta/expand/main"
-include { REVERSE_TRANSLATE } from "../../../modules/local/reverse-translate/main"
+include { REVERSE_TRANSLATE } from "../../../modules/local/pipeline-utils-rs/reverse-translate/main"
 
 workflow POST_ALIGNMENT_PROCESS {
     take:

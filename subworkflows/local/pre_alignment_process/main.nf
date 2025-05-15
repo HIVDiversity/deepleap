@@ -1,4 +1,4 @@
-include { TRANSLATE } from "../../../modules/local/translate/main"
+include { TRANSLATE } from "../../../modules/local/pipeline-utils-rs/translate/main"
 include { COLLAPSE } from "../../../modules/local/collapse_expand_fasta/collapse/main"
 
 workflow PRE_ALIGNMENT_PROCESSING {

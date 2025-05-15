@@ -7,14 +7,6 @@ include { MUSCLE } from "../modules/local/muscle/main"
 include { parseSampleSheet } from "../bin/utils"
 
 include { FILTER } from "../subworkflows/local/filter/main"
-
-include { REVERSE_TRANSLATE } from "../modules/local/reverse-translate/main"
-include { REVERSE_TRANSLATE as REVERSE_TRANSLATE_PROFILE } from "../modules/local/reverse-translate/main"
-
-include { COLLAPSE as COLLAPSE_AA_SEQS } from "../modules/local/collapse_expand_fasta/main.nf"
-include { COLLAPSE as COLLAPSE_REVERSED_SEQS } from "../modules/local/collapse_expand_fasta/main.nf"
-
-
 include { PREPROCESS_AGA } from "../subworkflows/local/preprocess_aga/main"
 include { PREPROCESS_CUSTOM } from "../subworkflows/local/preprocess_custom/main"
 include { FILTER_FUNCTIONAL_SEQUENCES } from "../subworkflows/local/functional_filter/main"
