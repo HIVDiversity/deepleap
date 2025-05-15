@@ -11,7 +11,7 @@ process FUNCTIONAL_FILTER {
 
     script:
     """
-    python /app/src/functional_filter/main.py ${sequences} ${meta.sample_id}.functional.fasta \
+    functional-filter ${sequences} ${meta.sample_id}.functional.fasta \
     --output-type FASTA\
     --output-rejected ${meta.sample_id}.rejected.fasta\
     --report-path ${meta.sample_id}.functional_report.csv\
