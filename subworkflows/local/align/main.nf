@@ -1,6 +1,7 @@
 include { MAFFT } from "../../../modules/local/mafft/main"
 include { MUSCLE } from "../../../modules/local/muscle/main"
 include { MUSCLE_SUPER_FIVE } from "../../../modules/local/muscle/main"
+include { PROBCONS } from "../../../modules/local/probcons/main"
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META
@@ -28,6 +29,13 @@ workflow ALIGN {
             sample_tuple
         )
         alignment_output_ch = MUSCLE_SUPER_FIVE.out.sample_tuple
+    }
+    else if (aligner == "PROBCONS") {
+        PROBCONS(
+            sample_tuple
+        )
+
+        alignment_output_ch = PROBCONS.out.sample_tuple
     }
 
     emit:
