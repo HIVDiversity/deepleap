@@ -19,8 +19,6 @@ process TRIM_CONSENSUS {
     --output-seq-name ${meta.sample_id}_consensus_trimmed \
     --strip-gaps \
     --output-type NT \
-    --alignment-mode local \
-    --gap-open-penalty 6 \
-    --gap-extension-penalty 2
+    ${task.ext.args}
     """
 }
