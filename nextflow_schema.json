@@ -12,9 +12,9 @@
       "description": "Define where the pipeline should find input data and save output data.",
       "required": [
         "samplesheet",
+        "sample_base_dir",
         "reference_file",
-        "outdir",
-        "sample_base_dir"
+        "outdir"
       ],
       "properties": {
         "samplesheet": {
@@ -90,6 +90,22 @@
           "fa_icon": "fas fa-broadcast-tower",
           "description": "What mode to use for trimming the sequences to the trimmed consensus",
           "enum": ["single-match", "double-match"]
+        },
+        "trim_consensus_alignment_mode": {
+          "type": "string",
+          "default": "local",
+          "description": "What mode to use for aligning the consensus to the reference.",
+          "enum": ["local", "custom", "local_custom"]
+        },
+        "trim_consensus_gap_open_penalty": {
+          "type": "integer",
+          "default": 5,
+          "description": "The gap opening penalty to use for trimming to the consensus."
+        },
+        "trim_consensus_gap_extension_penalty": {
+          "type": "integer",
+          "default": 1,
+          "description": "The gap extension penalty to use for trimming the consensus."
         }
       }
     },
