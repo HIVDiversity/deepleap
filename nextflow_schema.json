@@ -164,6 +164,10 @@
           "description": "An acceptable proportion (0-1) of the median protein length that can be lost before a sequence is considered non-functional",
           "minimum": 0,
           "maximum": 1
+        },
+        "ff_expected_length": {
+          "type": "number",
+          "description": "The expected length of the protein. If left blank, this is set to the median length of the sequences in the input."
         }
       },
       "fa_icon": "fas fa-filter"
