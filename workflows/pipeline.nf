@@ -13,8 +13,9 @@ include { MULTI_TIMEPOINT_ALIGNMENT } from "../subworkflows/local/multi_timepoin
 workflow HIV_SEQ_PIPELINE {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Pipeline Setup - make sure all the param are here
+    // Pipeline Setup - make sure all the params are here
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // TODO: I don't think this is necessary since we have params checking from the validation pipeline
     if (!params.region_of_interest) {
         println("No regions of interest provided. Exiting.")
         exit(1)
@@ -42,6 +43,19 @@ workflow HIV_SEQ_PIPELINE {
     def additionalMetadata = [
         "region_of_interest": regionOfInterest
     ]
+
+    // Set up options for adding the reference to the sequences before alignment 
+    def add_reference_to_sequences = params.add_reference_to_sequences
+
+
+    // We need to check if the user wants to add a different reference to the sequences 
+    if (!params.reference_to_add) {
+        def reference_to_add = params.reference_file
+    }
+    else {
+        def reference_to_add = params.reference_to_add
+    }
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BUILD SAMPLESHEET
