@@ -27,7 +27,16 @@ workflow PRE_ALIGNMENT_PROCESSING {
         ADD_SEQUENCES(
             COLLAPSE.out.sample_tuple.merge(TRANSLATE_REFERENCE.out.sample_tuple.collect()) { sample, ref -> tuple([sample[0], ref[0]], sample[1]) }
         )
-        output = ADD_SEQUENCES.out.fasta_tuple
+        output = ADD_SEQUENCES.out.fasta_tuple.map { sequence_file, meta ->
+            meta.put("contains_reference", true)
+            [sequence_file, meta]
+        }
+    }
+    else {
+        output = output.map { sequence_file, meta ->
+            meta.put("contains_reference", false)
+            [sequence_file, meta]
+        }
     }
 
     emit:
