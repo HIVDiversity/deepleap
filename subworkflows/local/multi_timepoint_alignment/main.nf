@@ -13,8 +13,6 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
     name_tuples // file(json), meta
 
     main:
-    // TODO: Add a step to join namefiles together so that uncollapsing is possible
-    // TODO: Also have a step to concat all the pre-nt files so that reverse-translating is possible
 
     // TODO: We make sure that the channels that only have a single file, ie the files that don't get sent through the profile alignment
     // get merged back into the queue such that they can be all output into the same directory...
