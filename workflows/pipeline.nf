@@ -56,9 +56,6 @@ workflow HIV_SEQ_PIPELINE {
         reference_to_add = params.reference_file
     }
 
-
-    def val_addRefBeforeAlign = channel.value(add_ref_before_align)
-    def val_addRefAfterAlign = channel.value(add_ref_after_align)
     def val_refToAdd = file(reference_to_add)
     def ref_seq_name = val_refToAdd.text.split("\n").find { line -> line.startsWith('>') }.substring(1)
     additionalMetadata.put("ref_seq_name", ref_seq_name)
@@ -108,7 +105,7 @@ workflow HIV_SEQ_PIPELINE {
 
     PRE_ALIGNMENT_PROCESSING(
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
-        val_addRefBeforeAlign,
+        add_ref_before_align,
         val_refToAdd,
     )
 
@@ -120,7 +117,7 @@ workflow HIV_SEQ_PIPELINE {
         ALIGN.out.aligned_tuple,
         PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
-        val_addRefAfterAlign,
+        add_ref_after_align,
         val_refToAdd,
     )
 
