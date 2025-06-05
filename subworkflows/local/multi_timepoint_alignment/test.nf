@@ -3,10 +3,14 @@ workflow {
     def file_one = file("/home/dlejeune/masters/nf-test-data/profile_align_test/al_file1.fasta")
     def file_two = file("/home/dlejeune/masters/nf-test-data/profile_align_test/al_file2.fasta")
     def file_three = file("/home/dlejeune/masters/nf-test-data/profile_align_test/al_file3.fasta")
+    def file_one_nt = file("/home/dlejeune/masters/nf-test-data/profile_align_test/ua_file1.fasta")
+    def file_two_nt = file("/home/dlejeune/masters/nf-test-data/profile_align_test/ua_file2.fasta")
+    def file_three_nt = file("/home/dlejeune/masters/nf-test-data/profile_align_test/ua_file3.fasta")
+    def empty_json_file = file("/home/dlejeune/masters/nf-test-data/profile_align_test/temp_json.json")
 
-    def meta_one = ["sample_id": "TEST_001", visit_id: "1000"]
-    def meta_two = ["sample_id": "TEST_001", visit_id: "100"]
-    def meta_three = ["sample_id": "TEST_001", visit_id: "500"]
+    def meta_one = ["sample_id": "TEST_001", visit_id: "1000", cap_name: "TEST"]
+    def meta_two = ["sample_id": "TEST_001", visit_id: "100", cap_name: "TEST"]
+    def meta_three = ["sample_id": "TEST_001", visit_id: "500", cap_name: "TEST2"]
 
     def files_list = [
         [file_one, meta_one],
@@ -15,25 +19,13 @@ workflow {
     ]
 
     def file_ch = channel.from(files_list)
+    def sample_nt_tuples = channel.from([[file_one_nt, meta_one], [file_two_nt, meta_two], [file_three_nt, meta_three]])
+    def sample_name_tuples = channel.from([[empty_json_file, meta_one], [empty_json_file, meta_two], [empty_json_file, meta_three]])
 
-    def input_ch = file_ch
-        .map { file, metadata ->
-            [metadata['sample_id'], file, metadata]
-        }
-        .groupTuple()
-        .map { sample_id, files, metadatas ->
-            // Create pairs of [file, metadata] for sorting
-            def pairs = files.indices.collect { i -> [files[i], metadatas[i]] }
-            // Sort pairs by visit_id
-            def sorted_pairs = pairs.sort { a, b -> a[1]['visit_id'] <=> b[1]['visit_id'] }
-            // Extract sorted files and metadata
-            def sorted_files = sorted_pairs.collect { it[0] }
-            def sorted_metadata = sorted_pairs.collect { it[1] }
-
-            return [sample_id, sorted_files, sorted_metadata]
-        }
 
     MULTI_TIMEPOINT_ALIGNMENT(
-        input_ch
+        file_ch,
+        sample_nt_tuples,
+        sample_name_tuples,
     )
 }
