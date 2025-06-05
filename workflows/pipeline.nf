@@ -56,7 +56,7 @@ workflow HIV_SEQ_PIPELINE {
     }
 
 
-    def val_refToAdd = channel.value(reference_to_add)
+    def val_refToAdd = file(reference_to_add)
     def val_addRefToSeqs = channel.value(add_reference_to_sequences)
 
 
