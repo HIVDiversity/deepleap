@@ -45,7 +45,7 @@ process MAFFT_ADD {
 
     script:
     """
-    mafft --add ${ref_file}  ${input_file} > ${meta.sample_id}.ref.mafft.fasta
+    mafft --thread -1 --localpair --maxiterate 1000 --add ${ref_file}  ${input_file} > ${meta.sample_id}.ref.mafft.fasta
     """
 }
 
