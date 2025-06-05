@@ -49,12 +49,15 @@ workflow HIV_SEQ_PIPELINE {
 
 
     // We need to check if the user wants to add a different reference to the sequences 
+    def reference_to_add = params.reference_to_add
+
     if (!params.reference_to_add) {
-        def reference_to_add = params.reference_file
+        reference_to_add = params.reference_file
     }
-    else {
-        def reference_to_add = params.reference_to_add
-    }
+
+
+    def val_refToAdd = channel.value(reference_to_add)
+    def val_addRefToSeqs = channel.value(add_reference_to_sequences)
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +103,9 @@ workflow HIV_SEQ_PIPELINE {
     )
 
     PRE_ALIGNMENT_PROCESSING(
-        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples
+        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+        val_addRefToSeqs,
+        val_refToAdd,
     )
 
     ALIGN(

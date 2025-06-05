@@ -5,6 +5,10 @@ workflow {
 
     def input_ch = channel.from([[input_seqs, meta]])
     PRE_ALIGNMENT_PROCESSING(
-        input_ch
+        input_ch,
+        true,
+        "/home/dlejeune/Documents/real_data/hxb2-env.fasta",
     )
+
+    PRE_ALIGNMENT_PROCESSING.out.translated_collapsed_tuples.view()
 }
