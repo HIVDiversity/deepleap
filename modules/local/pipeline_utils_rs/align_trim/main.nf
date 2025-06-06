@@ -14,7 +14,7 @@ process PAIRWISE_ALIGN_TRIM {
     args = task.ext.args ?: ""
 
     """
-    pipeline-utils-rs align-consensus \
+    pipeline-utils-rs align-trim \
     --reference-file ${reference} \
     --query-file ${query_file} \
     --output-file ${meta.sample_id}.trimmed.fasta ${log_flag} \

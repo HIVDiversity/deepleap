@@ -12,7 +12,7 @@ process KMER_TRIM_SEQUENCES {
     args = task.ext.args ?: ""
 
     """
-    pipeline-utils-rs align-and-trim\
+    pipeline-utils-rs kmer-trim\
     --query-sequences ${sequences}\
     --output-file ${meta.sample_id}.trimmed.fasta\
     --consensus-sequence ${reference}\
