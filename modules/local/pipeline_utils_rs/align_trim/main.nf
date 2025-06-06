@@ -1,4 +1,4 @@
-process TRIM_CONSENSUS {
+process PAIRWISE_ALIGN_TRIM {
     tag "${meta.sample_id}"
     label "pipeline_utils_rs"
 
