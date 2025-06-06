@@ -1,5 +1,6 @@
 include { GET_CONSENSUS } from "../../../modules/local/pipeline_utils_rs/consensus/main"
-include { PAIRWISE_ALIGN_TRIM } from '../../../modules/local/pipeline_utils_rs/align_trim/main'
+include { PAIRWISE_ALIGN_TRIM as PAIRWISE_ALN_TRIM_CONSENSUS } from '../../../modules/local/pipeline_utils_rs/align_trim/main'
+include { PAIRWISE_ALIGN_TRIM as PAIRWISE_ALN_TRIM_SEQS } from '../../../modules/local/pipeline_utils_rs/align_trim/main'
 include { KMER_TRIM_SEQUENCES } from '../../../modules/local/pipeline_utils_rs/kmer_trim/main'
 include { MAFFT_FAST_ALIGN } from '../../../modules/local/mafft/main'
 
@@ -21,22 +22,34 @@ workflow PREPROCESS_CUSTOM {
         MAFFT_FAST_ALIGN.out.sample_tuple
     )
 
+    def ch_sampleAlnAndRef = sample_tuples.merge(GET_CONSENSUS.out.sample_tuple) { sample, consensus ->
+        return tuple(sample[0], consensus[0], sample[1])
+    }
+
     // Align the consensus sequence to the reference sequence
-    PAIRWISE_ALIGN_TRIM(
-        GET_CONSENSUS.out.sample_tuple,
-        reference_ch,
+    PAIRWISE_ALN_TRIM_CONSENSUS(
+        ch_sampleAlnAndRef,
         "VERBOSE",
     )
 
     // Create a channel that has the unaligned samples and the aligned consensus sequence
-    seqsWithConsensus = sample_tuples.join(PAIRWISE_ALIGN_TRIM.out.sample_tuple, by: 1).map { [it[1], it[2], it[0]] }
+    def ch_seqsWithConsensus = sample_tuples
+        .join(PAIRWISE_ALN_TRIM_CONSENSUS.out.trimmed_fasta, by: 1)
+        .map { meta, samples, consensus -> [samples, consensus, meta] }
 
+    // Trim the rest of the sequences depending on the mode specified by the user.
     def preprocessed_sequences = channel.empty()
     if (use_pair_aln_for_seq) {
+        PAIRWISE_ALN_TRIM_SEQS(
+            ch_seqsWithConsensus,
+            "INFO",
+        )
+
+        preprocessed_sequences = PAIRWISE_ALN_TRIM_SEQS.out.trimmed_fasta
     }
     else {
         KMER_TRIM_SEQUENCES(
-            seqsWithConsensus
+            ch_seqsWithConsensus
         )
 
         preprocessed_sequences = KMER_TRIM_SEQUENCES.out.sample_tuple
