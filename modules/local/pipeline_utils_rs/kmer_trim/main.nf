@@ -1,5 +1,5 @@
-process TRIM_SEQUENCES{
-    tag "$meta.sample_id"
+process KMER_TRIM_SEQUENCES {
+    tag "${meta.sample_id}"
     label "pipeline_utils_rs"
 
     input:
@@ -19,6 +19,4 @@ process TRIM_SEQUENCES{
     ${task.ext.args}
 
     """
-
-
 }

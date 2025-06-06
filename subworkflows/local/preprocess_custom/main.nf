@@ -1,6 +1,6 @@
 include { GET_CONSENSUS } from "../../../modules/local/pipeline_utils_rs/consensus/main"
 include { PAIRWISE_ALIGN_TRIM } from '../../../modules/local/pipeline_utils_rs/align_trim/main'
-include { TRIM_SEQUENCES } from '../../../modules/local/pipeline_utils_rs/trim_sequences/main'
+include { KMER_TRIM_SEQUENCES } from '../../../modules/local/pipeline_utils_rs/kmer_trim/main'
 include { MAFFT_FAST_ALIGN } from '../../../modules/local/mafft/main'
 
 workflow PREPROCESS_CUSTOM {
@@ -35,13 +35,13 @@ workflow PREPROCESS_CUSTOM {
     if (use_pair_aln_for_seq) {
     }
     else {
-        TRIM_SEQUENCES(
+        KMER_TRIM_SEQUENCES(
             seqsWithConsensus
         )
 
-        preprocessed_sequences = TRIM_SEQUENCES.out.sample_tuple
+        preprocessed_sequences = KMER_TRIM_SEQUENCES.out.sample_tuple
     }
 
     emit:
-    preprocessed_nt_seqs = TRIM_SEQUENCES.out.sample_tuple
+    preprocessed_nt_seqs = preprocessed_sequences
 }
