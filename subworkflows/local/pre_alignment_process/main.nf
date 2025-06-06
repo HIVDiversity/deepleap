@@ -7,7 +7,7 @@ workflow PRE_ALIGNMENT_PROCESSING {
     take:
     nt_sample_tuple // file(FASTA_NT_FILTERED), meta 
     val_addRefToSeqs // bool: indicates that a reference should be added to samples prior to alignment
-    val_refToAdd // file: the reference that should be added
+    reference_to_add // file: the reference that should be added
 
     main:
 
@@ -21,8 +21,9 @@ workflow PRE_ALIGNMENT_PROCESSING {
     output = COLLAPSE.out.sample_tuple
 
     if (val_addRefToSeqs) {
+
         TRANSLATE_REFERENCE(
-            channel.of([val_refToAdd, ["sample_id": "ref"]])
+            channel.of([reference_to_add, ["sample_id": "ref"]])
         )
         ADD_SEQUENCES(
             COLLAPSE.out.sample_tuple.merge(TRANSLATE_REFERENCE.out.sample_tuple.collect()) { sample, ref ->

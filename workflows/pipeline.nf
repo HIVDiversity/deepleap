@@ -9,6 +9,7 @@ include { PRE_ALIGNMENT_PROCESSING } from "../subworkflows/local/pre_alignment_p
 include { ALIGN } from "../subworkflows/local/align/main"
 include { POST_ALIGNMENT_PROCESS } from "../subworkflows/local/post_alignment_process/main"
 include { MULTI_TIMEPOINT_ALIGNMENT } from "../subworkflows/local/multi_timepoint_alignment/main"
+include { EXTRACT_SEQ_FROM_GB } from '../modules/local/pipeline_utils_rs/extract_seq_from_genbank/main'
 
 workflow HIV_SEQ_PIPELINE {
 
@@ -56,10 +57,17 @@ workflow HIV_SEQ_PIPELINE {
         reference_to_add = params.reference_file
     }
 
-    def val_refToAdd = file(reference_to_add)
-    def ref_seq_name = val_refToAdd.text.split("\n").find { line -> line.startsWith('>') }.substring(1)
+    def reference_to_add_file = file(reference_to_add)
+    def ref_seq_name = reference_to_add_file.text.split("\n").find { line -> line.startsWith('>') }.substring(1)
     additionalMetadata.put("ref_seq_name", ref_seq_name)
 
+    if (reference_to_add_file.extension == "gb") {
+        EXTRACT_SEQ_FROM_GB(
+            reference_to_add_file,
+            ref_seq_name,
+        )
+        reference_to_add_file = EXTRACT_SEQ_FROM_GB.out.extracted_sequence_fasta
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BUILD SAMPLESHEET
@@ -107,7 +115,7 @@ workflow HIV_SEQ_PIPELINE {
     PRE_ALIGNMENT_PROCESSING(
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
         add_ref_before_align,
-        val_refToAdd,
+        reference_to_add_file,
     )
 
     ALIGN(
@@ -119,7 +127,7 @@ workflow HIV_SEQ_PIPELINE {
         PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
         add_ref_after_align,
-        val_refToAdd,
+        reference_to_add_file,
     )
 
     if (multi_timepoint_alignment) {
