@@ -51,10 +51,8 @@ workflow PREPROCESS_CUSTOM {
             ch_seqsWithConsensus,
             "INFO",
         )
+        preprocessed_sequences = PAIRWISE_ALN_TRIM_SEQS.out.trimmed_fasta
     }
-
-
-    preprocessed_sequences = PAIRWISE_ALN_TRIM_SEQS.out.trimmed_fasta
 
     emit:
     preprocessed_nt_seqs = preprocessed_sequences

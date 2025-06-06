@@ -13,9 +13,9 @@ process KMER_TRIM_SEQUENCES {
 
     """
     pipeline-utils-rs kmer-trim\
-    --query-sequences ${sequences}\
+    --query-seq-file ${sequences}\
     --output-file ${meta.sample_id}.trimmed.fasta\
-    --consensus-sequence ${reference}\
+    --ref-seq-file ${reference}\
     --output-type NT\
     ${args}
 
