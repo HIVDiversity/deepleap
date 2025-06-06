@@ -88,6 +88,7 @@ workflow HIV_SEQ_PIPELINE {
         PREPROCESS_CUSTOM(
             ch_input_files,
             ch_reference_file,
+            params.use_kmer_trimming,
         )
 
         preprocessed_files_nt = PREPROCESS_CUSTOM.out.preprocessed_nt_seqs
