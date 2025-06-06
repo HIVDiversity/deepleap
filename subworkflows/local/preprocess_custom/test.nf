@@ -11,6 +11,6 @@ workflow {
     PREPROCESS_CUSTOM(
         sample_channel,
         ref_channel,
-        true,
+        false,
     )
 }
