@@ -25,7 +25,9 @@ workflow PRE_ALIGNMENT_PROCESSING {
             channel.of([val_refToAdd, ["sample_id": "ref"]])
         )
         ADD_SEQUENCES(
-            COLLAPSE.out.sample_tuple.merge(TRANSLATE_REFERENCE.out.sample_tuple.collect()) { sample, ref -> tuple([sample[0], ref[0]], sample[1]) }
+            COLLAPSE.out.sample_tuple.merge(TRANSLATE_REFERENCE.out.sample_tuple.collect()) { sample, ref ->
+                tuple([sample[0], ref[0]], sample[1])
+            }
         )
         output = ADD_SEQUENCES.out.fasta_tuple
     }
