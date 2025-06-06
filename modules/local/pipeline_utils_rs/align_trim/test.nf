@@ -1,4 +1,4 @@
-include { TRIM_CONSENSUS } from "./main"
+include { PAIRWISE_ALIGN_TRIM } from "./main"
 
 workflow {
 
@@ -9,11 +9,11 @@ workflow {
     input_ch = channel.from([[query_file, meta]])
     ref_ch = channel.of(reference_file)
 
-    TRIM_CONSENSUS(
+    PAIRWISE_ALIGN_TRIM(
         input_ch,
         ref_ch,
         "VERBOSE",
     )
 
-    TRIM_CONSENSUS.out.view()
+    PAIRWISE_ALIGN_TRIM.out.view()
 }
