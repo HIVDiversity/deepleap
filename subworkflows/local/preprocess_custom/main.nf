@@ -8,7 +8,7 @@ workflow PREPROCESS_CUSTOM {
     take:
     sample_tuples // path(file), val(meta)
     ch_reference // File
-    use_pair_aln_for_seq // boolean 
+    use_kmer_trimming // boolean 
 
     main:
 
@@ -39,21 +39,22 @@ workflow PREPROCESS_CUSTOM {
 
     // Trim the rest of the sequences depending on the mode specified by the user.
     def preprocessed_sequences = channel.empty()
-    if (use_pair_aln_for_seq) {
-        PAIRWISE_ALN_TRIM_SEQS(
-            ch_seqsWithConsensus,
-            "INFO",
-        )
-
-        preprocessed_sequences = PAIRWISE_ALN_TRIM_SEQS.out.trimmed_fasta
-    }
-    else {
+    if (use_kmer_trimming) {
         KMER_TRIM_SEQUENCES(
             ch_seqsWithConsensus
         )
 
         preprocessed_sequences = KMER_TRIM_SEQUENCES.out.sample_tuple
     }
+    else {
+        PAIRWISE_ALN_TRIM_SEQS(
+            ch_seqsWithConsensus,
+            "INFO",
+        )
+    }
+
+
+    preprocessed_sequences = PAIRWISE_ALN_TRIM_SEQS.out.trimmed_fasta
 
     emit:
     preprocessed_nt_seqs = preprocessed_sequences
