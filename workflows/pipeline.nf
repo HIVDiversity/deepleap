@@ -13,8 +13,9 @@ include { MULTI_TIMEPOINT_ALIGNMENT } from "../subworkflows/local/multi_timepoin
 workflow HIV_SEQ_PIPELINE {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Pipeline Setup - make sure all the param are here
+    // Pipeline Setup - make sure all the params are here
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // TODO: I don't think this is necessary since we have params checking from the validation pipeline
     if (!params.region_of_interest) {
         println("No regions of interest provided. Exiting.")
         exit(1)
@@ -42,6 +43,23 @@ workflow HIV_SEQ_PIPELINE {
     def additionalMetadata = [
         "region_of_interest": regionOfInterest
     ]
+
+    // Set up options for adding the reference to the sequences before alignment 
+    def add_ref_before_align = params.add_reference_to_sequences == "BEFORE"
+    def add_ref_after_align = params.add_reference_to_sequences == "AFTER"
+
+
+    // We need to check if the user wants to add a different reference to the sequences 
+    def reference_to_add = params.reference_to_add
+
+    if (!params.reference_to_add) {
+        reference_to_add = params.reference_file
+    }
+
+    def val_refToAdd = file(reference_to_add)
+    def ref_seq_name = val_refToAdd.text.split("\n").find { line -> line.startsWith('>') }.substring(1)
+    additionalMetadata.put("ref_seq_name", ref_seq_name)
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BUILD SAMPLESHEET
@@ -86,7 +104,9 @@ workflow HIV_SEQ_PIPELINE {
     )
 
     PRE_ALIGNMENT_PROCESSING(
-        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples
+        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+        add_ref_before_align,
+        val_refToAdd,
     )
 
     ALIGN(
@@ -97,6 +117,8 @@ workflow HIV_SEQ_PIPELINE {
         ALIGN.out.aligned_tuple,
         PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+        add_ref_after_align,
+        val_refToAdd,
     )
 
     if (multi_timepoint_alignment) {
