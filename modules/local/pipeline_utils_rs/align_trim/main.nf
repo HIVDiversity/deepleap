@@ -3,7 +3,7 @@ process PAIRWISE_ALIGN_TRIM {
     label "pipeline_utils_rs"
 
     input:
-    tuple path(aligned_sequences), path(reference), val(meta)
+    tuple path(query_file), path(reference, name: "ref.fasta"), val(meta)
     val log_level
 
     output:
@@ -11,12 +11,13 @@ process PAIRWISE_ALIGN_TRIM {
 
     script:
     log_flag = log_level == "VERBOSE" ? "--verbose" : ""
+    args = task.ext.args ?: ""
 
     """
     pipeline-utils-rs align-consensus \
     --reference-file ${reference} \
-    --query-file ${aligned_sequences} \
-    --output-file ${meta.sample_id}.consensus.trimmed.fasta ${log_flag} \
-    ${task.ext.args}
+    --query-file ${query_file} \
+    --output-file ${meta.sample_id}.trimmed.fasta ${log_flag} \
+    ${args}
     """
 }

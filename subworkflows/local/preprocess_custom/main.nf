@@ -7,7 +7,7 @@ include { MAFFT_FAST_ALIGN } from '../../../modules/local/mafft/main'
 workflow PREPROCESS_CUSTOM {
     take:
     sample_tuples // path(file), val(meta)
-    reference_ch // File
+    ch_reference // File
     use_pair_aln_for_seq // boolean 
 
     main:
@@ -22,8 +22,8 @@ workflow PREPROCESS_CUSTOM {
         MAFFT_FAST_ALIGN.out.sample_tuple
     )
 
-    def ch_sampleAlnAndRef = sample_tuples.merge(GET_CONSENSUS.out.sample_tuple) { sample, consensus ->
-        return tuple(sample[0], consensus[0], sample[1])
+    def ch_sampleAlnAndRef = GET_CONSENSUS.out.sample_tuple.merge(ch_reference) { consensus, reference ->
+        return tuple(consensus[0], reference, consensus[1])
     }
 
     // Align the consensus sequence to the reference sequence
