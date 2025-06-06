@@ -21,6 +21,7 @@ workflow PREPROCESS_CUSTOM {
     TRIM_CONSENSUS(
         GET_CONSENSUS.out.sample_tuple,
         reference_ch,
+        "VERBOSE",
     )
 
     seqsWithConsensus = sample_tuples.join(TRIM_CONSENSUS.out.sample_tuple, by: 1).map { [it[1], it[2], it[0]] }
