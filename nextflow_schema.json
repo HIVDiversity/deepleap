@@ -78,12 +78,6 @@
       "default": "",
       "fa_icon": "fas fa-frog",
       "properties": {
-        "kmer_size": {
-          "type": "integer",
-          "default": 10,
-          "description": "The k-mer size that is used when matching the trimmed consensus to the untrimmed sequences to get the functional region",
-          "fa_icon": "fas fa-poll-h"
-        },
         "prs_ts_operating_mode": {
           "type": "string",
           "default": "double-match",
@@ -310,6 +304,23 @@
     "probcons_pre": {
       "type": "integer",
       "default": 0
+    },
+    "add_reference_to_sequences": {
+      "type": "string"
+    },
+    "reference_to_add": {
+      "type": "string"
+    },
+    "use_kmer_trimming": {
+      "type": "boolean"
+    },
+    "trim_kmer_size": {
+      "type": "integer",
+      "default": 10
+    },
+    "trim_kmer_max_dist": {
+      "type": "integer",
+      "default": 2
     }
   }
 }
