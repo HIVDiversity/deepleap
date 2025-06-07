@@ -11,6 +11,7 @@ process COLLAPSE {
     tuple path("*.json"), val(meta), emit: namefile_tuple
 
     script:
+    def strip_gaps_flag = strip_gaps ? "--strip-gaps" : ""
 
     """
     pipeline-utils-rs collapse\
@@ -18,6 +19,6 @@ process COLLAPSE {
     --output-file ${meta.sample_id}.collapsed.fasta\
     --name-output-file ${meta.sample_id}.namefile.json\
     --sequence-prefix ${meta.sample_id}\
-    ${strip_gaps}
+    ${strip_gaps_flag}
     """
 }
