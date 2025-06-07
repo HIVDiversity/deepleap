@@ -15,5 +15,6 @@ process EXPAND {
     --input-file ${collapsed_sequences}\
     --name-input-file ${namefile}\
     --output-file ${meta.sample_id}.uncollapsed.fasta\
+    --include-missing
     """
 }
