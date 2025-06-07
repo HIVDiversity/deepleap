@@ -141,7 +141,7 @@ workflow HIV_SEQ_PIPELINE {
     POST_ALIGNMENT_PROCESS(
         ALIGN.out.aligned_tuple,
         PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
-        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
+        PRE_ALIGNMENT_PROCESSING.out.nucleotide_files,
         add_ref_after_align,
         ch_refToAdd,
     )
