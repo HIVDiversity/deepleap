@@ -154,33 +154,3 @@ workflow HIV_SEQ_PIPELINE {
         )
     }
 }
-
-def convertToMap(obj) {
-    if (obj instanceof org.apache.groovy.json.internal.LazyMap) {
-        obj.collectEntries { key, value -> [(key): convertToMap(value)] }
-    }
-    else if (obj instanceof List) {
-        obj.collect { item -> convertToMap(item) }
-    }
-    else {
-        obj
-    }
-}
-
-
-def parseInputConfig(configFile) {
-    def inputFile = new File(configFile.toString())
-    def jsonDict = new groovy.json.JsonSlurper().parseText(inputFile.text)
-
-    def tupleList = []
-
-    jsonDict["runs"].each { entry ->
-
-        def temp_file = file(entry["meta"]["file"])
-        def temp_meta = convertToMap(entry)
-
-        tupleList.add(new Tuple(temp_file, temp_meta))
-    }
-
-    return tupleList
-}
