@@ -49,25 +49,41 @@ workflow HIV_SEQ_PIPELINE {
     def add_ref_before_align = params.add_reference_to_sequences == "BEFORE"
     def add_ref_after_align = params.add_reference_to_sequences == "AFTER"
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // REFERENCE SEQUENCE CONVERSION AND PARSING
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // We need to check if the user wants to add a different reference to the sequences 
     def reference_to_add = params.reference_to_add
 
-    if (!params.reference_to_add) {
+    if (!reference_to_add) {
         reference_to_add = params.reference_file
     }
 
-    def reference_to_add_file = file(reference_to_add)
-    def ref_seq_name = reference_to_add_file.text.split("\n").find { line -> line.startsWith('>') }.substring(1)
+
+    def ref_to_add_is_genbank = file(reference_to_add).extension == "gb"
+
+    (genbank_ref, fasta_ref) = ref_to_add_is_genbank ? [channel.of(reference_to_add), channel.empty()] : [channel.empty(), channel.of(reference_to_add)]
+
+    EXTRACT_SEQ_FROM_GB(
+        genbank_ref,
+        regionOfInterest,
+    )
+
+    def ref_seq_name = ""
+
+    if (ref_to_add_is_genbank) {
+        ref_seq_name = regionOfInterest
+    }
+    else {
+        ref_seq_name = file(reference_to_add).text.split("\n").find { line -> line.startsWith('>') }.substring(1)
+    }
+
     additionalMetadata.put("ref_seq_name", ref_seq_name)
 
-    if (reference_to_add_file.extension == "gb") {
-        EXTRACT_SEQ_FROM_GB(
-            reference_to_add_file,
-            ref_seq_name,
-        )
-        reference_to_add_file = EXTRACT_SEQ_FROM_GB.out.extracted_sequence_fasta
-    }
+    def ref_meta_dict = ["sample_id": ref_seq_name, "num_seqs": 1]
+    def ch_refToAdd = EXTRACT_SEQ_FROM_GB.out.extracted_sequence_fasta.mix(fasta_ref).map { ref -> [ref, ref_meta_dict] }
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BUILD SAMPLESHEET
@@ -115,7 +131,7 @@ workflow HIV_SEQ_PIPELINE {
     PRE_ALIGNMENT_PROCESSING(
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
         add_ref_before_align,
-        reference_to_add_file,
+        ch_refToAdd,
     )
 
     ALIGN(
@@ -127,7 +143,7 @@ workflow HIV_SEQ_PIPELINE {
         PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
         FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
         add_ref_after_align,
-        reference_to_add_file,
+        ch_refToAdd,
     )
 
     if (multi_timepoint_alignment) {

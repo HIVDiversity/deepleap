@@ -10,22 +10,22 @@ workflow POST_ALIGNMENT_PROCESS {
     namefile_tuples
     nt_tuples
     add_ref_seq
-    reference
+    ch_reference
 
     main:
     def samples = aligned_tuples
     def nt_samples = nt_tuples
-    def ch_ref = channel.value(reference)
+    // def ch_ref = channel.value(ch_reference)
     if (add_ref_seq) {
         TRANSLATE_REFERENCE(
-            channel.of([reference, ["sample_id": "ref"]])
+            ch_reference
         )
         MAFFT_ADD(
             aligned_tuples,
             TRANSLATE_REFERENCE.out.sample_tuple.collect().map { ref_file, _meta -> ref_file },
         )
         ADD_SEQUENCES(
-            nt_tuples.merge(ch_ref) { sample, ref -> tuple([sample[0], ref], sample[1]) }
+            nt_tuples.merge(ch_reference) { sample, ref -> tuple([sample[0], ref[0]], sample[1]) }
         )
         samples = MAFFT_ADD.out.sample_tuple
         nt_samples = ADD_SEQUENCES.out.fasta_tuple
@@ -49,5 +49,5 @@ workflow POST_ALIGNMENT_PROCESS {
     )
 
     emit:
-    revserse_translated_tuples = REVERSE_TRANSLATE.out.sample_tuple
+    reverse_translated_tuples = REVERSE_TRANSLATE.out.sample_tuple
 }
