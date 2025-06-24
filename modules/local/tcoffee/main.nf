@@ -6,7 +6,10 @@ process TCOFFEE {
     tuple path("*.fasta"), val(meta)
 
     script:
+
+    args = task.ext.args ?: ""
+
     """
-    t_coffee 
+    t_coffee ${args} --thread 0 -seq ${sample} -output fasta_aln
     """
 }
