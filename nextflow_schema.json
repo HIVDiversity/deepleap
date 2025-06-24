@@ -55,7 +55,7 @@
           "type": "string",
           "default": "MAFFT",
           "description": "What aligner to use for the main alignment",
-          "enum": ["MAFFT", "MUSCLE", "PROBCONS"],
+          "enum": ["MAFFT", "MUSCLE", "PROBCONS", "TCOFFEE"],
           "fa_icon": "fas fa-align-center"
         },
         "preprocess": {
@@ -321,6 +321,9 @@
     "trim_kmer_max_dist": {
       "type": "integer",
       "default": 2
+    },
+    "tcoffee_args": {
+      "type": "string"
     }
   }
 }

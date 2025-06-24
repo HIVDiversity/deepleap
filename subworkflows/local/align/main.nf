@@ -2,6 +2,7 @@ include { MAFFT } from "../../../modules/local/mafft/main"
 include { MUSCLE } from "../../../modules/local/muscle/main"
 include { MUSCLE_SUPER_FIVE } from "../../../modules/local/muscle/main"
 include { PROBCONS } from "../../../modules/local/probcons/main"
+include { TCOFFEE } from "../../../modules/local/tcoffee/main"
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META
@@ -36,6 +37,13 @@ workflow ALIGN {
         )
 
         alignment_output_ch = PROBCONS.out.sample_tuple
+    }
+    else if (aligner == "TCOFFEE") {
+        TCOFFEE(
+            sample_tuple
+        )
+
+        alignment_output_ch = TCOFFEE.out.sample_tuple
     }
 
     emit:

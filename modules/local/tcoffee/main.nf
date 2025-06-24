@@ -3,7 +3,7 @@ process TCOFFEE {
     tuple file(sample), val(meta)
 
     output:
-    tuple path("*.fasta_aln"), val(meta), emit: fasta_tuples
+    tuple path("*.fasta_aln"), val(meta), emit: sample_tuple
     tuple path("*.score_html"), val(meta), emit: score_tuples
 
     script:
