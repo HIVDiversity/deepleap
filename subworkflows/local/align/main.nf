@@ -3,6 +3,7 @@ include { MUSCLE } from "../../../modules/local/muscle/main"
 include { MUSCLE_SUPER_FIVE } from "../../../modules/local/muscle/main"
 include { PROBCONS } from "../../../modules/local/probcons/main"
 include { TCOFFEE } from "../../../modules/local/tcoffee/main"
+include { PRANK } from "../../../modules/local/prank/main"
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META
@@ -44,6 +45,13 @@ workflow ALIGN {
         )
 
         alignment_output_ch = TCOFFEE.out.sample_tuple
+    }
+    else if (aligner == "PRANK") {
+        PRANK(
+            sample_tuple
+        )
+
+        alignment_output_ch = PRANK.out.sample_tuple
     }
 
     emit:
