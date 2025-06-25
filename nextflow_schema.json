@@ -324,6 +324,10 @@
     },
     "tcoffee_args": {
       "type": "string"
+    },
+    "prank_args": {
+      "type": "string",
+      "default": "+F"
     }
   }
 }
