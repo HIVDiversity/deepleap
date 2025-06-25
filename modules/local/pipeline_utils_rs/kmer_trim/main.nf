@@ -17,6 +17,7 @@ process KMER_TRIM_SEQUENCES {
     --output-file ${meta.sample_id}.trimmed.fasta\
     --ref-seq-file ${reference}\
     --output-type NT\
+    --aa-stop-char X \
     ${args}
 
     """

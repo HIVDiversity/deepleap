@@ -15,6 +15,7 @@ process TRANSLATE {
     --input-file ${sequences}\
     --output-file ${meta.sample_id}.translated.fasta\
     --strip-gaps\
-    --drop-incomplete-codons
+    --drop-incomplete-codons\
+    --aa-stop-char X \
     """
 }

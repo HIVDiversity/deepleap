@@ -18,6 +18,7 @@ process PAIRWISE_ALIGN_TRIM {
     --reference-file ${reference} \
     --query-file ${query_file} \
     --output-file ${meta.sample_id}.trimmed.fasta ${log_flag} \
+    --aa-stop-char X \
     ${args}
     """
 }
