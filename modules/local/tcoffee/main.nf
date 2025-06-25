@@ -1,4 +1,7 @@
 process TCOFFEE {
+    tag "${meta.sample_id}"
+    label "tcoffee"
+
     input:
     tuple file(sample), val(meta)
 
@@ -11,6 +14,6 @@ process TCOFFEE {
     args = task.ext.args ?: ""
 
     """
-    t_coffee ${args} -thread 0 -seq ${sample} -output fasta_aln,score_html 
+    t_coffee ${args} -debug -thread 0 -seq ${sample} -output fasta_aln,score_html 
     """
 }
