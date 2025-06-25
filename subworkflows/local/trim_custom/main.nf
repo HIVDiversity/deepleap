@@ -4,7 +4,7 @@ include { PAIRWISE_ALIGN_TRIM as PAIRWISE_ALN_TRIM_SEQS } from '../../../modules
 include { KMER_TRIM_SEQUENCES } from '../../../modules/local/pipeline_utils_rs/kmer_trim/main'
 include { MAFFT_FAST_ALIGN } from '../../../modules/local/mafft/main'
 
-workflow PREPROCESS_CUSTOM {
+workflow TRIM_CUSTOM {
     take:
     sample_tuples // path(file), val(meta)
     ch_reference // File

@@ -1,10 +1,10 @@
-include { MAFFT_ADD_PROFILE } from "../../../modules/local/mafft/main"
-include { CONCAT_JSON_FILES } from "../../../modules/local/utils/concat_json/main"
-include { CONCAT_FASTA_FILES } from "../../../modules/local/utils/concat_fasta/main"
-include { EXPAND } from "../../../modules/local/collapse_expand_fasta/expand/main"
-include { COLLAPSE } from "../../../modules/local/collapse_expand_fasta/collapse/main"
-include { REVERSE_TRANSLATE } from "../../../modules/local/pipeline_utils_rs/reverse-translate/main"
-include { REMOVE_REFERENCE } from "../../../modules/local/utils/remove_reference/main"
+include { MAFFT_ADD_PROFILE } from "../../modules/local/mafft/main"
+include { CONCAT_JSON_FILES } from "../../modules/local/utils/concat_json/main"
+include { CONCAT_FASTA_FILES } from "../../modules/local/utils/concat_fasta/main"
+include { EXPAND } from "../../modules/local/collapse_expand_fasta/expand/main"
+include { COLLAPSE } from "../../modules/local/collapse_expand_fasta/collapse/main"
+include { REVERSE_TRANSLATE } from "../../modules/local/pipeline_utils_rs/reverse-translate/main"
+include { REMOVE_REFERENCE } from "../../modules/local/utils/remove_reference/main"
 
 workflow MULTI_TIMEPOINT_ALIGNMENT {
     take:

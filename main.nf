@@ -12,7 +12,7 @@ nextflow.enable.dsl = 2
 
 include { validateParameters ; paramsSummaryLog ; samplesheetToList } from 'plugin/nf-schema'
 // include {getWorkflowVersion} from './subworkflows/nf-core/utils_nextflow_pipeline/main'
-include { parseSampleSheet } from "bin/utils"
+include { parseSampleSheet } from "./bin/utils"
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT MODULES AND SUBWORKFLOWS
@@ -21,14 +21,11 @@ include { parseSampleSheet } from "bin/utils"
 
 //  include { INITIALISE          } from './subworkflows/local/initialise'
 
-include { EXTRACT_SEQ_FROM_GB } from 'modules/local/pipeline_utils_rs/extract_seq_from_genbank/main'
-include { PREPROCESS_AGA } from "workflows/preprocess_aga/main"
-include { PREPROCESS_CUSTOM } from "workflows/preprocess_custom/main"
-include { FILTER_FUNCTIONAL_SEQUENCES } from "workflows/functional_filter/main"
-include { PRE_ALIGNMENT_PROCESSING } from "workflows/pre_alignment_process/main"
-include { ALIGN } from "workflows/align/main"
-include { POST_ALIGNMENT_PROCESS } from "workflows/post_alignment_process/main"
-include { MULTI_TIMEPOINT_ALIGNMENT } from "workflows/multi_timepoint_alignment/main"
+include { EXTRACT_SEQ_FROM_GB } from './modules/local/pipeline_utils_rs/extract_seq_from_genbank/main'
+include { PREPROCESS } from "./workflows/preprocess/main"
+include { ALIGN } from "./workflows/align/main"
+include { POSTPROCESS } from "./workflows/postprocess/main"
+include { MULTI_TIMEPOINT_ALIGNMENT } from "./workflows/multi_timepoint_alignment/main"
 
 
 
@@ -55,46 +52,12 @@ workflow MAIN_WORKFLOW {
     // SEQUENCE TRIMMING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if (preprocessing_type == "AGA") {
-        PREPROCESS_AGA(
-            ch_input_files,
-            ch_reference_file,
-        )
-
-        preprocessed_files_nt = PREPROCESS_AGA.out.preprocessed_nt_seqs
-    }
-    else if (preprocessing_type == "CUSTOM") {
-        PREPROCESS_CUSTOM(
-            ch_input_files,
-            ch_reference_file,
-            params.use_kmer_trimming,
-        )
-
-        preprocessed_files_nt = PREPROCESS_CUSTOM.out.preprocessed_nt_seqs
-    }
-    else {
-        println("Preprocessing type not reconized.")
-        exit(1)
-    }
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // FUNCTIONAL FILTERING
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    // TODO - Strip illegal characters from the pre-processing?
-
-    FILTER_FUNCTIONAL_SEQUENCES(
-        preprocessed_files_nt
-    )
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // TRANSLATE - COLLAPSE 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-    PRE_ALIGNMENT_PROCESSING(
-        FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
-        add_ref_before_align,
+    PREPROCESS(
+        ch_input_files,
+        ch_reference_file,
+        preprocessing_type,
         ch_refToAdd,
+        add_ref_before_align,
     )
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,18 +65,16 @@ workflow MAIN_WORKFLOW {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     ALIGN(
-        PRE_ALIGNMENT_PROCESSING.out.translated_collapsed_tuples
+        PREPROCESS.out.sample_tuples_aa
     )
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // POSTPROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-    POST_ALIGNMENT_PROCESS(
+    POSTPROCESS(
         ALIGN.out.aligned_tuple,
-        PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
-        PRE_ALIGNMENT_PROCESSING.out.nucleotide_files,
+        PREPROCESS.out.namefile_tuples,
+        PREPROCESS.out.sample_tuples_nt,
         add_ref_after_align,
         ch_refToAdd,
     )
@@ -122,13 +83,11 @@ workflow MAIN_WORKFLOW {
     // MULTI-TIMEPOINT PROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
     if (multi_timepoint_alignment) {
         MULTI_TIMEPOINT_ALIGNMENT(
             ALIGN.out.aligned_tuple,
-            FILTER_FUNCTIONAL_SEQUENCES.out.filtered_samples,
-            PRE_ALIGNMENT_PROCESSING.out.namefile_tuples,
+            PREPROCESS.out.sample_tuples_nt,
+            PREPROCESS.out.namefile_tuples,
         )
     }
 }

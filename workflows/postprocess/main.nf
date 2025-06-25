@@ -1,10 +1,10 @@
-include { EXPAND } from "../../../modules/local/collapse_expand_fasta/expand/main"
-include { REVERSE_TRANSLATE } from "../../../modules/local/pipeline_utils_rs/reverse-translate/main"
-include { TRANSLATE as TRANSLATE_REFERENCE } from "../../../modules/local/pipeline_utils_rs/translate/main"
-include { MAFFT_ADD } from "../../../modules/local/mafft/main"
-include { ADD_SEQUENCES } from "../../../modules/local/utils/add_sequences/main"
+include { EXPAND } from "../../modules/local/collapse_expand_fasta/expand/main"
+include { REVERSE_TRANSLATE } from "../../modules/local/pipeline_utils_rs/reverse-translate/main"
+include { TRANSLATE as TRANSLATE_REFERENCE } from "../../modules/local/pipeline_utils_rs/translate/main"
+include { MAFFT_ADD } from "../../modules/local/mafft/main"
+include { ADD_SEQUENCES } from "../../modules/local/utils/add_sequences/main"
 
-workflow POST_ALIGNMENT_PROCESS {
+workflow POSTPROCESS {
     take:
     aligned_tuples
     namefile_tuples

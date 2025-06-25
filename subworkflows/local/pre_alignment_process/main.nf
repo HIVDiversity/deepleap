@@ -41,7 +41,7 @@ workflow PRE_ALIGNMENT_PROCESSING {
     }
 
     emit:
-    translated_collapsed_tuples = output
+    sample_tuples_aa = output
     namefile_tuples = COLLAPSE.out.namefile_tuple
-    nucleotide_files = ch_nt_samples
+    sample_tuples_nt = ch_nt_samples
 }

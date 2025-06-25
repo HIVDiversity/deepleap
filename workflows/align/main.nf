@@ -1,9 +1,9 @@
-include { MAFFT } from "../../../modules/local/mafft/main"
-include { MUSCLE } from "../../../modules/local/muscle/main"
-include { MUSCLE_SUPER_FIVE } from "../../../modules/local/muscle/main"
-include { PROBCONS } from "../../../modules/local/probcons/main"
-include { TCOFFEE } from "../../../modules/local/tcoffee/main"
-include { PRANK } from "../../../modules/local/prank/main"
+include { MAFFT } from "../../modules/local/mafft/main"
+include { MUSCLE } from "../../modules/local/muscle/main"
+include { MUSCLE_SUPER_FIVE } from "../../modules/local/muscle/main"
+include { PROBCONS } from "../../modules/local/probcons/main"
+include { TCOFFEE } from "../../modules/local/tcoffee/main"
+include { PRANK } from "../../modules/local/prank/main"
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META

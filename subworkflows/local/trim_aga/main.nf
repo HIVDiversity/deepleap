@@ -1,11 +1,11 @@
 include { AGA } from '../../../modules/local/aga/main.nf'
-workflow PREPROCESS_AGA {
+workflow TRIM_AGA {
     take:
     sample_tuple // path(input), val(meta)
     genbankFile // File
 
     main:
-
+    // TODO: STRIP dots from alignment
     AGA(
         sample_tuple,
         genbankFile,
