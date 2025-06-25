@@ -22,14 +22,13 @@ include { parseSampleSheet } from "bin/utils"
 //  include { INITIALISE          } from './subworkflows/local/initialise'
 
 include { EXTRACT_SEQ_FROM_GB } from 'modules/local/pipeline_utils_rs/extract_seq_from_genbank/main'
-include { HIV_SEQ_PIPELINE } from './workflows/pipeline'
-include { PREPROCESS_AGA } from "subworkflows/local/preprocess_aga/main"
-include { PREPROCESS_CUSTOM } from "subworkflows/local/preprocess_custom/main"
-include { FILTER_FUNCTIONAL_SEQUENCES } from "subworkflows/local/functional_filter/main"
-include { PRE_ALIGNMENT_PROCESSING } from "subworkflows/local/pre_alignment_process/main"
-include { ALIGN } from "subworkflows/local/align/main"
-include { POST_ALIGNMENT_PROCESS } from "subworkflows/local/post_alignment_process/main"
-include { MULTI_TIMEPOINT_ALIGNMENT } from "subworkflows/local/multi_timepoint_alignment/main"
+include { PREPROCESS_AGA } from "workflows/preprocess_aga/main"
+include { PREPROCESS_CUSTOM } from "workflows/preprocess_custom/main"
+include { FILTER_FUNCTIONAL_SEQUENCES } from "workflows/functional_filter/main"
+include { PRE_ALIGNMENT_PROCESSING } from "workflows/pre_alignment_process/main"
+include { ALIGN } from "workflows/align/main"
+include { POST_ALIGNMENT_PROCESS } from "workflows/post_alignment_process/main"
+include { MULTI_TIMEPOINT_ALIGNMENT } from "workflows/multi_timepoint_alignment/main"
 
 
 
