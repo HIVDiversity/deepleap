@@ -207,12 +207,30 @@ workflow {
 
     publish:
     sample_tuples_aligned_nt = MAIN_WORKFLOW.out.sample_tuples_aligned_nt
+    sample_tuples_aligned_aa = MAIN_WORKFLOW.out.sample_tuples_aligned_aa
+    functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
+    sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
 }
 
 output {
     sample_tuples_aligned_nt {
-        path { _sample, meta ->
-            "${meta.sample_id}/"
+        path { sample, meta ->
+            sample >> "${params.run_name}/${meta.sample_id}/${meta.sample_id}_aligned_nt.fasta"
+        }
+    }
+    sample_tuples_aligned_aa {
+        path { sample, meta ->
+            sample >> "${params.run_name}/${meta.sample_id}/${meta.sample_id}_aligned_aa.fasta"
+        }
+    }
+    functional_filter_reports {
+        path { sample, meta ->
+            sample >> "${params.run_name}/${meta.sample_id}/${meta.sample_id}_filter-report.csv"
+        }
+    }
+    sample_tuples_prof_aln_nt {
+        path { sample, meta ->
+            sample >> "${params.run_name}/${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
         }
     }
 }

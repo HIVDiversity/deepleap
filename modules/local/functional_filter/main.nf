@@ -6,8 +6,8 @@ process FUNCTIONAL_FILTER {
 
     output:
     tuple path("*.functional.fasta"), val(meta), emit: filtered_tuples
-    path ("*.rejected.fasta"), emit: rejected_records
-    path ("*.csv"), emit: report
+    tuple path("*.rejected.fasta"), val(meta), emit: rejected_records
+    tuple path("*.csv"), val(meta), emit: report
 
     script:
     """
