@@ -23,6 +23,7 @@ include { parseSampleSheet } from "./bin/utils"
 //  include { INITIALISE          } from './subworkflows/local/initialise'
 
 include { EXTRACT_SEQ_FROM_GB } from './modules/local/pipeline_utils_rs/extract_seq_from_genbank/main'
+include { PIPELINE_REPORT } from './modules/local/pipeline_report/main'
 include { PREPROCESS } from "./workflows/preprocess/main"
 include { ALIGN } from "./workflows/align/main"
 include { POSTPROCESS } from "./workflows/postprocess/main"
@@ -81,6 +82,17 @@ workflow MAIN_WORKFLOW {
     )
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // PRODUCE REPORT
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    PIPELINE_REPORT(
+        ch_input_files.map { file, _meta -> file }.collect(),
+        POSTPROCESS.out.reverse_translated_tuples.map { file, _meta -> file }.collect(),
+        PREPROCESS.out.filter_report.map { file, _meta -> file }.collect(),
+    )
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MULTI-TIMEPOINT PROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def ch_multi_timepoint_alignment = channel.empty()
@@ -99,6 +111,7 @@ workflow MAIN_WORKFLOW {
     sample_tuples_aligned_aa = POSTPROCESS.out.sample_tuples_aligned_aa
     functional_filter_reports = PREPROCESS.out.filter_report
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
+    pipeline_report = PIPELINE_REPORT.out
 }
 
 /*
@@ -210,6 +223,7 @@ workflow {
     sample_tuples_aligned_aa = MAIN_WORKFLOW.out.sample_tuples_aligned_aa
     functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
+    pipeline_report = MAIN_WORKFLOW.out.pipeline_report
 }
 
 output {
@@ -232,5 +246,8 @@ output {
         path { sample, meta ->
             sample >> "${params.run_name}/${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
         }
+    }
+    pipeline_report {
+        path { "${params.run_name}/execution_report/" }
     }
 }
