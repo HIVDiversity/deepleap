@@ -50,4 +50,5 @@ workflow POSTPROCESS {
 
     emit:
     reverse_translated_tuples = REVERSE_TRANSLATE.out.sample_tuple
+    sample_tuples_aligned_aa = EXPAND.out.sample_tuple
 }

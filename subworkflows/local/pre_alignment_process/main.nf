@@ -1,7 +1,7 @@
 include { COLLAPSE } from "../../../modules/local/collapse_expand_fasta/collapse/main"
 include { TRANSLATE } from "../../../modules/local/pipeline_utils_rs/translate/main"
 include { TRANSLATE as TRANSLATE_REFERENCE } from "../../../modules/local/pipeline_utils_rs/translate/main"
-include { ADD_SEQUENCES } from "../../../modules/local/utils/add_sequences/main"
+include { ADD_SEQUENCES as ADD_REF_TO_AA_SEQS } from "../../../modules/local/utils/add_sequences/main"
 include { ADD_SEQUENCES as ADD_REF_TO_NT_SEQS } from "../../../modules/local/utils/add_sequences/main"
 
 workflow PRE_ALIGNMENT_PROCESSING {
@@ -28,7 +28,7 @@ workflow PRE_ALIGNMENT_PROCESSING {
         TRANSLATE_REFERENCE(
             ch_reference_to_add
         )
-        ADD_SEQUENCES(
+        ADD_REF_TO_AA_SEQS(
             COLLAPSE.out.sample_tuple.merge(TRANSLATE_REFERENCE.out.sample_tuple.collect()) { sample, ref ->
                 tuple([sample[0], ref[0]], sample[1])
             }
@@ -36,7 +36,7 @@ workflow PRE_ALIGNMENT_PROCESSING {
         ADD_REF_TO_NT_SEQS(
             nt_sample_tuple.merge(ch_reference_to_add) { sample, ref -> tuple([sample[0], ref[0]], sample[1]) }
         )
-        output = ADD_SEQUENCES.out.fasta_tuple
+        output = ADD_REF_TO_AA_SEQS.out.fasta_tuple
         ch_nt_samples = ADD_REF_TO_NT_SEQS.out.fasta_tuple
     }
 

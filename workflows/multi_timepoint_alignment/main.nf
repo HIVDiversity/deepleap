@@ -121,5 +121,5 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
     )
 
     emit:
-    profile_aligment = MAFFT_ADD_PROFILE.out.profile_alignment_tuple
+    sample_tuples_prof_aln_nt = MAFFT_ADD_PROFILE.out.profile_alignment_tuple
 }

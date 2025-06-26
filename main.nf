@@ -7,7 +7,8 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
+nextflow.preview.output = true
+nextflow.enable.strict = true
 
 
 include { validateParameters ; paramsSummaryLog ; samplesheetToList } from 'plugin/nf-schema'
@@ -82,14 +83,22 @@ workflow MAIN_WORKFLOW {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MULTI-TIMEPOINT PROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    def ch_multi_timepoint_alignment = channel.empty()
     if (multi_timepoint_alignment) {
         MULTI_TIMEPOINT_ALIGNMENT(
             ALIGN.out.aligned_tuple,
             PREPROCESS.out.sample_tuples_nt,
             PREPROCESS.out.namefile_tuples,
         )
+
+        ch_multi_timepoint_alignment = MULTI_TIMEPOINT_ALIGNMENT.out.sample_tuples_prof_aln_nt
     }
+
+    emit:
+    sample_tuples_aligned_nt = POSTPROCESS.out.reverse_translated_tuples
+    sample_tuples_aligned_aa = POSTPROCESS.out.sample_tuples_aligned_aa
+    functional_filter_reports = PREPROCESS.out.filter_report
+    sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
 }
 
 /*
@@ -98,6 +107,7 @@ workflow MAIN_WORKFLOW {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 workflow {
+    main:
     // Print parameter summary log to screen before running
     // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
     validateParameters()
@@ -172,7 +182,7 @@ workflow {
     additionalMetadata.put("ref_seq_name", ref_seq_name)
 
     ref_meta_dict = ["sample_id": ref_seq_name, "num_seqs": 1]
-    ch_refToAdd = EXTRACT_SEQ_FROM_GB.out.extracted_sequence_fasta.mix(fasta_ref).map { ref -> [ref, ref_meta_dict] }
+    ch_refToAdd = EXTRACT_SEQ_FROM_GB.out.extracted_sequence_fasta.mix(fasta_ref).map { ref -> [ref, ref_meta_dict] }.collect()
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,4 +204,15 @@ workflow {
         add_ref_after_align,
         multi_timepoint_alignment,
     )
+
+    publish:
+    sample_tuples_aligned_nt = MAIN_WORKFLOW.out.sample_tuples_aligned_nt
+}
+
+output {
+    sample_tuples_aligned_nt {
+        path { _sample, meta ->
+            "${meta.sample_id}/"
+        }
+    }
 }
