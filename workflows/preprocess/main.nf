@@ -6,48 +6,64 @@ workflow PREPROCESS {
     take:
     ch_input_files
     ch_reference_file
-    preprocessing_type
+    trim_method
     ch_refToAdd
     add_ref_before_align
+    skip_trim
+    skip_functional_filter
 
     main:
+    if (!skip_trim) {
+        if (trim_method == "AGA") {
+            TRIM_AGA(
+                ch_input_files,
+                ch_reference_file,
+            )
 
-    if (preprocessing_type == "AGA") {
-        TRIM_AGA(
-            ch_input_files,
-            ch_reference_file,
-        )
+            ch_preprocessed_files_nt = TRIM_AGA.out.preprocessed_nt_seqs
+        }
+        else if (trim_method == "CUSTOM") {
+            TRIM_CUSTOM(
+                ch_input_files,
+                ch_reference_file,
+                params.use_kmer_trimming,
+            )
 
-        preprocessed_files_nt = TRIM_AGA.out.preprocessed_nt_seqs
-    }
-    else if (preprocessing_type == "CUSTOM") {
-        TRIM_CUSTOM(
-            ch_input_files,
-            ch_reference_file,
-            params.use_kmer_trimming,
-        )
-
-        preprocessed_files_nt = TRIM_CUSTOM.out.preprocessed_nt_seqs
+            ch_preprocessed_files_nt = TRIM_CUSTOM.out.preprocessed_nt_seqs
+        }
+        else {
+            println("Preprocessing type not reconized.")
+            exit(1)
+        }
     }
     else {
-        println("Preprocessing type not reconized.")
-        exit(1)
+        ch_preprocessed_files_nt = ch_input_files
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FUNCTIONAL FILTERING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    FUNCTIONAL_FILTER(
-        preprocessed_files_nt
-    )
+    if (!skip_functional_filter) {
+        FUNCTIONAL_FILTER(
+            ch_preprocessed_files_nt
+        )
+        ch_functional_filter_out = FUNCTIONAL_FILTER.out.filtered_tuples
+        ch_ff_report = FUNCTIONAL_FILTER.out.report
+        ch_ff_rejected = FUNCTIONAL_FILTER.out.rejected_records
+    }
+    else {
+        ch_functional_filter_out = ch_preprocessed_files_nt
+        ch_ff_report = channel.empty()
+        ch_ff_rejected = channel.empty()
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // TRANSLATE - COLLAPSE - ADD REF (OPTIONAL)
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     PRE_ALIGNMENT_PROCESSING(
-        FUNCTIONAL_FILTER.out.filtered_tuples,
+        ch_functional_filter_out,
         add_ref_before_align,
         ch_refToAdd,
     )
@@ -56,6 +72,6 @@ workflow PREPROCESS {
     sample_tuples_aa = PRE_ALIGNMENT_PROCESSING.out.sample_tuples_aa
     sample_tuples_nt = PRE_ALIGNMENT_PROCESSING.out.sample_tuples_nt
     namefile_tuples = PRE_ALIGNMENT_PROCESSING.out.namefile_tuples
-    sample_tuples_rejected_nt = FUNCTIONAL_FILTER.out.rejected_records
-    filter_report = FUNCTIONAL_FILTER.out.report
+    sample_tuples_rejected_nt = ch_ff_rejected
+    filter_report = ch_ff_report
 }

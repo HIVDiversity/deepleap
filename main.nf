@@ -43,32 +43,40 @@ workflow MAIN_WORKFLOW {
     ch_input_files
     ch_reference_file
     ch_refToAdd
-    preprocessing_type
+    trim_method
     add_ref_before_align
     add_ref_after_align
     multi_timepoint_alignment
+    skip_preprocess
+    skip_trim
+    skip_functional_filter
 
     main:
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // SEQUENCE TRIMMING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    PREPROCESS(
-        ch_input_files,
-        ch_reference_file,
-        preprocessing_type,
-        ch_refToAdd,
-        add_ref_before_align,
-    )
+    if (!skip_preprocess) {
+        PREPROCESS(
+            ch_input_files,
+            ch_reference_file,
+            trim_method,
+            ch_refToAdd,
+            add_ref_before_align,
+            skip_trim,
+            skip_functional_filter,
+        )
+        ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
+    }
+    else {
+        ch_pre_process_output = ch_input_files
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ALIGN
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ALIGN(
-        PREPROCESS.out.sample_tuples_aa
-    )
+    ALIGN(ch_pre_process_output)
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // POSTPROCESSING
@@ -84,12 +92,17 @@ workflow MAIN_WORKFLOW {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // PRODUCE REPORT
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    PIPELINE_REPORT(
-        ch_input_files.map { file, _meta -> file }.collect(),
-        POSTPROCESS.out.reverse_translated_tuples.map { file, _meta -> file }.collect(),
-        PREPROCESS.out.filter_report.map { file, _meta -> file }.collect(),
-    )
+    if (!skip_functional_filter) {
+        PIPELINE_REPORT(
+            ch_input_files.map { file, _meta -> file }.collect(),
+            POSTPROCESS.out.reverse_translated_tuples.map { file, _meta -> file }.collect(),
+            PREPROCESS.out.filter_report.map { file, _meta -> file }.collect(),
+        )
+        ch_pipeline_report = PIPELINE_REPORT.out
+    }
+    else {
+        ch_pipeline_report = channel.empty()
+    }
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,7 +124,7 @@ workflow MAIN_WORKFLOW {
     sample_tuples_aligned_aa = POSTPROCESS.out.sample_tuples_aligned_aa
     functional_filter_reports = PREPROCESS.out.filter_report
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
-    pipeline_report = PIPELINE_REPORT.out
+    pipeline_report = ch_pipeline_report
 }
 
 /*
@@ -149,8 +162,11 @@ workflow {
 
     sampleBaseDir = file(params.sample_base_dir)
     regionOfInterest = params.region_of_interest
-    preprocessing_type = params.preprocess
+    trim_method = params.trim_method
     multi_timepoint_alignment = params.multi_timepoint_alignment
+    skip_pre_process = params.skip_pre_process
+    skip_functional_filter = params.skip_functional_filter
+    skip_trim = params.skip_trim
 
     // This allow for flexibility - we can add some information to the metadata dictionary from the 
     // pipeline params
@@ -212,10 +228,13 @@ workflow {
         ch_input_files,
         ch_reference_file,
         ch_refToAdd,
-        preprocessing_type,
+        trim_method,
         add_ref_before_align,
         add_ref_after_align,
         multi_timepoint_alignment,
+        skip_pre_process,
+        skip_trim,
+        skip_functional_filter,
     )
 
     publish:

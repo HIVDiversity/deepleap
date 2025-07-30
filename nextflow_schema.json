@@ -58,12 +58,6 @@
           "enum": ["MAFFT", "MUSCLE", "PROBCONS", "TCOFFEE", "PRANK"],
           "fa_icon": "fas fa-align-center"
         },
-        "preprocess": {
-          "type": "string",
-          "default": "AGA",
-          "enum": ["AGA", "CUSTOM"],
-          "description": "The preprocessing strategy to use"
-        },
         "multi_timepoint_alignment": {
           "type": "boolean",
           "description": "This run should produce timepoint-stacked alignments"
@@ -328,6 +322,20 @@
     "prank_args": {
       "type": "string",
       "default": "+F"
+    },
+    "trim_method": {
+      "type": "string",
+      "default": "AGA",
+      "enum": ["AGA", "CUSTOM"]
+    },
+    "skip_pre_process": {
+      "type": "boolean"
+    },
+    "skip_trim": {
+      "type": "boolean"
+    },
+    "skip_functional_filter": {
+      "type": "boolean"
     }
   }
 }

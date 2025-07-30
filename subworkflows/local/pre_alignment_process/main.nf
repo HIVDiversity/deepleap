@@ -16,6 +16,7 @@ workflow PRE_ALIGNMENT_PROCESSING {
         nt_sample_tuple
     )
 
+
     COLLAPSE(
         TRANSLATE.out.sample_tuple,
         true,
