@@ -3,6 +3,7 @@ include { MUSCLE } from "../../modules/local/muscle/main"
 include { MUSCLE_SUPER_FIVE } from "../../modules/local/muscle/main"
 include { PROBCONS } from "../../modules/local/probcons/main"
 include { TCOFFEE } from "../../modules/local/tcoffee/main"
+include { REGRESSIVE_TCOFFEE } from "../../modules/local/tcoffee/main"
 include { PRANK } from "../../modules/local/prank/main"
 
 workflow ALIGN {
@@ -46,6 +47,13 @@ workflow ALIGN {
         )
 
         alignment_output_ch = TCOFFEE.out.sample_tuple
+    }
+    else if (aligner == "TCOFFEE_REGRESSIVE") {
+        REGRESSIVE_TCOFFEE(
+            sample_tuple
+        )
+
+        alignment_output_ch = REGRESSIVE_TCOFFEE.out.sample_tuple
     }
     else if (aligner == "PRANK") {
         PRANK(
