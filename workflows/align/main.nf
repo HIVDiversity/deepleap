@@ -8,15 +8,17 @@ include { PRANK } from "../../modules/local/prank/main"
 include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
 include { CLUSTALW } from "../../modules/local/clustal/w/main"
 include { VIRULIGN } from "../../modules/local/virulign/main"
+include { MACSE } from "../../modules/local/macse/main"
 
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META
     reference // value channel
+    aligner // value, str 
 
     main:
 
-    def aligner = params.aligner.toUpperCase()
+
 
     if (aligner == "MAFFT") {
         MAFFT(
@@ -87,6 +89,16 @@ workflow ALIGN {
         )
 
         alignment_output_ch = VIRULIGN.out.sample_tuple
+    }
+    else if (aligner == "MACSE") {
+        MACSE(
+            sample_tuple
+        )
+
+        alignment_output_ch = MACSE.out.sample_tuple
+    }
+    else {
+        alignment_output_ch = sample_tuple
     }
 
     emit:

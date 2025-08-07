@@ -50,44 +50,55 @@ workflow MAIN_WORKFLOW {
     skip_preprocess
     skip_trim
     skip_functional_filter
+    ch_aligner
 
     main:
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // SEQUENCE TRIMMING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (!skip_preprocess) {
-        PREPROCESS(
-            ch_input_files,
-            ch_reference_file,
-            trim_method,
-            ch_refToAdd,
-            add_ref_before_align,
-            skip_trim,
-            skip_functional_filter,
-        )
-        ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
-    }
-    else {
-        ch_pre_process_output = ch_input_files
-    }
+    PREPROCESS(
+        ch_input_files,
+        ch_reference_file,
+        trim_method,
+        ch_refToAdd,
+        add_ref_before_align,
+        skip_trim,
+        skip_functional_filter,
+    )
+    ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ALIGN
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ALIGN(ch_pre_process_output, ch_reference_file)
+    if (ch_aligner == "MACSE") {
+        ch_pre_process_output == PREPROCESS.out.sample_tuples_nt
+    }
+
+    ALIGN(ch_pre_process_output, ch_reference_file, ch_aligner)
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // POSTPROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    POSTPROCESS(
-        ALIGN.out.aligned_tuple,
-        PREPROCESS.out.namefile_tuples,
-        PREPROCESS.out.sample_tuples_nt,
-        add_ref_after_align,
-        ch_refToAdd,
-    )
+
+    if (ch_aligner != "MACSE") {
+        POSTPROCESS(
+            ALIGN.out.aligned_tuple,
+            PREPROCESS.out.namefile_tuples,
+            PREPROCESS.out.sample_tuples_nt,
+            add_ref_after_align,
+            ch_refToAdd,
+        )
+        ch_postprocess_nt = POSTPROCESS.out.reverse_translated_tuples
+        ch_postprocess_aa = POSTPROCESS.out.sample_tuples_aligned_aa
+    }
+    else {
+        ch_postprocess_nt = ALIGN.out.aligned_tuple
+        ch_postprocess_aa = ALIGN.out.aligned_tuple
+        ch_postprocess_aa.view()
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // PRODUCE REPORT
@@ -95,7 +106,7 @@ workflow MAIN_WORKFLOW {
     if (!skip_functional_filter) {
         PIPELINE_REPORT(
             ch_input_files.map { file, _meta -> file }.collect(),
-            POSTPROCESS.out.reverse_translated_tuples.map { file, _meta -> file }.collect(),
+            ch_postprocess_nt.map { file, _meta -> file }.collect(),
             PREPROCESS.out.filter_report.map { file, _meta -> file }.collect(),
         )
         ch_pipeline_report = PIPELINE_REPORT.out
@@ -120,8 +131,8 @@ workflow MAIN_WORKFLOW {
     }
 
     emit:
-    sample_tuples_aligned_nt = POSTPROCESS.out.reverse_translated_tuples
-    sample_tuples_aligned_aa = POSTPROCESS.out.sample_tuples_aligned_aa
+    sample_tuples_aligned_nt = ch_postprocess_nt
+    sample_tuples_aligned_aa = ch_postprocess_aa
     functional_filter_reports = PREPROCESS.out.filter_report
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
@@ -167,6 +178,8 @@ workflow {
     skip_pre_process = params.skip_pre_process
     skip_functional_filter = params.skip_functional_filter
     skip_trim = params.skip_trim
+    aligner = params.aligner.toUpperCase()
+    ch_aligner = channel.value(aligner)
 
     // This allow for flexibility - we can add some information to the metadata dictionary from the 
     // pipeline params
@@ -235,6 +248,7 @@ workflow {
         skip_pre_process,
         skip_trim,
         skip_functional_filter,
+        aligner,
     )
 
     publish:
