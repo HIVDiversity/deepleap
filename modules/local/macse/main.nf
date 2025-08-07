@@ -6,13 +6,13 @@ process MACSE {
     tuple file(sample), val(meta)
 
     output:
-    tuple path("*.fas"), val(meta), emit: sample_tuple
+    tuple path("*.fasta"), val(meta), emit: sample_tuple
 
     script:
 
     args = task.ext.args ?: ""
 
     """
-    pagan ${args} -s ${sample} -o ${meta.sample_id}_pagan.fasta -f=fasta
+    macse -prog alignSequences ${args} -seq ${sample} -out_AA ${meta.sample_id}_macseAA.fasta
     """
 }
