@@ -187,6 +187,32 @@
         "iqtree_args": {
           "type": "string",
           "description": "If building trees, what args to supply to IQTREE"
+        },
+        "tcoffee_regressive_args": {
+          "type": "string",
+          "default": "-nseq 100 -tree mbed -method clustalo_msa",
+          "description": "Parameters to pass to TCoffee Regressive."
+        },
+        "pagan_args": {
+          "type": "string",
+          "description": "Parameters to pass to PAGAN."
+        },
+        "clustalo_args": {
+          "type": "string",
+          "default": "--iterations 2",
+          "description": "Parameters to pass to Clustal Omega"
+        },
+        "probcons_consistency": {
+          "type": "integer",
+          "default": 2
+        },
+        "probcons_ir": {
+          "type": "integer",
+          "default": 100
+        },
+        "probcons_pre": {
+          "type": "integer",
+          "default": 0
         }
       }
     },
@@ -294,18 +320,6 @@
     }
   ],
   "properties": {
-    "probcons_consistency": {
-      "type": "integer",
-      "default": 2
-    },
-    "probcons_ir": {
-      "type": "integer",
-      "default": 100
-    },
-    "probcons_pre": {
-      "type": "integer",
-      "default": 0
-    },
     "add_reference_to_sequences": {
       "type": "string"
     },
