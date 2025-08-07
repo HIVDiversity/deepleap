@@ -63,7 +63,11 @@
             "TCOFFEE_REGRESSIVE",
             "PRANK",
             "CLUSTAL_OMEGA",
-            "CLUSTALW"
+            "CLUSTALW",
+            "VIRULIGN",
+            "MACSE",
+            "VIRALMSA"
+
           ],
           "fa_icon": "fas fa-align-center"
         },
