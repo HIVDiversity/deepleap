@@ -5,6 +5,8 @@ include { PROBCONS } from "../../modules/local/probcons/main"
 include { TCOFFEE } from "../../modules/local/tcoffee/main"
 include { REGRESSIVE_TCOFFEE } from "../../modules/local/tcoffee/main"
 include { PRANK } from "../../modules/local/prank/main"
+include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
+include { CLUSTALW } from "../../modules/local/clustal/w/main"
 
 workflow ALIGN {
     take:
@@ -61,6 +63,20 @@ workflow ALIGN {
         )
 
         alignment_output_ch = PRANK.out.sample_tuple
+    }
+    else if (aligner == "CLUSTAL_OMEGA") {
+        CLUSTAL_OMEGA(
+            sample_tuple
+        )
+
+        alignment_output_ch = CLUSTAL_OMEGA.out.sample_tuple
+    }
+    else if (aligner == "CLUSTALW") {
+        CLUSTALW(
+            sample_tuple
+        )
+
+        alignment_output_ch = CLUSTALW.out.sample_tuple
     }
 
     emit:
