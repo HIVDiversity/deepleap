@@ -7,10 +7,12 @@ include { REGRESSIVE_TCOFFEE } from "../../modules/local/tcoffee/main"
 include { PRANK } from "../../modules/local/prank/main"
 include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
 include { CLUSTALW } from "../../modules/local/clustal/w/main"
+include { VIRULIGN } from "../../modules/local/virulign/main"
 
 workflow ALIGN {
     take:
     sample_tuple // FASTA, META
+    reference // value channel
 
     main:
 
@@ -77,6 +79,14 @@ workflow ALIGN {
         )
 
         alignment_output_ch = CLUSTALW.out.sample_tuple
+    }
+    else if (aligner == "VIRULIGN") {
+        VIRULIGN(
+            sample_tuple,
+            reference,
+        )
+
+        alignment_output_ch = VIRULIGN.out.sample_tuple
     }
 
     emit:

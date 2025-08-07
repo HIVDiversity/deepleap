@@ -76,7 +76,7 @@ workflow MAIN_WORKFLOW {
     // ALIGN
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ALIGN(ch_pre_process_output)
+    ALIGN(ch_pre_process_output, ch_reference_file)
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // POSTPROCESSING
