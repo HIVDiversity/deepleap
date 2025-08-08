@@ -47,10 +47,10 @@ workflow MAIN_WORKFLOW {
     add_ref_before_align
     add_ref_after_align
     multi_timepoint_alignment
-    skip_preprocess
     skip_trim
     skip_functional_filter
     ch_aligner
+    is_nt_aligner
 
     main:
 
@@ -72,7 +72,7 @@ workflow MAIN_WORKFLOW {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ALIGN
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    is_nt_aligner = (ch_aligner == "MACSE" | ch_aligner == "VIRULIGN")
+
 
     if (is_nt_aligner) {
         ch_pre_process_output = PREPROCESS.out.sample_tuples_nt
@@ -183,6 +183,8 @@ workflow {
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
 
+    is_nt_aligner = (aligner == "MACSE" | aligner == "VIRULIGN" | ((aligner == "VIRALMSA") & params.viralmsa_nt_mode))
+
     // This allow for flexibility - we can add some information to the metadata dictionary from the 
     // pipeline params
     additionalMetadata = [
@@ -247,10 +249,10 @@ workflow {
         add_ref_before_align,
         add_ref_after_align,
         multi_timepoint_alignment,
-        skip_pre_process,
         skip_trim,
         skip_functional_filter,
         aligner,
+        is_nt_aligner,
     )
 
     publish:

@@ -9,6 +9,7 @@ include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
 include { CLUSTALW } from "../../modules/local/clustal/w/main"
 include { VIRULIGN } from "../../modules/local/virulign/main"
 include { MACSE } from "../../modules/local/macse/main"
+include { VIRALMSA } from "../../modules/local/viralmsa/main"
 
 workflow ALIGN {
     take:
@@ -96,6 +97,14 @@ workflow ALIGN {
         )
 
         alignment_output_ch = MACSE.out.sample_tuple
+    }
+    else if (aligner == "VIRALMSA") {
+        VIRALMSA(
+            sample_tuple,
+            reference,
+        )
+
+        alignment_output_ch = VIRALMSA.out.sample_tuple
     }
     else {
         alignment_output_ch = sample_tuple
