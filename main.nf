@@ -66,15 +66,19 @@ workflow MAIN_WORKFLOW {
         skip_trim,
         skip_functional_filter,
     )
-    ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
+
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ALIGN
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    is_nt_aligner = (ch_aligner == "MACSE" | ch_aligner == "VIRULIGN")
 
-    if (ch_aligner == "MACSE") {
-        ch_pre_process_output == PREPROCESS.out.sample_tuples_nt
+    if (is_nt_aligner) {
+        ch_pre_process_output = PREPROCESS.out.sample_tuples_nt
+    }
+    else {
+        ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
     }
 
     ALIGN(ch_pre_process_output, ch_reference_file, ch_aligner)
@@ -83,7 +87,7 @@ workflow MAIN_WORKFLOW {
     // POSTPROCESSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if (ch_aligner != "MACSE") {
+    if (!is_nt_aligner) {
         POSTPROCESS(
             ALIGN.out.aligned_tuple,
             PREPROCESS.out.namefile_tuples,
@@ -97,7 +101,6 @@ workflow MAIN_WORKFLOW {
     else {
         ch_postprocess_nt = ALIGN.out.aligned_tuple
         ch_postprocess_aa = ALIGN.out.aligned_tuple
-        ch_postprocess_aa.view()
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,7 +182,6 @@ workflow {
     skip_functional_filter = params.skip_functional_filter
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
-    ch_aligner = channel.value(aligner)
 
     // This allow for flexibility - we can add some information to the metadata dictionary from the 
     // pipeline params
@@ -235,7 +237,7 @@ workflow {
 
 
     ch_input_files = channel.fromList(sample_tuples)
-    ch_reference_file = channel.value(params.reference_file)
+    ch_reference_file = channel.value(file(params.reference_file))
 
     MAIN_WORKFLOW(
         ch_input_files,
