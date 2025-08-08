@@ -182,8 +182,9 @@ workflow {
     skip_functional_filter = params.skip_functional_filter
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
+    viralmsa_nt_mode = params.viralmsa_nt_mode
 
-    is_nt_aligner = (aligner == "MACSE" | aligner == "VIRULIGN" | ((aligner == "VIRALMSA") & params.viralmsa_nt_mode))
+    is_nt_aligner = (aligner == "MACSE" | aligner == "VIRULIGN" | ((aligner == "VIRALMSA") & viralmsa_nt_mode))
 
     // This allow for flexibility - we can add some information to the metadata dictionary from the 
     // pipeline params
