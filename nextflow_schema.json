@@ -264,13 +264,6 @@
           "description": "If running on an HPC with slurm, what queue to use",
           "fa_icon": "fas fa-store-alt"
         },
-        "log_dir": {
-          "type": "string",
-          "default": "./results/null/logs",
-          "description": "Where to copy pipeline logs to",
-          "hidden": true,
-          "fa_icon": "fas fa-sticky-note"
-        },
         "publish_dir_mode": {
           "type": "string",
           "default": "copy",
@@ -362,10 +355,6 @@
     },
     "skip_functional_filter": {
       "type": "boolean"
-    },
-    "outputDir": {
-      "type": "string",
-      "default": "./results/null"
     },
     "virulign_args": {
       "type": "string",
