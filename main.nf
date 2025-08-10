@@ -267,25 +267,25 @@ workflow {
 output {
     sample_tuples_aligned_nt {
         path { sample, meta ->
-            sample >> "${params.outdir}/${meta.sample_id}/${meta.sample_id}_aligned_nt.fasta"
+            sample >> "${meta.sample_id}/${meta.sample_id}_aligned_nt.fasta"
         }
     }
     sample_tuples_aligned_aa {
         path { sample, meta ->
-            sample >> "${params.outdir}/${meta.sample_id}/${meta.sample_id}_aligned_aa.fasta"
+            sample >> "${meta.sample_id}/${meta.sample_id}_aligned_aa.fasta"
         }
     }
     functional_filter_reports {
         path { sample, meta ->
-            sample >> "${params.outdir}/${meta.sample_id}/${meta.sample_id}_filter-report.csv"
+            sample >> "${meta.sample_id}/${meta.sample_id}_filter-report.csv"
         }
     }
     sample_tuples_prof_aln_nt {
         path { sample, meta ->
-            sample >> "${params.outdir}/${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
+            sample >> "${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
         }
     }
     pipeline_report {
-        path { "${params.outdir}/execution_report/" }
+        path { "execution_report/" }
     }
 }

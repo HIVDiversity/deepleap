@@ -10,12 +10,7 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": [
-        "samplesheet",
-        "sample_base_dir",
-        "reference_file",
-        "outdir"
-      ],
+      "required": ["samplesheet", "sample_base_dir", "reference_file"],
       "properties": {
         "samplesheet": {
           "type": "string",
@@ -35,13 +30,6 @@
           "fa_icon": "fas fa-file-import",
           "description": "The reference that contains the gene or CDS of interest. Note that this file type depends on the pre-processing mode selected.",
           "format": "file-path"
-        },
-        "outdir": {
-          "type": "string",
-          "format": "directory-path",
-          "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-          "fa_icon": "fas fa-folder-open",
-          "default": "./results/test"
         }
       }
     },
@@ -67,7 +55,6 @@
             "VIRULIGN",
             "MACSE",
             "VIRALMSA"
-
           ],
           "fa_icon": "fas fa-align-center"
         },
@@ -208,15 +195,14 @@
           "default": "--iterations 2",
           "description": "Parameters to pass to Clustal Omega"
         },
-        
-    "clustalw_args": {
-      "type": "string",
-      "default": "-CLUSTERING=NJ -ITERATION=NONE -NUMITER=3 -MATRIX=BLOSUM"
-    },
-    "viralmsa_args": {
+        "clustalw_args": {
+          "type": "string",
+          "default": "-CLUSTERING=NJ -ITERATION=NONE -NUMITER=3 -MATRIX=BLOSUM"
+        },
+        "viralmsa_args": {
           "type": "string",
           "description": "Parameters to pass to ViralMSA.",
-          "default":"-a minimap2 --omit_ref"
+          "default": "-a minimap2 --omit_ref"
         },
         "viralmsa_nt_mode": {
           "type": "boolean",
@@ -269,7 +255,6 @@
       "properties": {
         "run_name": {
           "type": "string",
-          "default": "test",
           "description": "A  human-readable identifier for this run",
           "fa_icon": "far fa-address-card"
         },
@@ -281,7 +266,7 @@
         },
         "log_dir": {
           "type": "string",
-          "default": "./results/test/logs",
+          "default": "./results/null/logs",
           "description": "Where to copy pipeline logs to",
           "hidden": true,
           "fa_icon": "fas fa-sticky-note"
@@ -377,6 +362,17 @@
     },
     "skip_functional_filter": {
       "type": "boolean"
+    },
+    "outputDir": {
+      "type": "string",
+      "default": "./results/null"
+    },
+    "virulign_args": {
+      "type": "string",
+      "default": "--maxFrameShifts 3 --exportReferenceSequence no"
+    },
+    "macse_args": {
+      "type": "string"
     }
   }
 }
