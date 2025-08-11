@@ -14,6 +14,6 @@ process VIRULIGN {
     args = task.ext.args ?: ""
 
     """
-    virulign ${reference} ${sample} ${args} --exportKind GlobalAlignment --exportAlphabet AminoAcids > ${meta.sample_id}_virulign.fasta
+    virulign ${reference} ${sample} ${args} --exportKind GlobalAlignment --exportAlphabet Nucleotides > ${meta.sample_id}_virulign.fasta
     """
 }
