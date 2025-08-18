@@ -13,6 +13,6 @@ process VIRALMSA {
     args = task.ext.args ?: ""
 
     """
-    ViralMSA.py --reference ${reference} --sequences ${sample} -e None --viralmsa_dir ./tmp --output ./viralmsa_output/ ${args}
+    ViralMSA.py --reference ${reference} --sequences ${sample} -e None --output ./viralmsa_output/ ${args}
     """
 }
