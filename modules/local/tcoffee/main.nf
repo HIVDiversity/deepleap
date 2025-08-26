@@ -35,7 +35,9 @@ process REGRESSIVE_TCOFFEE {
     args = task.ext.args ?: ""
 
     """
-    echo \$HOME
+    export TMP_4_TCOFFEE=${task.workdir}
+    export DIR_4_TCOFFEE=${task.workdir}
+    export CACHE_4_TCOFFEE=${task.workdir}
     t_coffee -reg ${args} -debug -thread 0 -seq ${sample} -outfile ${meta.sample_id}_tcoffeealn.fasta -outtree ${meta.sample_id}_tree.mbed
     """
 }
