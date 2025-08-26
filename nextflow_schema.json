@@ -54,7 +54,8 @@
             "CLUSTALW",
             "VIRULIGN",
             "MACSE",
-            "VIRALMSA"
+            "VIRALMSA",
+            "PAGAN"
           ],
           "fa_icon": "fas fa-align-center"
         },
