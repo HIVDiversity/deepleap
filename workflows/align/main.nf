@@ -5,6 +5,7 @@ include { PROBCONS } from "../../modules/local/probcons/main"
 include { TCOFFEE } from "../../modules/local/tcoffee/main"
 include { REGRESSIVE_TCOFFEE } from "../../modules/local/tcoffee/main"
 include { PRANK } from "../../modules/local/prank/main"
+include { PAGAN } from "../../modules/local/pagan/main"
 include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
 include { CLUSTALW } from "../../modules/local/clustal/w/main"
 include { VIRULIGN } from "../../modules/local/virulign/main"
@@ -68,6 +69,13 @@ workflow ALIGN {
         )
 
         alignment_output_ch = PRANK.out.sample_tuple
+    }
+    else if (aligner == "PAGAN") {
+        PAGAN(
+            sample_tuple
+        )
+
+        alignment_output_ch = PAGAN.out.sample_tuple
     }
     else if (aligner == "CLUSTAL_OMEGA") {
         CLUSTAL_OMEGA(
