@@ -14,7 +14,9 @@ process TCOFFEE {
     args = task.ext.args ?: ""
 
     """
-    echo \$HOME
+    export TMP_4_TCOFFEE=${task.workdir}
+    export DIR_4_TCOFFEE=${task.workdir}
+    export CACHE_4_TCOFFEE=${task.workdir}
     t_coffee ${args} -debug -thread 0 -seq ${sample} -output fasta_aln,score_html 
     """
 }
