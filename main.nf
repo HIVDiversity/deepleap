@@ -134,6 +134,7 @@ workflow MAIN_WORKFLOW {
     }
 
     emit:
+    trimmed_nt = ch_pre_process_output
     sample_tuples_aligned_nt = ch_postprocess_nt
     sample_tuples_aligned_aa = ch_postprocess_aa
     functional_filter_reports = PREPROCESS.out.filter_report
@@ -257,6 +258,7 @@ workflow {
     )
 
     publish:
+    trimmed_sample_tuples_nt = MAIN_WORKFLOW.out.trimmed_nt
     sample_tuples_aligned_nt = MAIN_WORKFLOW.out.sample_tuples_aligned_nt
     sample_tuples_aligned_aa = MAIN_WORKFLOW.out.sample_tuples_aligned_aa
     functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
@@ -283,6 +285,11 @@ output {
     sample_tuples_prof_aln_nt {
         path { sample, meta ->
             sample >> "${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
+        }
+    }
+    trimmed_sample_tuples_nt {
+        path { sample, meta ->
+            sample >> "${meta.sample_id}/${meta.sample_id}_trimmed_nt.fasta"
         }
     }
     pipeline_report {
