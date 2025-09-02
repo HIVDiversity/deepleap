@@ -85,3 +85,20 @@ process MAFFT_ADD_PROFILE {
     done
     """
 }
+
+
+process MAFFT_MERGE {
+    tag "${grouping_id}"
+    label "mafft"
+
+    input:
+    tuple val(grouping_id), path(alignment_file), path(merge_index)
+
+    output:
+    tuple path("*.fasta"), val(grouping_id), emit: merged_alignment
+
+    script:
+    """
+    mafft --merge ${merge_index} ${alignment_file} > ${grouping_id}_merge-aln.fasta 
+    """
+}
