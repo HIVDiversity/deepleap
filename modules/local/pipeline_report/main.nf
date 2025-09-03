@@ -1,4 +1,6 @@
 process PIPELINE_REPORT {
+    scratch true
+
     input:
     path pre_files, stageAs: "pre_files/*"
     path post_files, stageAs: "post_files/*"
@@ -9,14 +11,21 @@ process PIPELINE_REPORT {
 
     script:
 
+    json = groovy.json.JsonOutput.toJson(params).replace("\"", "\\\"")
+
     """
+    commitid="\$(cd ${workflow.projectDir}; git log --pretty=tformat:"%H" -n1 )"
+    tag="\$(cd ${workflow.projectDir}; git describe --tags --abbrev=0  )"
+    echo "${json}" > temp_params.json
+    
     generate-pipeline-report pre_files/ \\
      post_files/ \\
      func_filter_files/ \\
      ./output_dir/ \\
-     "first_timepoints_v3_001" \\
-     --pipeline-version "1.5.2" \\
-     --pipeline-commit-hash ${workflow.commitId} \\
-     --run-date ${workflow.start.format("yyyy-MM-dd'T'HH:mm:ss")}\\
+     "${params.run_name}" \\
+     --pipeline-version "\$tag" \\
+     --pipeline-commit-hash  \$commitid \\
+     --run-date ${workflow.start.format("yyyy-MM-dd'T'HH:mm:ss")} \\
+     --nextflow-params-fp temp_params.json
     """
 }

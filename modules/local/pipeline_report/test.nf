@@ -41,4 +41,6 @@ workflow {
         output_channel.map { file, _meta -> file }.collect(),
         report_channel.map { file, _meta -> file }.collect(),
     )
+
+    PIPELINE_REPORT.out.view()
 }
