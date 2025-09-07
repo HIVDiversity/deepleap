@@ -269,27 +269,27 @@ workflow {
 output {
     sample_tuples_aligned_nt {
         path { sample, meta ->
-            sample >> "${meta.sample_id}/${meta.sample_id}_aligned_nt.fasta"
+            sample >> "nucleotide_alignments/${meta.sample_id}_aligned_nt.fasta"
         }
     }
     sample_tuples_aligned_aa {
         path { sample, meta ->
-            sample >> "${meta.sample_id}/${meta.sample_id}_aligned_aa.fasta"
+            sample >> "amino_acid_alignments/${meta.sample_id}_aligned_aa.fasta"
         }
     }
     functional_filter_reports {
         path { sample, meta ->
-            sample >> "${meta.sample_id}/${meta.sample_id}_filter-report.csv"
+            sample >> "functional_filter/${meta.sample_id}_filter-report.csv"
         }
     }
     sample_tuples_prof_aln_nt {
         path { sample, meta ->
-            sample >> "${meta.sample_id}/${meta.sample_id}_profile-aligned_nt.fasta"
+            sample >> "profile_alignments/${meta.sample_id}_profile-aligned_nt.fasta"
         }
     }
     trimmed_sample_tuples_nt {
         path { sample, meta ->
-            sample >> "${meta.sample_id}/${meta.sample_id}_trimmed_nt.fasta"
+            sample >> "trimmed_sequences/${meta.sample_id}_trimmed_nt.fasta"
         }
     }
     pipeline_report {
