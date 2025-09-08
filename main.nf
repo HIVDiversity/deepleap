@@ -138,6 +138,7 @@ workflow MAIN_WORKFLOW {
     sample_tuples_aligned_nt = ch_postprocess_nt
     sample_tuples_aligned_aa = ch_postprocess_aa
     functional_filter_reports = PREPROCESS.out.filter_report
+    sample_tuples_rejected_nt = PREPROCESS.out.sample_tuples_rejected_nt
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
 }
@@ -262,6 +263,7 @@ workflow {
     sample_tuples_aligned_nt = MAIN_WORKFLOW.out.sample_tuples_aligned_nt
     sample_tuples_aligned_aa = MAIN_WORKFLOW.out.sample_tuples_aligned_aa
     functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
+    sample_tuples_rejected_nt = MAIN_WORKFLOW.out.sample_tuples_rejected_nt
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
     pipeline_report = MAIN_WORKFLOW.out.pipeline_report
 }
@@ -280,6 +282,11 @@ output {
     functional_filter_reports {
         path { sample, meta ->
             sample >> "functional_filter/${meta.sample_id}_filter-report.csv"
+        }
+    }
+    sample_tuples_rejected_nt {
+        path { sample, meta ->
+            sample >> "rejected_sequences/${meta.sample_id}_filter-rejected.fasta"
         }
     }
     sample_tuples_prof_aln_nt {
