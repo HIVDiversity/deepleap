@@ -1,0 +1,181 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: nextflow run -c nextflow.config main.nf --run_name testA --samplesheet /home/dlejeune/masters/nf-codon-alignment/sample_data/samplesheet.csv --reference_file /home/dlejeune/masters/nf-codon-alignment/sample_data/hxb2_env.fasta --aligner MAFFT -profile test,docker --region_of_interest envelope-polyprotein --sample_base_dir /home/dlejeune/masters/nf-codon-alignment/sample_data/input -output-dir ./testoutput/ --skip_trim
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /home/dlejeune/masters/nf-codon-alignment
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 80
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 24
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 100
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 2000
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: floating
+    title: Terminalizer
+    style:
+      border: 0px black solid
+      # boxShadow: none
+      # margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 12
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 612
+    content: "\e[33mNextflow 25.10.0 is available - Please consider updating your version to it\e(B\e[m\r\n"
+  - delay: 1696
+    content: "\r\n\e[1m\e[38;5;232m\e[48;5;43m N E X T F L O W \e[0;2m  ~  \e[mversion 25.04.2\e[m\r\n\e[K\r\n"
+  - delay: 2598
+    content: "Launching\e[35m `main.nf` \e[0;2m[\e[0;1;36msmall_williams\e[0;2m] DSL2 - \e[36mrevision: \e[0;36mc330214707\e[m\r\n\e[K\r\n"
+  - delay: 1174
+    content: "\e[33mWARN: WORKFLOW OUTPUT DEFINITION IS A PREVIEW FEATURE - SYNTAX AND FUNCTIONALITY CAN CHANGE IN FUTURE RELEASES\e[39m\e[K\r\n"
+  - delay: 2631
+    content: "\e[33mWARN: The following invalid input values have been detected:\r\n\r\n* --output_dir: ./results/testA\r\n\r\n\e[39m\e[K\r\n"
+  - delay: 141
+    content: "\e[1mInput/output options\e[0m\r\n  \e[0;34msamplesheet                          : \e[0;32m/home/dlejeune/masters/nf-codon-alignment/sample_data/samplesheet.csv\e[0m\r\n  \e[0;34msample_base_dir                      : \e[0;32m/home/dlejeune/masters/nf-codon-alignment/sample_data/input\e[0m\r\n  \e[0;34mreference_file                       : \e[0;32m/home/dlejeune/masters/nf-codon-alignment/sample_data/hxb2_env.fasta\e[0m\r\n\r\n\e[1mAGA Preprocess Arguments\e[0m\r\n  \e[0;34mregion_of_interest                   : \e[0;32menvelope-polyprotein\e[0m\r\n\r\n\e[1mMiscellaneous Process Arguments\e[0m\r\n  \e[0;34mviralmsa_nt_mode                     : \e[0;32mtrue\e[0m\r\n\r\n\e[1mCompute Options\e[0m\r\n  \e[0;34mmax_memory                           : \e[0;32m10.GB\e[0m\r\n  \e[0;34mmax_cpus                             : \e[0;32m8\e[0m\r\n  \e[0;34mmax_time                             : \e[0;32m1.h\e[0m\r\n\r\n\e[1mGeneric options\e[0m\r\n  \e[0;34mrun_name                             : \e[0;32mtestA\e[0m\r\n  \e[0;34mtrace_report_suffix                  : \e[0;32m2025-11-07_12-09-59\e[0m\r\n\r\n\e[1mOther parameters\e[0m\r\n  \e[0;34mskip_trim                            : \e[0;32mtrue\e[0m\r\n\r\n\e[1mCore Nextflow options\e[0m\r\n  \e[0;34mrunName                              : \e[0;32msmall_williams\e[0m\r\n  \e[0;34mcontainerEngine                      : \e[0;32mdocker\e[0m\r\n  \e[0;34mcontainer.withLabel:mafft            : \e[0;32mdlejeune/mafft:7.525\e[0m\r\n  \e[0;34mcontainer.AGA                        : \e[0;32mdlejeune/aga:0.2.1\e[0m\r\n  \e[0;34mcontainer.withLabel:muscle           : \e[0;32mdlejeune/muscle:5.1.0\e[0m\r\n  \e[0;34mcontainer.withLabel:pipeline_utils_rs: \e[0;32mdlejeune/pipeline-utils-rs:2.1.0\e[0m\r\n  \e[0;34mcontainer.FUNCTIONAL_FILTER          : \e[0;32mdlejeune/functional-filter:0.2.8\e[0m\r\n  \e[0;34mcontainer.IQTREE                     : \e[0;32mdlejeune/iqtree:2.0.7\e[0m\r\n  \e[0;34mcontainer.PROBCONS                   : \e[0;32mdlejeune/probcons:1.12\e[0m\r\n  \e[0;34mcontainer.TCOFFEE                    : \e[0;32mdlejeune/tcoffee:13.46.0\e[0m\r\n  \e[0;34mcontainer.REGRESSIVE_TCOFFEE         : \e[0;32mdlejeune/tcoffee:13.46.0\e[0m\r\n  \e[0;34mcontainer.PRANK                      : \e[0;32mdlejeune/prank:250331\e[0m\r\n  \e[0;34mcontainer.PAGAN                      : \e[0;32mdlejeune/pagan:20190829\e[0m\r\n  \e[0;34mcontainer.CLUSTAL_OMEGA              : \e[0;32mbiocontainers/clustal-omega:v1.2.1_cv5\e[0m\r\n  \e[0;34mcontainer.CLUSTALW                   : \e[0;32mdlejeune/clustalw:2.1\e[0m\r\n  \e[0;34mcontainer.withLabel:codonAligner     : \e[0;32mdlejeune/codon-aware-aligners:1.0.0\e[0m\r\n  \e[0;34mcontainer.VIRALMSA                   : \e[0;32mniemasd/viralmsa:latest\e[0m\r\n  \e[0;34mcontainer.PIPELINE_REPORT            : \e[0;32mdlejeune/pipeline-report:1.0.2\e[0m\r\n  \e[0;34mlaunchDir                            : \e[0;32m/home/dlejeune/masters/nf-codon-alignment\e[0m\r\n  \e[0;34mworkDir                              : \e[0;32m/home/dlejeune/masters/nf-codon-alignment/work\e[0m\r\n  \e[0;34mprojectDir                           : \e[0;32m/home/dlejeune/masters/nf-codon-alignment\e[0m\r\n  \e[0;34muserName                             : \e[0;32mdlejeune\e[0m\r\n  \e[0;34mprofile                              : \e[0;32mtest,docker\e[0m\r\n  \e[0;34mconfigFiles                          : \e[0;32m\e[0m\r\n\r\n!! Only displaying parameters that differ from the pipeline defaults !!\r\n-\e[2m----------------------------------------------------\e[0m-\r\n"
+  - delay: 364
+    content: "\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB -\e[K\r\n"
+  - delay: 201
+    content: "\e[2A\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…EPROCESS:\e[mFUNCTIONAL_FILTER -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…NMENT_PROCESSING:\e[mTRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…GNMENT_PROCESSING:\e[mCOLLAPSE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 200
+    content: "\e[10A\r\n\e[2mexecutor >  local (1)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…NMENT_PROCESSING:\e[mTRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…GNMENT_PROCESSING:\e[mCOLLAPSE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 11
+    content: '[sudo] password for dlejeune: '
+  - delay: 190
+    content: "\e[11A\r\n\e[2mexecutor >  local (2)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m9a/758e1e\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…NMENT_PROCESSING:\e[mTRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…GNMENT_PROCESSING:\e[mCOLLAPSE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 3699
+    content: "\r\n"
+  - delay: 2306
+    content: "\e[11A\r\n"
+  - delay: 8
+    content: "\e[2mexecutor >  local (4)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…GNMENT_PROCESSING:\e[mCOLLAPSE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 200
+    content: "\e[11A\r\n\e[2mexecutor >  local (4)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…GNMENT_PROCESSING:\e[mCOLLAPSE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 801
+    content: "\e[11A\r\n"
+  - delay: 8
+    content: "\e[2mexecutor >  local (6)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 201
+    content: "\e[11A\r\n\e[2mexecutor >  local (6)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:ALIGN:\e[mMAFFT      -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 801
+    content: "\e[11A\r\n"
+  - delay: 8
+    content: "\e[2mexecutor >  local (7)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m23/dff570\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 201
+    content: "\e[11A\r\n\e[2mexecutor >  local (8)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…ORKFLOW:POSTPROCESS:\e[mEXPAND -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 1803
+    content: "\e[11A\r\n"
+  - delay: 13
+    content: "\e[2mexecutor >  local (9)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m23/dff570\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 1 of 2\e[K\r\n\e[2m[\e[0;34mf0/4027c9\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 0 of 1\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 800
+    content: "\e[11A\r\n\e[2mexecutor >  local (10)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAI…TPROCESS:\e[mREVERSE_TRANSLATE -\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 400
+    content: "\e[11A\r\n"
+  - delay: 8
+    content: "\e[2mexecutor >  local (11)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34mf0/4027c9\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 1 of 2\e[K\r\n\e[2m[\e[0;34m3f/acbe22\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 0 of 1\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 600
+    content: "\e[11A\r\n\e[2mexecutor >  local (12)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m3d/d50d29\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 0 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 401
+    content: "\e[11A\r\n"
+  - delay: 8
+    content: "\e[2mexecutor >  local (12)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m3f/acbe22\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleA\e[2m)\e[m\e[2m |\e[m 1 of 2\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT  -\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 601
+    content: "\e[11A\r\n\e[2mexecutor >  local (13)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m3d/d50d29\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m19/81618c\e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT \e[2m |\e[m 0 of 1\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 19412
+    content: "\e[11A\r\n"
+  - delay: 10
+    content: "\e[2mexecutor >  local (13)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m3d/d50d29\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m19/81618c\e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT \e[2m |\e[m 1 of 1\e[32m ✔\e[m\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 601
+    content: "\e[11A\r\n\e[2mexecutor >  local (13)\e[m\e[K\r\n\e[2m[\e[0;34m-        \e[0;2m] \e[0;2m\e[mEXTRACT_SEQ_FROM_GB            -\e[K\r\n\e[2m[\e[0;34m7b/3ca8b5\e[0;2m] \e[0;2m\e[mMAI…UNCTIONAL_FILTER\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m5f/13ad2d\e[0;2m] \e[0;2mMAI…ESSING:\e[mTRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7f/685255\e[0;2m] \e[0;2mMAI…CESSING:\e[mCOLLAPSE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m7a/f4490e\e[0;2m] \e[0;2mMAI…FLOW:ALIGN:\e[mMAFFT\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m57/f8add5\e[0;2m] \e[0;2mMAI…STPROCESS:\e[mEXPAND\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m3d/d50d29\e[0;2m] \e[0;2m\e[mMAI…EVERSE_TRANSLATE\e[33;2m (\e[0;33msampleB\e[2m)\e[m\e[2m |\e[m 2 of 2\e[32m ✔\e[m\e[K\r\n\e[2m[\e[0;34m19/81618c\e[0;2m] \e[0;2mMAIN_WORKFLOW:\e[mPIPELINE_REPORT \e[2m |\e[m 1 of 1\e[32m ✔\e[m\e[K\r\n\e[33mWARN: There's no process matching config selector: IQTREE\e[39m\e[K\r\n"
+  - delay: 36
+    content: "\r\n"
