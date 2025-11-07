@@ -1,6 +1,6 @@
 
 # DeepLEAP
-![GitHub commit activity](https://img.shields.io/github/last-commit/HIVDiversity/deepleap?style=for-the-badge) ![GitHub License](https://img.shields.io/github/license/HIVDiversity/deepleap?style=for-the-badge) ![GitHub Tag](https://img.shields.io/github/v/tag/HIVDiversity/deepleap?sort=semver&style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/last-commit/HIVDiversity/deepleap?style=for-the-badge) ![GitHub License](https://img.shields.io/github/license/HIVDiversity/deepleap?style=for-the-badge) ![GitHub Tag](https://img.shields.io/github/v/tag/HIVDiversity/deepleap?sort=semver&style=for-the-badge) ![](https://img.shields.io/badge/Nextflow_25.04.2-0DC09D?logo=nextflow&labelColor=&logoColor=fff&style=for-the-badge)
 
 
 
