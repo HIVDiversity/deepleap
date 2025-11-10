@@ -1,4 +1,5 @@
 include { MAFFT } from "../../modules/local/mafft/main"
+include { MAFFT_SEED } from "../../modules/local/mafft/main"
 include { MUSCLE } from "../../modules/local/muscle/main"
 include { MUSCLE_SUPER_FIVE } from "../../modules/local/muscle/main"
 include { PROBCONS } from "../../modules/local/probcons/main"
@@ -28,6 +29,14 @@ workflow ALIGN {
         )
 
         alignment_output_ch = MAFFT.out.sample_tuple
+    }
+    else if (aligner == "MAFFT-SEED") {
+        MAFFT_SEED(
+            sample_tuple,
+            reference,
+        )
+
+        alignment_output_ch = MAFFT_SEED.out.sample_tuple
     }
     else if (aligner == "MUSCLE") {
         MUSCLE(

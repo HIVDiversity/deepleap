@@ -102,3 +102,23 @@ process MAFFT_MERGE {
     mafft --merge ${merge_index} ${alignment_file} > ${grouping_id}_merge-aln.fasta 
     """
 }
+
+
+process MAFFT_SEED {
+    // Aligns unaligned sequences to an existing reference sequence
+    tag "${meta.sample_id}"
+    label "mafft"
+
+    input:
+    tuple path(input_file), val(meta)
+    path reference_profile
+
+    output:
+    tuple path("*.mafft.fasta"), val(meta), emit: sample_tuple
+
+    script:
+
+    """
+    mafft --seed ${reference_profile} --thread -1 ${task.ext.args} ${input_file} > ${meta.sample_id}.mafft.fasta
+    """
+}

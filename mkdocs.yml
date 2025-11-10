@@ -1,0 +1,69 @@
+site_name: DeepLEAP Documentation
+site_url: http://127.0.0.1:8000
+
+repo_url: https://github.com/HIVDiversity/deepleap/
+repo_name: HIVDiversity/deepleap
+
+theme:
+  name: material
+  custom_dir: docs/assets
+  palette:
+    scheme: default
+    primary: blue
+    accent: light blue
+
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tabs
+    - navigation.sections
+    - navigation.footer
+    - header.autohide
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github 
+
+copyright: Copyright &copy; 2025 HIV Diversity Lab — University Of Cape Town
+
+plugins:
+  - search
+  - glightbox:
+       effect: zoom
+       slide_effect: slide
+       width: 100%
+       height: auto
+       zoomable: true
+       draggable: true
+       skip_classes:
+         - custom-skip-class-name
+       auto_themed: false
+       auto_caption: false
+       caption_position: bottom
+       background: white
+       shadow: true
+       manual: false
+
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+
+
+# extra:
+#   version:
+#     provider: mike
+
+
+watch:
+  - docs
+
