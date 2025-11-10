@@ -51,6 +51,7 @@ workflow MAIN_WORKFLOW {
     skip_functional_filter
     ch_aligner
     is_nt_aligner
+    ch_panel_alignment
 
     main:
 
@@ -81,7 +82,13 @@ workflow MAIN_WORKFLOW {
         ch_pre_process_output = PREPROCESS.out.sample_tuples_aa
     }
 
-    ALIGN(ch_pre_process_output, ch_reference_file, ch_aligner)
+    ch_align_reference = ch_reference_file
+
+    if (ch_aligner == "MAFFT-SEED") {
+        ch_align_reference = ch_panel_alignment
+    }
+
+    ALIGN(ch_pre_process_output, ch_align_reference, ch_aligner)
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // POSTPROCESSING
@@ -149,6 +156,7 @@ workflow MAIN_WORKFLOW {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 workflow {
+
     main:
     // Print parameter summary log to screen before running
     // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
@@ -244,6 +252,13 @@ workflow {
     ch_input_files = channel.fromList(sample_tuples)
     ch_reference_file = channel.value(file(params.reference_file))
 
+    if (params.panel_alignment == null && (aligner == "MAFFT-SEED")) {
+        error("Using a panel alignment requires a reference panel to be provided. Exiting.")
+    }
+    else {
+        ch_panel_alignment = channel.value(file(params.panel_alignment))
+    }
+
     MAIN_WORKFLOW(
         ch_input_files,
         ch_reference_file,
@@ -256,6 +271,7 @@ workflow {
         skip_functional_filter,
         aligner,
         is_nt_aligner,
+        ch_panel_alignment,
     )
 
     publish:

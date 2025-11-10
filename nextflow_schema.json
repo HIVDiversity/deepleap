@@ -45,6 +45,7 @@
           "description": "What aligner to use for the main alignment",
           "enum": [
             "MAFFT",
+            "MAFFT-SEED",
             "MUSCLE",
             "PROBCONS",
             "TCOFFEE",
