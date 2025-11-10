@@ -11,3 +11,4 @@ testing*
 *.tar.gz
 .env
 log/
+.cache

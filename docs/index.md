@@ -1,17 +1,16 @@
-# Welcome to MkDocs
+---
+hide:
+  - navigation
+  - toc
+---
+<div style="text-align: center; margin-bottom: 2em; font-size: x-large;">
+<h1 style="margin: 0em">DeepLEAP</h1>
+<p style="margin: 0em">Deep-sequence Long-read Envelope Alignment Pipeline</p>
+</div>
+---
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
-
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+DeepLEAP is a Nextflow pipeline designed to perform codon-aware alignments of long-read sequencing data. Although initially designed for HIV envelope sequences, it can be adapted for other coding sequences.
+<figure markdown="1">
+![pipeline diagram](assets/implementation-new_metro_diagram.svg)
+<figcaption>Execution diagram of the DeepLEAP pipeline.</figcaption>
+</figure>
