@@ -1,5 +1,6 @@
 include { TRIM_AGA } from "../../subworkflows/local/trim_aga/main"
 include { TRIM_CUSTOM } from "../../subworkflows/local/trim_custom/main"
+include { TRIM_MINIMAP } from "../../subworkflows/local/trim_minimap/main"
 include { PRE_ALIGNMENT_PROCESSING } from "../../subworkflows/local/pre_alignment_process/main"
 include { FUNCTIONAL_FILTER } from "../../modules/local/functional_filter/main"
 workflow PREPROCESS {
@@ -11,6 +12,7 @@ workflow PREPROCESS {
     add_ref_before_align
     skip_trim
     skip_functional_filter
+    trim_coords
 
     main:
     if (!skip_trim) {
@@ -30,6 +32,14 @@ workflow PREPROCESS {
             )
 
             ch_preprocessed_files_nt = TRIM_CUSTOM.out.preprocessed_nt_seqs
+        }
+        else if (trim_method == "MINIMAP2") {
+            TRIM_MINIMAP(
+                ch_input_files,
+                ch_reference_file,
+                trim_coords,
+            )
+            ch_preprocessed_files_nt = TRIM_MINIMAP.out.preprocessed_nt_seqs
         }
         else {
             println("Preprocessing type not reconized.")
