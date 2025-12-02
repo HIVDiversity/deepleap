@@ -7,7 +7,7 @@ process MINIMAP_TWO {
     path ref_file
 
     output:
-    tuple path("*.fasta"), val(meta), emit: trimmed_tuple
+    tuple path("*.fasta"), val(meta), emit: mapped_tuple
 
     script:
 
