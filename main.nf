@@ -52,6 +52,7 @@ workflow MAIN_WORKFLOW {
     ch_aligner
     is_nt_aligner
     ch_panel_alignment
+    trim_coords
 
     main:
 
@@ -66,6 +67,7 @@ workflow MAIN_WORKFLOW {
         add_ref_before_align,
         skip_trim,
         skip_functional_filter,
+        trim_coords,
     )
 
 
@@ -168,13 +170,11 @@ workflow {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // TODO: I don't think this is necessary since we have params checking from the validation pipeline
     if (!params.region_of_interest) {
-        println("No regions of interest provided. Exiting.")
-        exit(1)
+        error("No regions of interest provided. Exiting.")
     }
 
     if (!params.sample_base_dir) {
-        println("No sample base directory specified. Exiting")
-        exit(1)
+        error("No sample base directory specified. Exiting")
     }
 
     regionShorthand = params.region_shorthand
@@ -186,7 +186,18 @@ workflow {
 
     sampleBaseDir = file(params.sample_base_dir)
     regionOfInterest = params.region_of_interest
+
     trim_method = params.trim_method
+    trim_coords = channel.empty()
+    if (trim_method == "MINIMAP2") {
+        if (!params.minimap_trim_from | !params.minimap_trim_to) {
+            error("Both trimming coordinates must be specified if trimming with minimap2.")
+        }
+        else {
+            trim_coords = tuple(params.minimap_trim_from, params.minimap_trim_to)
+        }
+    }
+
     multi_timepoint_alignment = params.multi_timepoint_alignment
     skip_pre_process = params.skip_pre_process
     skip_functional_filter = params.skip_functional_filter
@@ -272,6 +283,7 @@ workflow {
         aligner,
         is_nt_aligner,
         ch_panel_alignment,
+        trim_coords,
     )
 
     publish:

@@ -39,6 +39,11 @@
       "description": "Paramters that change the operating mode of the pipeline",
       "default": "",
       "properties": {
+        "trim_method": {
+          "type": "string",
+          "default": "MINIMAP2",
+          "enum": ["MINIMAP2", "AGA", "CUSTOM"]
+        },
         "aligner": {
           "type": "string",
           "default": "MAFFT",
@@ -60,9 +65,24 @@
           ],
           "fa_icon": "fas fa-align-center"
         },
+        "add_reference_to_sequences": {
+          "type": "string"
+        },
         "multi_timepoint_alignment": {
           "type": "boolean",
           "description": "This run should produce timepoint-stacked alignments"
+        },
+        "skip_pre_process": {
+          "type": "boolean"
+        },
+        "skip_functional_filter": {
+          "type": "boolean"
+        },
+        "reference_to_add": {
+          "type": "string"
+        },
+        "skip_trim": {
+          "type": "boolean"
         }
       },
       "fa_icon": "fas fa-code-branch"
@@ -127,6 +147,21 @@
         }
       },
       "required": ["region_of_interest"]
+    },
+    "new_group_1": {
+      "title": "New Group 1",
+      "type": "object",
+      "description": "Arguments specifying how minimap2 must trim sequences",
+      "default": "",
+      "properties": {
+        "minimap_trim_from": {
+          "type": "integer"
+        },
+        "minimap_trim_to": {
+          "type": "integer"
+        }
+      },
+      "fa_icon": "fas fa-map-marked-alt"
     },
     "filtering_options": {
       "title": "Filtering Options",
@@ -208,7 +243,8 @@
         },
         "viralmsa_nt_mode": {
           "type": "boolean",
-          "description": "Give ViralMSA nucleotide sequences rather than amino acid sequences. Ensure reference is in correct format."
+          "description": "Give ViralMSA nucleotide sequences rather than amino acid sequences. Ensure reference is in correct format.",
+          "default": true
         },
         "probcons_consistency": {
           "type": "integer",
@@ -307,6 +343,9 @@
       "$ref": "#/$defs/aga_preprocess_arguments"
     },
     {
+      "$ref": "#/$defs/new_group_1"
+    },
+    {
       "$ref": "#/$defs/filtering_options"
     },
     {
@@ -320,12 +359,6 @@
     }
   ],
   "properties": {
-    "add_reference_to_sequences": {
-      "type": "string"
-    },
-    "reference_to_add": {
-      "type": "string"
-    },
     "use_kmer_trimming": {
       "type": "boolean"
     },
@@ -344,25 +377,18 @@
       "type": "string",
       "default": "+F"
     },
-    "trim_method": {
-      "type": "string",
-      "default": "AGA",
-      "enum": ["AGA", "CUSTOM"]
-    },
-    "skip_pre_process": {
-      "type": "boolean"
-    },
-    "skip_trim": {
-      "type": "boolean"
-    },
-    "skip_functional_filter": {
-      "type": "boolean"
-    },
     "virulign_args": {
       "type": "string",
       "default": "--maxFrameShifts 3 --exportReferenceSequence no"
     },
     "macse_args": {
+      "type": "string"
+    },
+    "output_dir": {
+      "type": "string",
+      "default": "./results/null"
+    },
+    "panel_alignment": {
       "type": "string"
     }
   }
