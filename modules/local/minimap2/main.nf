@@ -12,6 +12,6 @@ process MINIMAP_TWO {
     script:
 
     """
-    minimap2 -a ${ref_file} > ${meta.sample_id}_mapped.fasta
+    minimap2 -a ${ref_file} ${sample} > ${meta.sample_id}_mapped.fasta
     """
 }
