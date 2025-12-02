@@ -263,11 +263,14 @@ workflow {
     ch_input_files = channel.fromList(sample_tuples)
     ch_reference_file = channel.value(file(params.reference_file))
 
-    if (params.panel_alignment == null && (aligner == "MAFFT-SEED")) {
-        error("Using a panel alignment requires a reference panel to be provided. Exiting.")
+    if (aligner == "MAFFT-SEED") {
+        if (params.panel_alignment == null) {
+            error("Using a panel alignment requires a reference panel to be provided. Exiting.")
+        }
+        ch_panel_alignment = channel.value(file(params.panel_alignment))
     }
     else {
-        ch_panel_alignment = channel.value(file(params.panel_alignment))
+        ch_panel_alignment = channel.empty()
     }
 
     MAIN_WORKFLOW(
