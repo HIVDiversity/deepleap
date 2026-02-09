@@ -1,0 +1,14 @@
+[project]
+name = "frontend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["attrs>=25.4.0"]
+
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb", "src"]
+site-package-path = [".venv/lib/python3.14/site-packages"]
+python-platform = "linux"
+python-version = "3.14"
+python-interpreter-path = "venv/bin/python3"
