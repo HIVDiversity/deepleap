@@ -1,10 +1,17 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
 [project]
 name = "frontend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["attrs>=25.4.0"]
+dependencies = [
+    "attrs>=25.4.0",
+    "nicegui>=3.7.1",
+]
 
 [tool.pyrefly]
 project-includes = ["**/*.py*", "**/*.ipynb", "src"]

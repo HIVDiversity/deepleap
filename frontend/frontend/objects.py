@@ -1,6 +1,7 @@
-from attrs import define
-from typing import Optional, List
 from enum import Enum
+from typing import List, Optional
+
+from attrs import define
 
 
 @define
@@ -11,10 +12,12 @@ class Group:
 
 
 class ParamType(Enum):
-    string = 0
+    STRING = 0
     BOOL = 1
     INT = 2
     SELECT = 3
+    FILE = 4
+    FLOAT = 5
 
 
 @define
@@ -30,8 +33,14 @@ class IntParamType:
 
 
 @define
+class FloatParamType:
+    max_val: Optional[float]
+    min_val: Optional[float]
+
+
+@define
 class SelectParamType:
-    items = List[str]
+    items: List[str]
 
 
 @define
@@ -40,19 +49,30 @@ class FileParamType:
     check_exists: bool
 
 
-type ParamConfigType = StringParamType | IntParamType | SelectParamType | FileParamType
-type AnyParamType = str | int | bool
+@define
+class BoolParamType:
+    pass
+
+
+type ParamConfigType = (
+    StringParamType
+    | IntParamType
+    | SelectParamType
+    | FileParamType
+    | FloatParamType
+    | BoolParamType
+)
+type AnyParamType = str | int | bool | float
 
 
 @define
 class Parameter:
     name: str
-    description: str
+    description: Optional[str]
     icon: Optional[str]
     value: Optional[AnyParamType]
     required: bool
-    param_type: ParamType
-    param_config: ParamConfigType
+    param_type: ParamConfigType
     group: Group
 
 
