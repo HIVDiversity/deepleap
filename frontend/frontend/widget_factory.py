@@ -31,20 +31,23 @@ def _form_label_help(
             ui.markdown(help).classes("text-gray-600 gap-0")
 
 
-def create_groups():
+def create_groups(form_values, upload_root):
+
     with ui.card_section().classes("w-full"):
-        skip_trim, skip_preprocess, skip_functional_filter = create_general_group()
+        skip_trim, skip_preprocess, skip_functional_filter = create_general_group(
+            form_values
+        )
 
-        create_input_output_group()
+        create_input_output_group(form_values, upload_root)
 
-        create_trimming_group(skip_trim)
+        create_trimming_group(form_values, skip_trim)
 
-        create_filtering_group()
+        create_filtering_group(form_values)
 
-        create_aligner_group()
+        create_aligner_group(form_values)
 
 
-def create_input_output_group():
+def create_input_output_group(form_values: dict, upload_root: Path):
     """Creates the 'Input/output options' widget group."""
     with ui.expansion("Inputs", icon="terminal", value=False).classes(expand_style):
         ui.label("Provide samplesheet and input files.").classes("text-base")
@@ -70,18 +73,37 @@ def create_input_output_group():
             with ui.column():
                 ui.upload(
                     label="Upload Samplesheet *",
-                    on_upload=lambda e: print(e),
-                ).classes("w-full").props("color=deep-purple")
+                    auto_upload=True,
+                    on_upload=lambda f: upload_file(
+                        f, upload_root, form_values, "samplesheet"
+                    ),
+                    on_rejected=lambda: ui.notify("Invalid file."),
+                ).classes("w-full").props('color=deep-purple accept=".csv"')
 
             with ui.column():
                 ui.upload(
-                    label="Files *", on_upload=lambda e: print(e)
-                ).classes().classes("w-full").props("color=brown")
+                    label="Files *",
+                    multiple=True,
+                    auto_upload=True,
+                    on_multi_upload=lambda fs: upload_files(
+                        fs.files, upload_root, form_values, "seqs"
+                    ),
+                    on_rejected=lambda: ui.notify(
+                        "One or more invalid filetypes provided"
+                    ),
+                ).classes().classes("w-full").props(
+                    'color=brown accept=".fasta, .fa, .fa"'
+                )
 
             with ui.column():
                 ui.upload(
-                    label="Reference Seq *", on_upload=lambda e: print(e)
-                ).classes("w-full").props("color=teal")
+                    label="Reference Seq *",
+                    on_upload=lambda f: upload_file(
+                        f, upload_root, form_values, "ref_seq"
+                    ),
+                    auto_upload=True,
+                    on_rejected=lambda: ui.notify("Invalid filetype provided"),
+                ).classes("w-full").props('color=teal accept=".fasta, .fa, .fa"')
 
         with ui.row():
             _form_label_help(
@@ -90,15 +112,36 @@ def create_input_output_group():
             )
 
             ui.upload(
-                label="Additional Reference Seq", on_upload=lambda e: print(e)
-            ).classes("w-full").props("color=grey")
+                label="Additional Reference Seq",
+                auto_upload=True,
+                on_upload=lambda f: upload_file(
+                    f, upload_root, form_values, "additional_ref"
+                ),
+            ).classes("w-full").props('color=grey accept=".fasta, .fa, .fa"')
 
 
-def create_general_group():
+async def upload_files(files, upload_root, form_values, key):
+    form_values[key] = []
+    for file in files:
+        upload_loc = upload_root / f"seqs/{file.name}"
+        print(f"saving to {upload_loc}")
+        await file.save(upload_loc)
+        form_values[key].append(upload_loc)
+
+
+async def upload_file(file, upload_root, form_values, key):
+    upload_location = str(upload_root / file.file.name)
+    await file.file.save(upload_location)
+    form_values[key] = upload_location
+
+
+def create_general_group(form_values):
     with ui.expansion("General", icon="settings", value=True).classes(expand_style):
         with ui.row().classes("w-full p-2"):
             _form_label_help("Run Name", None)
-            ui.input(label="A short unique name for this run.").classes("w-full -mt-2")
+            ui.input(label="A short unique name for this run.").classes(
+                "w-full -mt-2"
+            ).bind_value_to(form_values, "run_name")
 
         with ui.row().classes("w-full p-2"):
             _form_label_help(
@@ -106,23 +149,29 @@ def create_general_group():
             )
             with ui.row():
                 with ui.column():
-                    skip_trim = ui.switch("Skip Trimming", value=False).classes(
-                        "w-full"
+                    skip_trim = (
+                        ui.switch("Skip Trimming", value=False)
+                        .classes("w-full")
+                        .bind_value_to(form_values, "skip_trim")
                     )
 
                 with ui.column():
-                    skip_preprocess = ui.switch(
-                        "Skip Pre-Processing", value=False
-                    ).classes("w-full")
+                    skip_preprocess = (
+                        ui.switch("Skip Pre-Processing", value=False)
+                        .classes("w-full")
+                        .bind_value_to(form_values, "skip_preprocess")
+                    )
                 with ui.column():
-                    skip_functional_filter = ui.switch(
-                        "Skip Functional Filter", value=False
-                    ).classes("w-full")
+                    skip_functional_filter = (
+                        ui.switch("Skip Functional Filter", value=False)
+                        .classes("w-full")
+                        .bind_value_to(form_values, "skip_functional_filter")
+                    )
 
         return skip_trim, skip_preprocess, skip_functional_filter
 
 
-def create_trimming_group(skip_trim):
+def create_trimming_group(form_values, skip_trim):
     with (
         ui.expansion("Trimming", icon="content_cut", value=False)
         .bind_visibility_from(skip_trim, "value", backward=lambda x: not x)
@@ -134,11 +183,15 @@ def create_trimming_group(skip_trim):
                 "Choose the method that trims the region of interest.",
             )
 
-            preprocess_select = ui.select(
-                options=["MINIMAP2", "AGA"],
-                label="Trim method",
-                value="MINIMAP2",
-            ).classes("w-full")
+            preprocess_select = (
+                ui.select(
+                    options=["MINIMAP2", "AGA"],
+                    label="Trim method",
+                    value="MINIMAP2",
+                )
+                .classes("w-full")
+                .bind_value_to(form_values, "preprocess_method")
+            )
 
         with ui.row().classes("w-full"):
             with (
@@ -157,7 +210,12 @@ def create_trimming_group(skip_trim):
                         "text-m font-bold",
                     )
 
-                    region_name = ui.input().classes("w-full").props("outlined rounded")
+                    region_name = (
+                        ui.input()
+                        .classes("w-full")
+                        .props("outlined rounded")
+                        .bind_value_to(form_values, "aga_params")
+                    ).bind_value_to(form_values, "region_name")
 
                 with ui.grid(columns=2).classes("items-center"):
                     _form_label_help(
@@ -170,7 +228,7 @@ def create_trimming_group(skip_trim):
                         "outlined rounded"
                     ).bind_value_from(
                         region_name, "value", backward=lambda x: x[:3].upper()
-                    )
+                    ).bind_value_to(form_values, "region_name_shorthand")
 
         with ui.row().classes("w-full"):
             with (
@@ -188,15 +246,15 @@ def create_trimming_group(skip_trim):
                     "Specify the start and end coordinates on the reference sequence that define your region of interest. Both values are inclusive."
                 )
                 with ui.grid(columns=2):
-                    ui.number(label="RoI Start*", step=1, precision=0, min=1).classes(
+                    ui.number(label="RoI Start*", step=1, precision=0, min=0).classes(
                         "w-full"
-                    )
-                    ui.number(label="RoI End*", step=1, precision=0, max=1).classes(
+                    ).bind_value_to(form_values, "minimap_roi_start")
+                    ui.number(label="RoI End*", step=1, precision=0, min=0).classes(
                         "w-full"
-                    )
+                    ).bind_value_to(form_values, "minimap_roi_end")
 
 
-def create_aligner_group():
+def create_aligner_group(form_values):
     with ui.expansion("Alignment", icon="subject", value=False).classes(expand_style):
         with ui.column():
             _form_label_help(
@@ -225,7 +283,7 @@ def create_aligner_group():
                 )
                 .classes("w-full")
                 .props("rounded outlined")
-            )
+            ).bind_value_to(form_values, "aligner")
         with ui.expansion(
             "Advanced Aligner Params",
             icon="tune",
@@ -243,84 +301,101 @@ def create_aligner_group():
                     value="--localpair --maxiterate 1000",
                 ).classes("w-full").tooltip(
                     "Arguments to supply to MAFFT if using it as the aligner."
+                ).bind_value_to(form_values, "aligner_params")
+
+            with ui.row():
+                _form_label_help(
+                    "Add Reference to Alignment",
+                    "Choose how the provided reference is added to the alignment.",
+                )
+
+                ui.select(
+                    options={
+                        "none": "Do not add the reference to the alignment",
+                        "BEFORE": "Add reference BEFORE alignment",
+                        "AFTER": "Add reference AFTER alignment",
+                    },
+                    value="none",
+                ).classes("w-full").props("rounded outlined").bind_value_to(
+                    form_values, "add_ref_to_seqs"
                 )
 
     pass
 
 
-def create_custom_preprocess_group():
-    """Creates the 'Custom Preprocess Arguments' widget group."""
+# def create_custom_preprocess_group(form_values):
+#     """Creates the 'Custom Preprocess Arguments' widget group."""
 
-    with ui.expansion(
-        "Custom Preprocess Arguments", icon="fas fa-frog", value=True
-    ).classes("w-full"):
-        ui.label("Arguments for the CUSTOM preprocessing mode.").classes(
-            "text-sm text-gray-600 ml-1"
-        )
-        ui.select(
-            options=["single-match", "double-match"],
-            label="Prs ts operating mode",
-            value="double-match",
-        ).classes("w-full").tooltip(
-            "What mode to use for trimming the sequences to the trimmed consensus."
-        )
-        ui.select(
-            options=["local", "custom", "local_custom"],
-            label="Trim consensus alignment mode",
-            value="local",
-        ).classes("w-full").tooltip(
-            "What mode to use for aligning the consensus to the reference."
-        )
-        ui.number(
-            label="Trim consensus gap open penalty",
-            value=5,
-            step=1,
-            precision=0,
-        ).classes("w-full").tooltip(
-            "The gap opening penalty to use for trimming to the consensus."
-        )
-        ui.number(
-            label="Trim consensus gap extension penalty",
-            value=1,
-            step=1,
-            precision=0,
-        ).classes("w-full").tooltip(
-            "The gap extension penalty to use for trimming the consensus."
-        )
-
-
-def create_aga_preprocess_group():
-    # """Creates the 'AGA Preprocess Arguments' widget group."""
-    # with ui.expansion(
-    #     "AGA Preprocess Arguments", icon="fas fa-cat", value=True
-    # ).classes("w-full"):
-    #     ui.label("Arguments for the AGA preprocessing strategy.").classes(
-    #         "text-sm text-gray-600 ml-1"
-    #     )
-    #     ui.input(label="Region of interest *").classes("w-full").tooltip(
-    #         "The name of the CDS or protein that is to be extracted from the supplied files."
-    #     )
-    #     ui.input(label="Region shorthand").classes("w-full").tooltip(
-    #         "What to shorten the region name to."
-    #     )
-    #
-    pass
+#     with ui.expansion(
+#         "Custom Preprocess Arguments", icon="fas fa-frog", value=True
+#     ).classes("w-full"):
+#         ui.label("Arguments for the CUSTOM preprocessing mode.").classes(
+#             "text-sm text-gray-600 ml-1"
+#         )
+#         ui.select(
+#             options=["single-match", "double-match"],
+#             label="Prs ts operating mode",
+#             value="double-match",
+#         ).classes("w-full").tooltip(
+#             "What mode to use for trimming the sequences to the trimmed consensus."
+#         )
+#         ui.select(
+#             options=["local", "custom", "local_custom"],
+#             label="Trim consensus alignment mode",
+#             value="local",
+#         ).classes("w-full").tooltip(
+#             "What mode to use for aligning the consensus to the reference."
+#         )
+#         ui.number(
+#             label="Trim consensus gap open penalty",
+#             value=5,
+#             step=1,
+#             precision=0,
+#         ).classes("w-full").tooltip(
+#             "The gap opening penalty to use for trimming to the consensus."
+#         )
+#         ui.number(
+#             label="Trim consensus gap extension penalty",
+#             value=1,
+#             step=1,
+#             precision=0,
+#         ).classes("w-full").tooltip(
+#             "The gap extension penalty to use for trimming the consensus."
+#         )
 
 
-def create_minimap_trim_group():
-    # """Creates the 'Minimap2 Trim Arguments' widget group."""
-    # with ui.expansion(
-    #     "Minimap2 Trim Arguments", icon="fas fa-map-marked-alt", value=True
-    # ).classes("w-full"):
-    #     ui.label("Arguments specifying how minimap2 must trim sequences.").classes(
-    #         "text-sm text-gray-600 ml-1"
-    #     )
-    #     ui.number(label="Minimap trim from", step=1, precision=0).classes("w-full")
-    #     ui.number(label="Minimap trim to", step=1, precision=0).classes("w-full")
-    pass
+# def create_aga_preprocess_group():
+#     # """Creates the 'AGA Preprocess Arguments' widget group."""
+#     # with ui.expansion(
+#     #     "AGA Preprocess Arguments", icon="fas fa-cat", value=True
+#     # ).classes("w-full"):
+#     #     ui.label("Arguments for the AGA preprocessing strategy.").classes(
+#     #         "text-sm text-gray-600 ml-1"
+#     #     )
+#     #     ui.input(label="Region of interest *").classes("w-full").tooltip(
+#     #         "The name of the CDS or protein that is to be extracted from the supplied files."
+#     #     )
+#     #     ui.input(label="Region shorthand").classes("w-full").tooltip(
+#     #         "What to shorten the region name to."
+#     #     )
+#     #
+#     pass
 
 
-def create_filtering_group():
+# def create_minimap_trim_group():
+#     # """Creates the 'Minimap2 Trim Arguments' widget group."""
+#     # with ui.expansion(
+#     #     "Minimap2 Trim Arguments", icon="fas fa-map-marked-alt", value=True
+#     # ).classes("w-full"):
+#     #     ui.label("Arguments specifying how minimap2 must trim sequences.").classes(
+#     #         "text-sm text-gray-600 ml-1"
+#     #     )
+#     #     ui.number(label="Minimap trim from", step=1, precision=0).classes("w-full")
+#     #     ui.number(label="Minimap trim to", step=1, precision=0).classes("w-full")
+#     pass
+
+
+def create_filtering_group(form_values):
     """Creates the 'Filtering Options' widget group."""
     with ui.expansion("Filtering Options", icon="filter_alt", value=False).classes(
         expand_style
@@ -338,7 +413,7 @@ def create_filtering_group():
             precision=0,
         ).classes("w-full").tooltip(
             "The maximum percentage along the read that a stop codon can find itself."
-        )
+        ).bind_value_to(form_values, "ff_max_stop_pct")
 
         # ui.html(svg_item, sanitize=False).classes("w-full")
 
@@ -350,12 +425,12 @@ def create_filtering_group():
             "w-full"
         ).tooltip(
             "Allow sequences that do not contain any stop codons to be considered functional."
-        )
+        ).bind_value_to(form_values, "ff_include_no_stop_codons")
         ui.switch("Include sequences that contain frameshifts", value=False).classes(
             "w-full"
         ).tooltip(
             "Include sequences that potentially contain a frameshift to be considered functional."
-        )
+        ).bind_value_to(form_values, "ff_include_frameshifts")
 
         _form_label_help(
             "Sequence Length",
@@ -369,7 +444,15 @@ def create_filtering_group():
             step=0.01,
         ).classes("w-full").tooltip(
             "An acceptable proportion (0-1) of the median protein length that can be lost."
+        ).bind_value_to(form_values, "ff_max_seq_loss")
+        ui.label(
+            "If you know the expected length of the gene region you have provided, you can enter it below. If the value in this box is not 0, that length with be used instead of the median value in the filtering step described above."
         )
+        ui.number(label="Expected sequence length", min=0, value=0).classes(
+            "w-full"
+        ).tooltip(
+            "An acceptable proportion (0-1) of the median protein length that can be lost."
+        ).bind_value_to(form_values, "ff_expected_length")
 
 
 def create_compute_group():
