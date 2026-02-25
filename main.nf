@@ -7,7 +7,7 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.preview.output = true
+//nextflow.preview.output = true
 nextflow.enable.strict = true
 
 
@@ -207,13 +207,13 @@ workflow {
 
     is_nt_aligner = (aligner == "MACSE" | aligner == "VIRULIGN" | ((aligner == "VIRALMSA") & viralmsa_nt_mode))
 
-    // This allow for flexibility - we can add some information to the metadata dictionary from the 
+    // This allow for flexibility - we can add some information to the metadata dictionary from the
     // pipeline params
     additionalMetadata = [
         "region_of_interest": regionOfInterest
     ]
 
-    // Set up options for adding the reference to the sequences before alignment 
+    // Set up options for adding the reference to the sequences before alignment
     add_ref_before_align = params.add_reference_to_sequences == "BEFORE"
     add_ref_after_align = params.add_reference_to_sequences == "AFTER"
 
@@ -221,7 +221,7 @@ workflow {
     // REFERENCE SEQUENCE CONVERSION AND PARSING
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // We need to check if the user wants to add a different reference to the sequences 
+    // We need to check if the user wants to add a different reference to the sequences
     reference_to_add = params.reference_to_add
 
     if (!reference_to_add) {

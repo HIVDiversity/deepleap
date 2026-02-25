@@ -1,12 +1,62 @@
 import asyncio
+import json
 import shlex
 import subprocess
 import tomllib
+import uuid
+from datetime import datetime
 from pathlib import Path
 from string import Template
 
+from frontend import db, models
 
-async def run_pipeline(params: dict, optional_params):
+
+async def create_pipeline_run(
+    params: dict, optional_params: dict, run_id: str, run_root: Path
+):
+    engine = db.get_engine()
+    db_param_dump = params.copy()
+    db_param_dump["optional_params"] = optional_params
+    with db.Session(engine) as session:
+        pipeline_run = models.PipelineRun(
+            id=run_id,
+            name=params["run_name"],
+            status="pending",
+            started_at=datetime.now(),
+            finished_at=None,
+            root_foler=str(run_root),
+            ref_file=str(params["ref_file"].name),
+            # config=json.dumps(db_param_dump),
+        )
+        session.add(pipeline_run)
+        session.commit()
+        session.refresh(pipeline_run)
+
+    run_command = build_command(params, optional_params, run_root)
+    process = await asyncio.create_subprocess_exec(
+        *shlex.split(run_command),
+        stdout=open(run_root / "pipeline.log", "wb"),
+        stderr=asyncio.subprocess.STDOUT,
+    )
+
+    await process.communicate()
+
+    if process.returncode == 0:
+        final_status = "success"
+    else:
+        final_status = "failed"
+
+    with db.Session(engine) as session:
+        pipeline_run = session.get(models.PipelineRun, run_id)
+        if pipeline_run:
+            pipeline_run.status = final_status
+            pipeline_run.finished_at = datetime.now()
+            session.add(pipeline_run)
+            session.commit()
+            session.refresh(pipeline_run)
+
+
+def build_command(params: dict, optional_params, run_root: Path):
     command = Template(
         "$nextflow -log $nextflow_log run -c $nextflow_config $main_nf --run_name $run_name --samplesheet $samplesheet --reference_file $ref_file --aligner $aligner -profile docker --region_of_interest $region_of_interest --trim_method $trim_method --sample_base_dir $sample_base_dir -output-dir $output_dir -work-dir $nextflow_work_dir --max_memory $max_memory --max_cpus $max_cpus --max_time $max_time $other_flags "
     )
@@ -26,14 +76,7 @@ async def run_pipeline(params: dict, optional_params):
         **params,
     )
 
-    print(command_hydrated)
-    process = await asyncio.create_subprocess_exec(
-        *shlex.split(command_hydrated),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
-    )
-
-    return await process.wait()
+    return command_hydrated
 
 
 def build_optional_param_string(optional_params):

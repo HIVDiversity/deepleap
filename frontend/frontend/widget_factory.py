@@ -71,39 +71,50 @@ def create_input_output_group(form_values: dict, upload_root: Path):
                 ).classes("text-gray-600")
 
             with ui.column():
-                ui.upload(
-                    label="Upload Samplesheet *",
-                    auto_upload=True,
-                    on_upload=lambda f: upload_file(
-                        f, upload_root, form_values, "samplesheet"
-                    ),
-                    on_rejected=lambda: ui.notify("Invalid file."),
-                ).classes("w-full").props('color=deep-purple accept=".csv"')
-
-            with ui.column():
-                ui.upload(
-                    label="Files *",
-                    multiple=True,
-                    auto_upload=True,
-                    on_multi_upload=lambda fs: upload_files(
-                        fs.files, upload_root, form_values, "seqs"
-                    ),
-                    on_rejected=lambda: ui.notify(
-                        "One or more invalid filetypes provided"
-                    ),
-                ).classes().classes("w-full").props(
-                    'color=brown accept=".fasta, .fa, .fa"'
+                samplesheet_upload = (
+                    ui.upload(
+                        label="Upload Samplesheet *",
+                        auto_upload=True,
+                        on_upload=lambda f: upload_file(
+                            f, upload_root, form_values, "samplesheet"
+                        ),
+                        on_rejected=lambda: ui.notify("Invalid file."),
+                    )
+                    .classes("w-full")
+                    .props('color=deep-purple accept=".csv"')
                 )
 
             with ui.column():
-                ui.upload(
-                    label="Reference Seq *",
-                    on_upload=lambda f: upload_file(
-                        f, upload_root, form_values, "ref_seq"
-                    ),
-                    auto_upload=True,
-                    on_rejected=lambda: ui.notify("Invalid filetype provided"),
-                ).classes("w-full").props('color=teal accept=".fasta, .fa, .fa"')
+                seq_upload = (
+                    ui.upload(
+                        label="Files *",
+                        multiple=True,
+                        auto_upload=True,
+                        on_multi_upload=lambda fs: upload_files(
+                            fs.files, upload_root, form_values, "seqs"
+                        ),
+                        on_rejected=lambda: ui.notify(
+                            "One or more invalid filetypes provided"
+                        ),
+                    )
+                    .classes()
+                    .classes("w-full")
+                    .props('color=brown accept=".fasta, .fa, .fa"')
+                )
+
+            with ui.column():
+                ref_seq_upload = (
+                    ui.upload(
+                        label="Reference Seq *",
+                        on_upload=lambda f: upload_file(
+                            f, upload_root, form_values, "ref_seq"
+                        ),
+                        auto_upload=True,
+                        on_rejected=lambda: ui.notify("Invalid filetype provided"),
+                    )
+                    .classes("w-full")
+                    .props('color=teal accept=".fasta, .fa, .fa"')
+                )
 
         with ui.row():
             _form_label_help(
@@ -123,7 +134,7 @@ def create_input_output_group(form_values: dict, upload_root: Path):
 async def upload_files(files, upload_root, form_values, key):
     form_values[key] = []
     for file in files:
-        upload_loc = upload_root / f"seqs/{file.name}"
+        upload_loc = upload_root / file.name
         print(f"saving to {upload_loc}")
         await file.save(upload_loc)
         form_values[key].append(upload_loc)

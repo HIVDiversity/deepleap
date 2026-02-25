@@ -12,3 +12,5 @@ testing*
 .env
 log/
 .cache
+temp
+*.db
