@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from string import Template
 
-from frontend import db, models
+from frontend import config, db, models
 
 
 async def create_pipeline_run(
@@ -60,8 +60,7 @@ def build_command(params: dict, optional_params, run_root: Path):
     command = Template(
         "$nextflow -log $nextflow_log run -c $nextflow_config $main_nf --run_name $run_name --samplesheet $samplesheet --reference_file $ref_file --aligner $aligner -profile docker --region_of_interest $region_of_interest --trim_method $trim_method --sample_base_dir $sample_base_dir -output-dir $output_dir -work-dir $nextflow_work_dir --max_memory $max_memory --max_cpus $max_cpus --max_time $max_time $other_flags "
     )
-    with open("config.toml", "rb") as f:
-        config_values = tomllib.load(f)
+    config_values = config.get_config()
 
     command_hydrated = command.substitute(
         nextflow=config_values["nextflow_binary"],

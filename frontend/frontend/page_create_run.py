@@ -16,16 +16,11 @@ class CreateDeepLEAPRunGUI:
     NiceGUI interface for Nextflow pipelines with schema support
     """
 
-    def __init__(
-        self, data_root, session=None, temp_upload: Path = Path("temp/uploads")
-    ):
+    def __init__(self, data_root):
 
         self.data_root = data_root
 
         self.build_ui()
-
-    def set_session(self, session):
-        self.session = "temp"
 
     def build_ui(self):
         """Build the main user interface"""
@@ -48,22 +43,17 @@ class CreateDeepLEAPRunGUI:
             # Control panel
             with ui.card().classes("w-full max-w-4xl"):
                 with ui.row().classes("w-full justify-between items-center"):
-                    with ui.row().classes("gap-2"):
-                        ui.button(
-                            "Load Config",
-                            on_click=lambda x: print("yoink"),
-                            icon="upload",
-                        ).props("outline")
-                        ui.button(
-                            "Export Config",
-                            on_click=lambda x: print("yoink"),
-                            icon="download",
-                        ).props("outline")
-                        ui.button(
-                            "Reset to Defaults",
-                            on_click=lambda x: print(self.session),
-                            icon="refresh",
-                        ).props("outline")
+                    # with ui.row().classes("gap-2"):
+                    # ui.button(
+                    #     "Load Config",
+                    #     on_click=lambda x: print("yoink"),
+                    #     icon="upload",
+                    # ).props("outline")
+                    # ui.button(
+                    #     "Export Config",
+                    #     on_click=lambda x: print("yoink"),
+                    #     icon="download",
+                    # ).props("outline")
 
                     ui.button(
                         "Run Pipeline",
@@ -167,14 +157,3 @@ class CreateDeepLEAPRunGUI:
         )
         ui.notify(f"Successfully submitted pipeline job with ID {run_id}")
         ui.navigate.to(f"/run/{run_id}")
-
-
-# Main execution
-if __name__ in {"__main__", "__mp_main__"}:
-    with open("config.toml", "rb") as f:
-        config_values = tomllib.load(f)
-
-    deepleap_app = CreateDeepLEAPRunGUI(Path(config_values["data_dir"]))
-    app.on_connect(lambda: deepleap_app.set_session(uuid.uuid4().hex))
-
-    ui.run(title="DeepLEAP Pipeline Interface", port=8000, reload=True, show=True)

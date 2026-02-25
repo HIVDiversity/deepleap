@@ -2,11 +2,15 @@ import tomllib
 from pathlib import Path
 
 from nicegui import ui
+from typer import Typer
+from typing_extensions import Optional
 
-from frontend import components
+from frontend import components, config
 from frontend.page_create_run import CreateDeepLEAPRunGUI
 from frontend.page_pipeline_run_info import view_run_info
 from frontend.page_view_runs import view_runs
+
+app = Typer()
 
 
 @ui.page("/")
@@ -20,8 +24,7 @@ def index():
 @ui.page("/create")
 def create_run():
     components.navbar()
-    with open("config.toml", "rb") as f:
-        config_values = tomllib.load(f)
+    config_values = config.get_config()
 
     deepleap_app = CreateDeepLEAPRunGUI(Path(config_values["data_dir"]))
 
@@ -41,5 +44,13 @@ def all_runs():
             view_runs()
 
 
-if __name__ in {"__main__", "__mp_main__"}:
+@app.command("run")
+def run(config_file: Optional[Path] = None):
+    if config_file:
+        config.set_config_file(config_file)
+
     ui.run(index, title="DeepLEAP Pipeline", port=8000, reload=True, show=True)
+
+
+if __name__ in {"__main__", "__mp_main__"}:
+    run()
