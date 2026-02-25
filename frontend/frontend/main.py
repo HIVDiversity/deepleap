@@ -5,7 +5,7 @@ from nicegui import ui
 from typer import Typer
 from typing_extensions import Optional
 
-from frontend import components, config
+from frontend import components, config, db
 from frontend.page_create_run import CreateDeepLEAPRunGUI
 from frontend.page_pipeline_run_info import view_run_info
 from frontend.page_view_runs import view_runs
@@ -48,6 +48,9 @@ def all_runs():
 def run(config_file: Optional[Path] = None, port: Optional[int] = 8080):
     if config_file:
         config.set_config_file(config_file)
+
+    config_values = config.get_config()
+    db.create_if_not_exists(config_values["db_url"])
 
     ui.run(index, title="DeepLEAP Pipeline", port=port, reload=True, show=True)
 

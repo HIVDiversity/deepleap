@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sqlmodel import Session, SQLModel, create_engine
 from typer import Typer
 
@@ -12,6 +14,13 @@ def get_engine(db_url="sqlite:///deepleap_runs.db"):
         db_url = config_values["db_url"]
 
     return create_engine(db_url, echo=True)
+
+
+def create_if_not_exists(db_url):
+    filename = Path(db_url.split("///")[-1])
+
+    if not filename.exists():
+        init_db()
 
 
 @app.command()
