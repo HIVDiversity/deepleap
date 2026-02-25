@@ -45,11 +45,11 @@ def all_runs():
 
 
 @app.command("run")
-def run(config_file: Optional[Path] = None):
+def run(config_file: Optional[Path] = None, port: Optional[int] = 8080):
     if config_file:
         config.set_config_file(config_file)
 
-    ui.run(index, title="DeepLEAP Pipeline", port=8000, reload=True, show=True)
+    ui.run(index, title="DeepLEAP Pipeline", port=port, reload=True, show=True)
 
 
 if __name__ in {"__main__", "__mp_main__"}:
