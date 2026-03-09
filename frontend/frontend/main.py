@@ -23,15 +23,6 @@ def index():
     with ui.column().classes("w-full items-center p-4 gap-4"):
         with ui.card().classes("w-full max-w-4xl"):
             ui.label("index")
-            ui.button("Launch test pipeline", on_click=launch_test_pipeline)
-
-
-def launch_test_pipeline():
-    logger.info("Launching test pipeline...")
-    subprocess.run(
-        "docker run -v frontend_deep-leap-data:/data dlejeune/deepleap nextflow run hello",
-        shell=True,
-    )
 
 
 @ui.page("/create")
