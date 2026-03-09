@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from loguru import logger
 from sqlmodel import Session, SQLModel, create_engine
 from typer import Typer
 
@@ -13,14 +14,19 @@ def get_engine(db_url="sqlite:///deepleap_runs.db"):
     if config_values.get("db_url"):
         db_url = config_values["db_url"]
 
-    return create_engine(db_url, echo=True)
+    return create_engine(db_url, echo=False)
 
 
-def create_if_not_exists(db_url):
-    filename = Path(db_url.split("///")[-1])
-
+def create_if_not_exists(db_url: str):
+    filename = Path(db_url.replace("sqlite:///", ""))
+    logger.info(f"Checking if database file {filename} exists...")
     if not filename.exists():
+        logger.info(f"Database file {filename} does not exist. Creating database...")
         init_db()
+    else:
+        logger.info(
+            f"Database file {filename} already exists. Skipping database creation."
+        )
 
 
 @app.command()

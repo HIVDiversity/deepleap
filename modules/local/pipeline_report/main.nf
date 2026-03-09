@@ -14,11 +14,13 @@ process PIPELINE_REPORT {
     json = groovy.json.JsonOutput.toJson(params).replace("\"", "\\\"")
 
     """
-    git config --global --add safe.directory "*"
-    commitid="\$(cd ${workflow.projectDir}; git log --pretty=tformat:"%H" -n1 )"
-    tag="\$(cd ${workflow.projectDir}; git describe --tags --abbrev=0  )"
+    # git config --global --add safe.directory "*"
+    # commitid="\$(cd ${workflow.projectDir}; git log --pretty=tformat:"%H" -n1 )"
+    # tag="\$(cd ${workflow.projectDir}; git describe --tags --abbrev=0  )"
+    tag="none"
+    commitid="none"
     echo "${json}" > temp_params.json
-    
+
     generate-pipeline-report pre_files/ \\
      post_files/ \\
      func_filter_files/ \\

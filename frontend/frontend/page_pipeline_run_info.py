@@ -1,6 +1,8 @@
 import csv
 import json
+import shutil
 import tarfile
+import uuid
 from pathlib import Path
 
 from nicegui import ui
@@ -8,6 +10,7 @@ from sqlmodel import Session, select
 
 from frontend.db import get_engine
 from frontend.models import PipelineRun
+from frontend.runner import create_pipeline_rerun
 
 
 def view_run_info(run_id):
@@ -19,18 +22,19 @@ def view_run_info(run_id):
     if not pipeline_run:
         ui.label("Pipeline run not found.")
     else:
-        pipeline_run_info = _load_run_info(
-            Path(pipeline_run.root_foler)
-            / "outputs/execution_report/output_dir/data/data.json"
-        )
         card = ui.card().classes("w-full")
         with card:
             with ui.row().classes("justify-between w-full items-center"):
                 ui.label(f"Pipeline run: {pipeline_run.name}").classes(
                     "text-lg font-medium"
                 )
-
-                _get_status_badge(pipeline_run.status or "unknown")
+                with ui.row().classes("gap-2 items-center"):
+                    ui.button(
+                        icon="refresh", on_click=lambda: rerun_pipeline(pipeline_run)
+                    ).props("round flat color=deep-orange").tooltip(
+                        "Re-run the pipeline"
+                    )
+                    _get_status_badge(pipeline_run.status or "unknown")
             ui.separator()
 
             with ui.row().classes("justify-between gap-6 w-full"):
@@ -45,6 +49,10 @@ def view_run_info(run_id):
                     ).classes("text-sm text-gray-600")
 
             if pipeline_run.status == "success":
+                pipeline_run_info = _load_run_info(
+                    Path(pipeline_run.root_folder)
+                    / "outputs/execution_report/output_dir/data/data.json"
+                )
                 with ui.row():
                     run_results_overview(pipeline_run_info)
 
@@ -53,6 +61,8 @@ def view_run_info(run_id):
                 # ).props("rounded color=purple")
 
             _sample_file_expand(pipeline_run)
+
+            _full_command_expand(pipeline_run)
 
             _log_expand(pipeline_run)
 
@@ -192,7 +202,7 @@ def _build_samplesheet_dialog(pipeline_run):
         ui.dialog() as samplesheet_dialog,
         ui.card().classes("size-fit"),
     ):
-        samplesheet_file = Path(pipeline_run.root_foler) / "samplesheet.csv"
+        samplesheet_file = Path(pipeline_run.root_folder) / "samplesheet.csv"
         with ui.row().classes("justify-between w-full"):
             ui.label("Samplesheet").classes("text-lg font-medium")
             ui.button(
@@ -240,7 +250,7 @@ def _build_samplesheet_dialog(pipeline_run):
 
 def _build_ref_dialog(pipeline_run):
     with ui.dialog() as ref_dialog, ui.card().classes("w-lg"):
-        ref_file = Path(pipeline_run.root_foler) / pipeline_run.ref_file
+        ref_file = Path(pipeline_run.root_folder) / pipeline_run.ref_file
         with ui.row().classes("justify-between w-full"):
             ui.label("Reference Sequence").classes("text-lg font-medium")
             ui.button(
@@ -265,7 +275,7 @@ def _sample_file_expand(pipeline_run):
         "w-full text-base border border-gray-400 rounded-md mb-3"
     ):
         with ui.list().props("separator"):
-            for seq in Path(pipeline_run.root_foler).glob("seqs/*"):
+            for seq in Path(pipeline_run.root_folder).glob("seqs/*"):
                 with ui.item():
                     with ui.item_section():
                         ui.item(seq.name).classes("font-mono")
@@ -275,6 +285,13 @@ def _sample_file_expand(pipeline_run):
                         )
 
 
+def _full_command_expand(pipeline_run):
+    with ui.expansion("Full NF Command", icon="article", value=False).classes(
+        "w-full text-base border border-gray-400 rounded-md mb-3"
+    ):
+        ui.label(pipeline_run.run_command).classes("w-full font-mono")
+
+
 def _log_expand(pipeline_run):
     with ui.expansion("Execution Log", icon="sticky_note_2", value=False).classes(
         "w-full text-base border border-gray-400 rounded-md mb-3"
@@ -282,7 +299,7 @@ def _log_expand(pipeline_run):
         log_area = (
             ui.textarea("").classes("w-full font-mono").props("autogrow readonly")
         )
-        log_file = Path(pipeline_run.root_foler) / "pipeline.log"
+        log_file = Path(pipeline_run.root_folder) / "pipeline.log"
         if pipeline_run.status in (
             "running",
             "in_progress",
@@ -296,7 +313,7 @@ def _log_expand(pipeline_run):
 
 
 def _download_results(pipeline_run, temp_dir=Path("temp/")):
-    results_folder = Path(pipeline_run.root_foler)
+    results_folder = Path(pipeline_run.root_folder)
     temp_dir.mkdir(exist_ok=True)
     tar_path = temp_dir / f"{pipeline_run.name}_results.tar.gz"
     with tarfile.open(tar_path, "w:gz") as tar:
@@ -307,7 +324,7 @@ def _download_results(pipeline_run, temp_dir=Path("temp/")):
 
 def view_run_report(pipeline_run):
     report_file_dir = (
-        Path(pipeline_run.root_foler) / "outputs/execution_report/output_dir/"
+        Path(pipeline_run.root_folder) / "outputs/execution_report/output_dir/"
     )
     report_file = next(report_file_dir.glob("*.pdf"), None)
 
@@ -322,9 +339,6 @@ def view_run_report(pipeline_run):
 def _actions(pipeline_run):
     samplesheet_dialog = _build_samplesheet_dialog(pipeline_run)
     ref_dialog = _build_ref_dialog(pipeline_run)
-    report_dialog = _build_functional_filter_report_modal(
-        Path(pipeline_run.root_foler) / "outputs/execution_report/output_dir/data"
-    )
 
     with (
         ui.dropdown_button("Actions", icon="flash_on")
@@ -351,6 +365,10 @@ def _actions(pipeline_run):
                     ui.icon("download")
                 with ui.item_section():
                     ui.label("Download Results").classes("")
+            report_dialog = _build_functional_filter_report_modal(
+                Path(pipeline_run.root_folder)
+                / "outputs/execution_report/output_dir/data"
+            )
             if report_dialog:
                 with ui.item("", on_click=report_dialog.open):
                     with ui.item_section().props("avatar"):
@@ -359,7 +377,7 @@ def _actions(pipeline_run):
                         ui.label("Show Functional Filter UpSetPlot")
 
                 report_file_dir = (
-                    Path(pipeline_run.root_foler)
+                    Path(pipeline_run.root_folder)
                     / "outputs/execution_report/output_dir/"
                 )
                 report_file = next(report_file_dir.glob("*.pdf"), None)
@@ -369,3 +387,14 @@ def _actions(pipeline_run):
                             ui.icon("picture_as_pdf")
                         with ui.item_section():
                             ui.label("Download Full Report").classes("")
+
+
+async def rerun_pipeline(pipeline_run):
+    ui.notify("Rerunning pipeline...", color="blue")
+
+    output_dir = Path(pipeline_run.root_folder) / "outputs"
+    shutil.rmtree(output_dir)
+    output_dir.mkdir()
+    ui.navigate.to(f"/run/{pipeline_run.id}")
+
+    await create_pipeline_rerun(pipeline_run.id)

@@ -1,0 +1,16 @@
+nextflow_binary = "docker run -v /home/deepleap/processing_root:/home/deepleap/processing_root --group-add 960 -v /var/run/docker.sock:/var/run/docker.sock dlejeune/deepleap nextflow"
+nextflow_config_file="/deepleap/nextflow.config"
+
+nextflow_work_dir="/home/deepleap/processing_root/nf_work"
+nextflow_cache_dir="/home/deepleap/processing_root/nf_cache"
+nextflow_main_script="/deepleap/main.nf"
+nextflow_log_path = "/home/deepleap/processing_root/nf_logs/nextflow.log"
+data_dir = "/home/deepleap/processing_root/run_data/"
+max_memory = "16.GB"
+max_cpus = "16"
+max_time = "24.h"
+db_url="sqlite:////home/deepleap/processing_root/deepleap_runs.db"
+port=5050
+
+[env]
+TMPDIR="/home/deepleap/processing_root/nf_temp"

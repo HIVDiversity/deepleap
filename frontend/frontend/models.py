@@ -11,6 +11,7 @@ class PipelineRun(SQLModel, table=True):
     status: str
     started_at: datetime
     finished_at: Optional[datetime]
-    root_foler: str
+    root_folder: str
     ref_file: str
     config: Optional[str] = None
+    run_command: str = ""

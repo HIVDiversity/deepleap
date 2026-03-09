@@ -415,7 +415,7 @@ def create_filtering_group(form_values):
             "Stop Codon Position",
             "The minimum percentage from the start of a sequence that a stop codon may lie, below which a sequence is deemed non-functional.",
         )
-        svg_item = Path("assets/codon_distance_help.svg").read_text()
+        # svg_item = Path("assets/codon_distance_help.svg").read_text()
 
         ui.number(
             label="Min acceptable distance (percentage)",

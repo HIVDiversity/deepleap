@@ -2,14 +2,14 @@ include { PIPELINE_REPORT } from "./main"
 
 workflow {
 
-    def file_one = file("/home/dlejeune/masters/nf-test-data/test_report/samples/CAP001_1000.fasta")
-    def file_two = file("/home/dlejeune/masters/nf-test-data/test_report/samples/CAP001_2000.fasta")
+    def file_one = file("//home/dlejeune/Data/nf-test-data/test_report/samples/CAP001_1000.fasta")
+    def file_two = file("//home/dlejeune/Data/nf-test-data/test_report/samples/CAP001_2000.fasta")
 
-    def file_one_results = file("/home/dlejeune/masters/nf-test-data/test_report/results/CAP001_1000.reverse_translated.fasta")
-    def file_two_results = file("/home/dlejeune/masters/nf-test-data/test_report/results/CAP001_2000.reverse_translated.fasta")
+    def file_one_results = file("//home/dlejeune/Data/nf-test-data/test_report/results/CAP001_1000.reverse_translated.fasta")
+    def file_two_results = file("//home/dlejeune/Data/nf-test-data/test_report/results/CAP001_2000.reverse_translated.fasta")
 
-    def file_one_filter = file("/home/dlejeune/masters/nf-test-data/test_report/filter_report/CAP001_1000.functional_report.csv")
-    def file_two_filter = file("/home/dlejeune/masters/nf-test-data/test_report/filter_report/CAP001_2000.functional_report.csv")
+    def file_one_filter = file("//home/dlejeune/Data/nf-test-data/test_report/filter_report/CAP001_1000.functional_report.csv")
+    def file_two_filter = file("//home/dlejeune/Data/nf-test-data/test_report/filter_report/CAP001_2000.functional_report.csv")
 
 
 

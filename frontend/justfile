@@ -1,0 +1,24 @@
+default:
+    @just --list
+
+build-docker:
+    DOCKER_BUILDKIT=1 sudo -E docker build -t dlejeune/deepleap-frontend .
+
+up:
+    docker compose up -d
+
+down:
+    docker compose down
+
+compose-logs:
+    docker compose logs deepleap-frontend -f
+
+reload:
+    just down
+    just build-docker
+    just up
+    just compose-logs
+
+delete-volume:
+    docker container prune -f
+    docker volume rm frontend_deep-leap-data

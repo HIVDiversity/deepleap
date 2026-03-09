@@ -1,0 +1,18 @@
+services:
+  deepleap-frontend:
+    image: docker.io/dlejeune/deepleap-frontend
+    container_name: deepleap-frontend
+    restart: unless-stopped
+    user: "855:855"
+    group_add:
+      - "960"
+    environment:
+      DEEPLEAP_FRONTEND_CONFIG: /config/config.toml
+    ports:
+      - 5050:8080
+    volumes:
+      - /home/deepleap/processing_root/:/home/deepleap/processing_root/
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config_v2.toml:/config/config.toml:ro
+volumes:
+  deep-leap-data:
