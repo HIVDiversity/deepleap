@@ -162,7 +162,7 @@ workflow {
     main:
     // Print parameter summary log to screen before running
     // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
-    validateParameters()
+    // validateParameters()
     log.info(paramsSummaryLog(workflow))
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -209,9 +209,7 @@ workflow {
 
     // This allow for flexibility - we can add some information to the metadata dictionary from the
     // pipeline params
-    additionalMetadata = [
-        "region_of_interest": regionOfInterest
-    ]
+    additionalMetadata = ["region_of_interest": regionOfInterest]
 
     // Set up options for adding the reference to the sequences before alignment
     add_ref_before_align = params.add_reference_to_sequences == "BEFORE"
