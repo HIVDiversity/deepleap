@@ -1,5 +1,10 @@
+---
+icon: lucide/arrow-down-to-line
+---
+
 # Installation
- 
+DeepLEAP must be installed locally (or on an HPC) to be used.
+
 ## Prerequisites
  
 You need two things before running DeepLEAP:

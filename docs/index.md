@@ -1,3 +1,7 @@
+---
+icon: lucide/rocket
+---
+
 # Overview
  
 **DeepLEAP** (Deep-sequence Long-read Envelope Alignment Pipeline) is a [Nextflow](https://www.nextflow.io/)
@@ -9,8 +13,8 @@ reproducible science.
 ## Background
  
 HIV envelope sequences present a particular challenge for alignment pipelines. The envelope gene
-contains overlapping reading frames — regions that can be in-frame or out-of-frame depending on
-context — which means that a standard nucleotide aligner will often introduce or misplace gaps
+contains overlapping reading frames (regions that can be in-frame or out-of-frame depending on
+context) meaning that aligners tend to introduce or misplace gaps
 in a way that breaks the codon structure of the sequence. Once codon structure is broken,
 downstream analyses (phylogenetics, selection pressure, protein structure prediction) become
 unreliable.
@@ -19,9 +23,10 @@ DeepLEAP handles this through three steps:
  
 1. **Trim** — extract the coding region of interest from quality-filtered reads, handling overlapping
    or complex reading frame structures
-2. **Filter** — screen out non-functional sequences: those carrying early stop codons that
+2. **Filter** — screen out "non-functional" sequences: those carrying early stop codons that
    would prevent the production of a viable viral protein
-3. **Align** — produce a codon-aware multiple sequence alignment using your choice of aligner
+3. **Align** — produce a codon-aware multiple sequence alignment via "_backtranslation_" using your choice of aligner
+
 Although DeepLEAP was built and validated around HIV envelope sequences, the pipeline is
 general enough to be applied to other viral coding sequences. Users working outside of HIV
 should treat it as experimental and validate outputs carefully.

@@ -1,39 +1,11 @@
-# Getting Started
+---
+icon: lucide/terminal
+---
+
+# Usage
 ## Prerequisites
-DeepLEAP is built using [Nextflow](https://www.nextflow.io/) version 25.04.2 which must be installed on your system, and depends upon a container runtime such as [Docker](https://www.docker.com/) or [Singularity](https://sylabs.io/docs/). Other containerization systems may work as long as they can convert Docker images to their own format.
-
-### Nextflow Installation
-Nextflow requires Java to be installed on your system. Thereafter, you can install Nextflow by running the following command in your terminal:
-```bash
-curl -s https://get.nextflow.io | bash
-```
-And you can check that this has been successful by running:
-```bash
-./nextflow run hello
-```
-Further information can be found in the [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html).
-
-### Container Runtime
-Note, you only need to have one of these installed on your system.
-
-#### Docker Installation
-Instructions for installing Docker can be found on the [Docker website](https://docs.docker.com/engine/install/). You can check if Docker is installed correctly by running:
-```bash
-sudo docker run hello-world
-```
-
-#### Singularity Installation
-You can find instructions for installing Singularity on the [Singularity website](https://docs.sylabs.io/guides/3.0/user-guide/installation.html). You can check if Singularity is installed correctly by running:
-```bash
-singularity run --containall library://sylabsed/examples/lolcow
-```
-
-## Installation
-Simply clone this repository into the directory of your choice:
-```bash
-git clone git@github.com:HIVDiversity/deepleap.git
-```
-## Usage
+You need to have installed the pipeline as described in [Installation](installation.md)
+## First Run
 The repository has a sample dataset in the `sample_data` directory which we can use to test the pipeline. Navigate to the `deepleap` directory, and run the following command, replacing `${deepleap_root}` with the path to the directory you cloned this repo to:
 
 ```bash
@@ -79,3 +51,4 @@ testoutput/
 ├── nucleotide_alignments/
 ├── rejected_sequences/
 └── trimmed_sequences/
+```
