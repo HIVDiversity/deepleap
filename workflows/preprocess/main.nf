@@ -1,5 +1,4 @@
 include { TRIM_AGA } from "../../subworkflows/local/trim_aga/main"
-include { TRIM_CUSTOM } from "../../subworkflows/local/trim_custom/main"
 include { TRIM_MINIMAP } from "../../subworkflows/local/trim_minimap/main"
 include { PRE_ALIGNMENT_PROCESSING } from "../../subworkflows/local/pre_alignment_process/main"
 include { FUNCTIONAL_FILTER } from "../../modules/local/functional_filter/main"
@@ -23,15 +22,6 @@ workflow PREPROCESS {
             )
 
             ch_preprocessed_files_nt = TRIM_AGA.out.preprocessed_nt_seqs
-        }
-        else if (trim_method == "CUSTOM") {
-            TRIM_CUSTOM(
-                ch_input_files,
-                ch_reference_file,
-                params.use_kmer_trimming,
-            )
-
-            ch_preprocessed_files_nt = TRIM_CUSTOM.out.preprocessed_nt_seqs
         }
         else if (trim_method == "MINIMAP2") {
             TRIM_MINIMAP(
