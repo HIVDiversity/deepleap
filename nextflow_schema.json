@@ -48,8 +48,7 @@
           "default": "MINIMAP2",
           "enum": [
             "MINIMAP2",
-            "AGA",
-            "CUSTOM"
+            "AGA"
           ]
         },
         "functional_filter_method": {
@@ -102,45 +101,6 @@
         }
       },
       "fa_icon": "fas fa-code-branch"
-    },
-    "custom_preprocess_arguments": {
-      "title": "Custom Preprocess Arguments",
-      "type": "object",
-      "description": "Arguments that alter how the vaious preprocessing steps in the CUSTOM operating mode work",
-      "default": "",
-      "fa_icon": "fas fa-frog",
-      "properties": {
-        "prs_ts_operating_mode": {
-          "type": "string",
-          "default": "double-match",
-          "fa_icon": "fas fa-broadcast-tower",
-          "description": "What mode to use for trimming the sequences to the trimmed consensus",
-          "enum": [
-            "single-match",
-            "double-match"
-          ]
-        },
-        "trim_consensus_alignment_mode": {
-          "type": "string",
-          "default": "local",
-          "description": "What mode to use for aligning the consensus to the reference.",
-          "enum": [
-            "local",
-            "custom",
-            "local_custom"
-          ]
-        },
-        "trim_consensus_gap_open_penalty": {
-          "type": "integer",
-          "default": 5,
-          "description": "The gap opening penalty to use for trimming to the consensus."
-        },
-        "trim_consensus_gap_extension_penalty": {
-          "type": "integer",
-          "default": 1,
-          "description": "The gap extension penalty to use for trimming the consensus."
-        }
-      }
     },
     "aga_preprocess_arguments": {
       "title": "AGA Preprocess Arguments",
@@ -402,9 +362,6 @@
       "$ref": "#/$defs/operating_modes"
     },
     {
-      "$ref": "#/$defs/custom_preprocess_arguments"
-    },
-    {
       "$ref": "#/$defs/aga_preprocess_arguments"
     },
     {
@@ -429,14 +386,6 @@
   "properties": {
     "use_kmer_trimming": {
       "type": "boolean"
-    },
-    "trim_kmer_size": {
-      "type": "integer",
-      "default": 10
-    },
-    "trim_kmer_max_dist": {
-      "type": "integer",
-      "default": 2
     },
     "tcoffee_args": {
       "type": "string"
