@@ -118,11 +118,6 @@
           "type": "string",
           "description": "What to shorten the region name to"
         },
-        "aga_strip_char": {
-          "type": "string",
-          "default": ".",
-          "description": "Not currently used and may be changed in the future"
-        },
         "aga_args": {
           "type": "string",
           "default": "--local",
@@ -268,18 +263,6 @@
           "type": "boolean",
           "description": "Give ViralMSA nucleotide sequences rather than amino acid sequences. Ensure reference is in correct format.",
           "default": true
-        },
-        "probcons_consistency": {
-          "type": "integer",
-          "default": 2
-        },
-        "probcons_ir": {
-          "type": "integer",
-          "default": 100
-        },
-        "probcons_pre": {
-          "type": "integer",
-          "default": 0
         }
       }
     },
@@ -384,9 +367,6 @@
     }
   ],
   "properties": {
-    "use_kmer_trimming": {
-      "type": "boolean"
-    },
     "tcoffee_args": {
       "type": "string"
     },
