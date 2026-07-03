@@ -93,7 +93,6 @@ a wide range of aligners:
 | ClustalW | Classic aligner; included for reproducibility with older workflows |
 | VIRULIGN | Codon-aware aligner specifically designed for viral sequences |
 | MACSE | Codon-aware aligner that handles frameshifts |
-| ViralMSA | Reference-guided aligner optimised for viral genomes |
 | PAGAN | Phylogeny-aware progressive aligner |
  
 A dedicated guide to choosing an aligner for your dataset is available in the

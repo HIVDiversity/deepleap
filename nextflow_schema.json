@@ -76,7 +76,6 @@
             "CLUSTALW",
             "VIRULIGN",
             "MACSE",
-            "VIRALMSA",
             "PAGAN"
           ],
           "fa_icon": "fas fa-align-center"
@@ -254,16 +253,6 @@
         "clustalw_args": {
           "type": "string",
           "default": "-CLUSTERING=NJ -ITERATION=NONE -NUMITER=3 -MATRIX=BLOSUM"
-        },
-        "viralmsa_args": {
-          "type": "string",
-          "description": "Parameters to pass to ViralMSA.",
-          "default": "-a minimap2 --omit_ref"
-        },
-        "viralmsa_nt_mode": {
-          "type": "boolean",
-          "description": "Give ViralMSA nucleotide sequences rather than amino acid sequences. Ensure reference is in correct format.",
-          "default": true
         }
       }
     },
