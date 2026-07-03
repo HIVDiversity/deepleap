@@ -117,7 +117,7 @@ workflow MAIN_WORKFLOW {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // PRODUCE REPORT
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (!skip_functional_filter) {
+    if ((!skip_functional_filter) & (functional_filter_method != "LENGTH_BASED_FILTERING")) {
         PIPELINE_REPORT(
             ch_input_files.map { file, _meta -> file }.collect(),
             ch_postprocess_nt.map { file, _meta -> file }.collect(),
