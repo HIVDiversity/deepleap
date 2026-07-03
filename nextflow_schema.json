@@ -330,6 +330,12 @@
           "description": "Display version and exit.",
           "fa_icon": "fas fa-question-circle",
           "hidden": true
+        },
+        "help": {
+          "type": "boolean",
+          "description": "Display help text and exit.",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
         }
       },
       "required": [
