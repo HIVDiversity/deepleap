@@ -67,6 +67,7 @@
             "MAFFT",
             "MAFFT-SEED",
             "MUSCLE",
+            "MUSCLE-FAST",
             "PROBCONS",
             "TCOFFEE",
             "TCOFFEE_REGRESSIVE",

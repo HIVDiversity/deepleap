@@ -84,6 +84,7 @@ a wide range of aligners:
 | **MAFFT** *(default)* | Fast and accurate; recommended for most datasets |
 | MAFFT-SEED | MAFFT with a seed alignment; useful for very large datasets |
 | MUSCLE | Good general-purpose aligner |
+| MUSCLE-FAST | MUSCLE's Super5 algorithm; faster, for very large datasets |
 | PROBCONS | Probabilistic consistency-based; accurate but slower |
 | T-Coffee | High accuracy; slower on large datasets |
 | T-Coffee Regressive | Scalable T-Coffee variant for large datasets |
