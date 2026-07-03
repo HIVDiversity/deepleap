@@ -165,13 +165,12 @@ workflow {
     main:
     // Print parameter summary log to screen before running
     // log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
-    // validateParameters()
+    validateParameters()
     log.info(paramsSummaryLog(workflow))
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Pipeline Setup - make sure all the params are here
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // TODO: I don't think this is necessary since we have params checking from the validation pipeline
     if (!params.region_of_interest) {
         error("No regions of interest provided. Exiting.")
     }
