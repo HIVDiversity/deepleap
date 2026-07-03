@@ -10,7 +10,11 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": ["samplesheet", "sample_base_dir", "reference_file"],
+      "required": [
+        "samplesheet",
+        "sample_base_dir",
+        "reference_file"
+      ],
       "properties": {
         "samplesheet": {
           "type": "string",
@@ -42,7 +46,19 @@
         "trim_method": {
           "type": "string",
           "default": "MINIMAP2",
-          "enum": ["MINIMAP2", "AGA", "CUSTOM"]
+          "enum": [
+            "MINIMAP2",
+            "AGA",
+            "CUSTOM"
+          ]
+        },
+        "functional_filter_method": {
+          "type": "string",
+          "default": "ELLPACA",
+          "enum": [
+            "ELLPACA",
+            "LENGTH_BASED_FILTERING"
+          ]
         },
         "aligner": {
           "type": "string",
@@ -99,13 +115,20 @@
           "default": "double-match",
           "fa_icon": "fas fa-broadcast-tower",
           "description": "What mode to use for trimming the sequences to the trimmed consensus",
-          "enum": ["single-match", "double-match"]
+          "enum": [
+            "single-match",
+            "double-match"
+          ]
         },
         "trim_consensus_alignment_mode": {
           "type": "string",
           "default": "local",
           "description": "What mode to use for aligning the consensus to the reference.",
-          "enum": ["local", "custom", "local_custom"]
+          "enum": [
+            "local",
+            "custom",
+            "local_custom"
+          ]
         },
         "trim_consensus_gap_open_penalty": {
           "type": "integer",
@@ -146,7 +169,9 @@
           "description": "If using the AGA preprocessing, what arguments to supply to AGA"
         }
       },
-      "required": ["region_of_interest"]
+      "required": [
+        "region_of_interest"
+      ]
     },
     "new_group_1": {
       "title": "New Group 1",
@@ -196,6 +221,44 @@
         }
       },
       "fa_icon": "fas fa-filter"
+    },
+    "length_based_filtering_options": {
+      "title": "Length Based Filtering Options",
+      "type": "object",
+      "description": "Options controlling the length-based functional filter (used when functional_filter_method is LENGTH_BASED_FILTERING)",
+      "default": "",
+      "properties": {
+        "lbf_threshold_mode": {
+          "type": "string",
+          "default": "MEDIAN",
+          "enum": [
+            "FIXED",
+            "MEDIAN",
+            "MEAN"
+          ],
+          "description": "How the minimum-length threshold is determined for length-based filtering"
+        },
+        "lbf_min_length": {
+          "type": "integer",
+          "description": "Minimum sequence length to keep when lbf_threshold_mode is FIXED. Required (and only used) in that mode."
+        },
+        "lbf_min_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "How much shorter than the center length a sequence may be and still be kept. An absolute base count (e.g. '20') or a percentage of the center (e.g. '20%'). Defaults to 0 (the center acts as a strict minimum) if neither this nor lbf_tolerance is set. Cannot be combined with lbf_tolerance."
+        },
+        "lbf_max_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "How much longer than the center length a sequence may be and still be kept. An absolute base count or a percentage of the center. If neither this nor lbf_tolerance is set, there is no upper bound. Cannot be combined with lbf_tolerance."
+        },
+        "lbf_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "Symmetric tolerance: shorthand for setting both lbf_min_tolerance and lbf_max_tolerance to the same value. Cannot be combined with lbf_min_tolerance/lbf_max_tolerance."
+        }
+      },
+      "fa_icon": "fas fa-ruler-horizontal"
     },
     "miscellaneous_process_arguments": {
       "title": "Miscellaneous Process Arguments",
@@ -326,7 +389,9 @@
           "hidden": true
         }
       },
-      "required": ["run_name"]
+      "required": [
+        "run_name"
+      ]
     }
   },
   "allOf": [
@@ -347,6 +412,9 @@
     },
     {
       "$ref": "#/$defs/filtering_options"
+    },
+    {
+      "$ref": "#/$defs/length_based_filtering_options"
     },
     {
       "$ref": "#/$defs/miscellaneous_process_arguments"

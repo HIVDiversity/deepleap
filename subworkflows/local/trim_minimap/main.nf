@@ -1,5 +1,6 @@
 include { MINIMAP_TWO } from '../../../modules/local/minimap2/main.nf'
 include { TRIM_SAM } from '../../../modules/local/pipeline_utils_rs/trim_sam/main.nf'
+
 workflow TRIM_MINIMAP {
     take:
     sample_tuple // path(input), val(meta)
