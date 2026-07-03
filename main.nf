@@ -202,7 +202,6 @@ workflow {
     }
 
     multi_timepoint_alignment = params.multi_timepoint_alignment
-    skip_pre_process = params.skip_pre_process
     skip_functional_filter = params.skip_functional_filter
     functional_filter_method = params.functional_filter_method
     skip_trim = params.skip_trim
