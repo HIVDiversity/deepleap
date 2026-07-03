@@ -241,6 +241,21 @@
         "lbf_min_length": {
           "type": "integer",
           "description": "Minimum sequence length to keep when lbf_threshold_mode is FIXED. Required (and only used) in that mode."
+        },
+        "lbf_min_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "How much shorter than the center length a sequence may be and still be kept. An absolute base count (e.g. '20') or a percentage of the center (e.g. '20%'). Defaults to 0 (the center acts as a strict minimum) if neither this nor lbf_tolerance is set. Cannot be combined with lbf_tolerance."
+        },
+        "lbf_max_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "How much longer than the center length a sequence may be and still be kept. An absolute base count or a percentage of the center. If neither this nor lbf_tolerance is set, there is no upper bound. Cannot be combined with lbf_tolerance."
+        },
+        "lbf_tolerance": {
+          "type": "string",
+          "pattern": "^\\d+%?$",
+          "description": "Symmetric tolerance: shorthand for setting both lbf_min_tolerance and lbf_max_tolerance to the same value. Cannot be combined with lbf_min_tolerance/lbf_max_tolerance."
         }
       },
       "fa_icon": "fas fa-ruler-horizontal"
