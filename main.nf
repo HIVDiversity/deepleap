@@ -49,6 +49,7 @@ workflow MAIN_WORKFLOW {
     multi_timepoint_alignment
     skip_trim
     skip_functional_filter
+    functional_filter_method
     ch_aligner
     is_nt_aligner
     ch_panel_alignment
@@ -67,6 +68,7 @@ workflow MAIN_WORKFLOW {
         add_ref_before_align,
         skip_trim,
         skip_functional_filter,
+        functional_filter_method,
         trim_coords,
     )
 
@@ -148,6 +150,7 @@ workflow MAIN_WORKFLOW {
     sample_tuples_aligned_aa = ch_postprocess_aa
     functional_filter_reports = PREPROCESS.out.filter_report
     sample_tuples_rejected_nt = PREPROCESS.out.sample_tuples_rejected_nt
+    sample_tuples_length_trimmed_nt = PREPROCESS.out.sample_tuples_length_trimmed_nt
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
 }
@@ -201,6 +204,7 @@ workflow {
     multi_timepoint_alignment = params.multi_timepoint_alignment
     skip_pre_process = params.skip_pre_process
     skip_functional_filter = params.skip_functional_filter
+    functional_filter_method = params.functional_filter_method
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
     viralmsa_nt_mode = params.viralmsa_nt_mode
@@ -281,6 +285,7 @@ workflow {
         multi_timepoint_alignment,
         skip_trim,
         skip_functional_filter,
+        functional_filter_method,
         aligner,
         is_nt_aligner,
         ch_panel_alignment,
@@ -293,6 +298,7 @@ workflow {
     sample_tuples_aligned_aa = MAIN_WORKFLOW.out.sample_tuples_aligned_aa
     functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
     sample_tuples_rejected_nt = MAIN_WORKFLOW.out.sample_tuples_rejected_nt
+    sample_tuples_length_trimmed_nt = MAIN_WORKFLOW.out.sample_tuples_length_trimmed_nt
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
     pipeline_report = MAIN_WORKFLOW.out.pipeline_report
 }
@@ -326,6 +332,11 @@ output {
     trimmed_sample_tuples_nt {
         path { sample, meta ->
             sample >> "trimmed_sequences/${meta.sample_id}_trimmed_nt.fasta"
+        }
+    }
+    sample_tuples_length_trimmed_nt {
+        path { sample, meta ->
+            sample >> "length_filter_trim/${meta.sample_id}_trimmed_to_stop.fasta"
         }
     }
     pipeline_report {
