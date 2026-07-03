@@ -1,4 +1,4 @@
-include { PREPROCESS_AGA } from './main.nf'
+include { TRIM_AGA } from './main.nf'
 
 workflow  {
     def original_seqs = file("/home/dlejeune/masters/nf-test-data/test_aga_preprocess/CAP344_2000-pool1_nicd.fasta")
@@ -9,7 +9,7 @@ workflow  {
     def sample_channel = channel.from([[original_seqs, meta]])
     def genbank_channel = channel.of(genbank)
 
-    PREPROCESS_AGA(
+    TRIM_AGA(
         sample_channel,
         genbank_channel
     )

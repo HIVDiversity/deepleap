@@ -5,8 +5,11 @@ workflow {
     def meta = ["sample_id": "CAP409_2000-pool12_inqaba"]
 
     def input_ch = channel.from([[input_file, meta]])
+    def reference_ch = channel.value(input_file)
 
     ALIGN(
-        input_ch
+        input_ch,
+        reference_ch,
+        "MAFFT"
     )
 }

@@ -10,8 +10,6 @@ process TRIM_SAM {
     tuple path("*.fasta"), val(meta), emit: trimmed_fasta
 
     script:
-    args = task.ext.args ?: ""
-
     """
     pipeline-utils-rs trim-sam --input-file ${input_file} --output-file ${meta.sample_id}_trimmed.fasta --trim-from ${from} --trim-to ${to}
     """

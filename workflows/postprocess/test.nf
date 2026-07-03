@@ -1,4 +1,4 @@
-include { POST_ALIGNMENT_PROCESS } from "./main"
+include { POSTPROCESS } from "./main"
 
 workflow {
 }

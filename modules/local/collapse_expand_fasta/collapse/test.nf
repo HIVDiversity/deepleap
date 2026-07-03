@@ -10,7 +10,8 @@ workflow {
     input_ch = channel.from([[sequences, meta]])
 
     COLLAPSE(
-        input_ch
+        input_ch,
+        false
     )
 
     COLLAPSE.out.sample_tuple.view()

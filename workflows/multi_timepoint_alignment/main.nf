@@ -35,12 +35,12 @@ workflow MULTI_TIMEPOINT_ALIGNMENT {
             def sorted_pairs = pairs.sort { a, b -> a[1]['visit_id'] <=> b[1]['visit_id'] }
 
             // Extract sorted files and metadata
-            def sorted_files = sorted_pairs.collect { it[0] }
-            def sorted_metadata = sorted_pairs.collect { it[1] }
+            def sorted_files = sorted_pairs.collect { pair -> pair[0] }
+            def sorted_metadata = sorted_pairs.collect { pair -> pair[1] }
 
             return [cap_id, sorted_files, sorted_metadata]
         }
-        .branch { cap_id, sorted_files, _sorted_metadata ->
+        .branch { _cap_id, sorted_files, _sorted_metadata ->
             multi_timepoints: sorted_files.size() > 1
             single_timepoints: true
         }
