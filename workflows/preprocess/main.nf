@@ -34,8 +34,7 @@ workflow PREPROCESS {
             ch_preprocessed_files_nt = TRIM_MINIMAP.out.preprocessed_nt_seqs
         }
         else {
-            println("Preprocessing type not reconized.")
-            exit(1)
+            error("Preprocessing type not recognized: ${trim_method}")
         }
     }
     else {
@@ -47,7 +46,7 @@ workflow PREPROCESS {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     if (!skip_functional_filter) {
-        if (functional_filter_method == "ELLIPACA") {
+        if (functional_filter_method == "ELLPACA") {
             FUNCTIONAL_FILTER(
                 ch_preprocessed_files_nt
             )
@@ -66,8 +65,7 @@ workflow PREPROCESS {
             ch_ff_trimmed_to_stop = LENGTH_BASED_FILTERING.out.trimmed_to_stop_nt
         }
         else {
-            println("Functional filter method not reconized.")
-            exit(1)
+            error("Functional filter method not recognized: ${functional_filter_method}")
         }
     }
     else {
