@@ -51,6 +51,7 @@ workflow MAIN_WORKFLOW {
     skip_trim
     skip_functional_filter
     functional_filter_method
+    use_kmer_filtering
     ch_aligner
     is_nt_aligner
     ch_panel_alignment
@@ -73,6 +74,7 @@ workflow MAIN_WORKFLOW {
         skip_trim,
         skip_functional_filter,
         functional_filter_method,
+        use_kmer_filtering,
         trim_coords,
     )
 
@@ -240,6 +242,15 @@ workflow {
     multi_timepoint_alignment = params.multi_timepoint_alignment
     skip_functional_filter = params.skip_functional_filter
     functional_filter_method = params.functional_filter_method
+
+    // Kmer Filtering parameters
+    if (params.use_kmer_filtering) {
+        use_kmer_filtering = ["use_kmer_filtering": true, "start_kmers": params.match_kmers_start, "end_kmers": params.match_kmers_end]
+    }
+    else {
+        use_kmer_filtering = ["use_kmer_filtering": false, "start_kmers": null, "end_kmers": null]
+    }
+
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
 
@@ -324,6 +335,7 @@ workflow {
         skip_trim,
         skip_functional_filter,
         functional_filter_method,
+        use_kmer_filtering,
         aligner,
         is_nt_aligner,
         ch_panel_alignment,

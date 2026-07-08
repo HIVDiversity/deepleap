@@ -13,6 +13,7 @@ workflow PREPROCESS {
     skip_trim
     skip_functional_filter
     functional_filter_method
+    use_kmer_filtering
     trim_coords
 
     main:
@@ -57,7 +58,8 @@ workflow PREPROCESS {
         }
         else if (functional_filter_method == "LENGTH_BASED_FILTERING") {
             LENGTH_BASED_FILTERING(
-                ch_preprocessed_files_nt
+                ch_preprocessed_files_nt,
+                use_kmer_filtering,
             )
             ch_functional_filter_out = LENGTH_BASED_FILTERING.out.filtered_tuples
             ch_ff_report = LENGTH_BASED_FILTERING.out.report
