@@ -87,6 +87,31 @@
           "type": "boolean",
           "description": "This run should produce timepoint-stacked alignments"
         },
+        "build_phylogeny": {
+          "type": "boolean",
+          "default": false,
+          "description": "Infer a phylogenetic tree (and, later, a per-site variation heatmap) from the computed alignment(s)"
+        },
+        "phylogeny_alignment_type": {
+          "type": "string",
+          "default": "NT",
+          "enum": [
+            "NT",
+            "AA",
+            "BOTH"
+          ],
+          "description": "Which computed alignment(s) to feed into phylogenetic tree inference"
+        },
+        "phylogeny_baseline_method": {
+          "type": "string",
+          "default": "REFERENCE",
+          "enum": [
+            "REFERENCE",
+            "CONSENSUS",
+            "MINDIST"
+          ],
+          "description": "How to choose the baseline sequence used for the (future) per-site variation heatmap"
+        },
         "skip_functional_filter": {
           "type": "boolean"
         },
