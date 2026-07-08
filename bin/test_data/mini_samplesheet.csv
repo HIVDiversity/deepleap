@@ -1,0 +1,3 @@
+sample_id,filename,group,skip_trim,skip_filter,cap_name,visit_id
+sampleA,sample_a.fasta,,,,ABC,0
+sampleB,sample_b.fasta,grp1,true,false,DEF,0
