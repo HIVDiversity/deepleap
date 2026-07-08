@@ -17,7 +17,7 @@ process FILTER_LENGTH {
     --input-file ${input_file} \
     --output-file ${meta.sample_id}.length_filtered.fasta \
     --report-file ${meta.sample_id}_length_filter_report.csv \
-    --rejected-seq-output ${meta.sample_id}.rejected.fasta \
+    --rejected-seq-output ${meta.sample_id}.length_rejected.fasta \
     ${task.ext.args}
     """
 }
