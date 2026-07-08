@@ -25,7 +25,7 @@ workflow LENGTH_BASED_FILTERING {
         )
         kmer_filtered_sequences = FILTER_BY_KMER.out.filtered_tuples
         kmer_rejected_sequences = FILTER_BY_KMER.out.rejected_records
-        kmer_report = FILTER_LENGTH.out.report
+        kmer_report = FILTER_BY_KMER.out.report
     }
     else {
         kmer_filtered_sequences = channel.empty()
