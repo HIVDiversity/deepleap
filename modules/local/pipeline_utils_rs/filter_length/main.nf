@@ -18,6 +18,7 @@ process FILTER_LENGTH {
     --output-file ${meta.sample_id}_length_filtered.fasta \
     --report-file ${meta.sample_id}_length_filter_report.csv \
     --rejected-seq-output ${meta.sample_id}_length_rejected.fasta \
+    --exclude-gaps \
     ${task.ext.args}
     """
 }
