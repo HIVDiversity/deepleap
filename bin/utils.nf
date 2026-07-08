@@ -1,4 +1,4 @@
-def parseSampleSheet(Path samplesheet, Path sampleDir, otherMetadata) {
+def parseSampleSheet(samplesheet, sampleDir, otherMetadata) {
     def output_list = []
 
     samplesheet
@@ -9,11 +9,12 @@ def parseSampleSheet(Path samplesheet, Path sampleDir, otherMetadata) {
             // Check if the user provided a path for this sample
             // TODO: We could add some redundancy to check if the file extension is .fa rather than .fasta
 
-            def filename = entry.remove("filename")
+            def filename = entry["filename"]
             def samplePath = sampleDir.resolve(filename)
 
             new_output.add(file(samplePath))
             entry = entry + otherMetadata
+            entry["samplePath"] = file(samplePath)
 
             if (!entry.containsKey("num_seqs")) {
                 def num_seqs = 0
