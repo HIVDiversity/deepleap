@@ -71,8 +71,6 @@ workflow MAIN_WORKFLOW {
         trim_method,
         ch_refToAdd,
         add_ref_before_align,
-        skip_trim,
-        skip_functional_filter,
         functional_filter_method,
         use_kmer_filtering,
         trim_coords,
@@ -311,7 +309,13 @@ workflow {
     sample_tuples = parseSampleSheet(samplesheet, sampleBaseDir, additionalMetadata)
 
 
-    ch_input_files = channel.fromList(sample_tuples)
+    ch_input_files = channel.fromList(sample_tuples).map { f, meta ->
+        def eff = meta + [
+            skip_trim: (meta.skip_trim ?: false) || params.skip_trim,
+            skip_filter: (meta.skip_filter ?: false) || params.skip_functional_filter,
+        ]
+        [f, eff]
+    }
     ch_reference_file = channel.value(file(params.reference_file))
 
     if (aligner == "MAFFT-SEED") {
