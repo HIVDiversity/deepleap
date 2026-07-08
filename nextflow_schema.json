@@ -10,11 +10,7 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": [
-        "samplesheet",
-        "sample_base_dir",
-        "reference_file"
-      ],
+      "required": ["samplesheet", "sample_base_dir", "reference_file"],
       "properties": {
         "samplesheet": {
           "type": "string",
@@ -34,6 +30,9 @@
           "fa_icon": "fas fa-file-import",
           "description": "The reference that contains the gene or CDS of interest. Note that this file type depends on the pre-processing mode selected.",
           "format": "file-path"
+        },
+        "panel_alignment": {
+          "type": "string"
         }
       }
     },
@@ -45,19 +44,13 @@
       "properties": {
         "trim_method": {
           "type": "string",
-          "default": "MINIMAP2",
-          "enum": [
-            "MINIMAP2",
-            "AGA"
-          ]
+          "default": "AGA",
+          "enum": ["MINIMAP2", "AGA"]
         },
         "functional_filter_method": {
           "type": "string",
           "default": "ELLPACA",
-          "enum": [
-            "ELLPACA",
-            "LENGTH_BASED_FILTERING"
-          ]
+          "enum": ["ELLPACA", "LENGTH_BASED_FILTERING"]
         },
         "aligner": {
           "type": "string",
@@ -89,27 +82,18 @@
         },
         "build_phylogeny": {
           "type": "boolean",
-          "default": false,
           "description": "Infer a phylogenetic tree (and, later, a per-site variation heatmap) from the computed alignment(s)"
         },
         "phylogeny_alignment_type": {
           "type": "string",
           "default": "NT",
-          "enum": [
-            "NT",
-            "AA",
-            "BOTH"
-          ],
+          "enum": ["NT", "AA", "BOTH"],
           "description": "Which computed alignment(s) to feed into phylogenetic tree inference"
         },
         "phylogeny_baseline_method": {
           "type": "string",
           "default": "REFERENCE",
-          "enum": [
-            "REFERENCE",
-            "CONSENSUS",
-            "MINDIST"
-          ],
+          "enum": ["REFERENCE", "CONSENSUS", "MINDIST"],
           "description": "How to choose the baseline sequence used for the (future) per-site variation heatmap"
         },
         "skip_functional_filter": {
@@ -146,9 +130,7 @@
           "description": "If using the AGA preprocessing, what arguments to supply to AGA"
         }
       },
-      "required": [
-        "region_of_interest"
-      ]
+      "required": ["region_of_interest"]
     },
     "new_group_1": {
       "title": "New Group 1",
@@ -199,6 +181,22 @@
       },
       "fa_icon": "fas fa-filter"
     },
+    "kmer_filtering_options": {
+      "title": "Kmer Filtering Options",
+      "type": "object",
+      "description": "How to filter using Kmers",
+      "default": "",
+      "properties": {
+        "match_kmers_start": {
+          "type": "string",
+          "default": "ATG"
+        },
+        "match_kmers_end": {
+          "type": "string",
+          "default": "TGA,TAG,TAA"
+        }
+      }
+    },
     "length_based_filtering_options": {
       "title": "Length Based Filtering Options",
       "type": "object",
@@ -208,11 +206,7 @@
         "lbf_threshold_mode": {
           "type": "string",
           "default": "MEDIAN",
-          "enum": [
-            "FIXED",
-            "MEDIAN",
-            "MEAN"
-          ],
+          "enum": ["FIXED", "MEDIAN", "MEAN"],
           "description": "How the minimum-length threshold is determined for length-based filtering"
         },
         "lbf_min_length": {
@@ -350,9 +344,7 @@
           "hidden": true
         }
       },
-      "required": [
-        "run_name"
-      ]
+      "required": ["run_name"]
     }
   },
   "allOf": [
@@ -370,6 +362,9 @@
     },
     {
       "$ref": "#/$defs/filtering_options"
+    },
+    {
+      "$ref": "#/$defs/kmer_filtering_options"
     },
     {
       "$ref": "#/$defs/length_based_filtering_options"
@@ -402,9 +397,6 @@
     "output_dir": {
       "type": "string",
       "default": "./results/null"
-    },
-    "panel_alignment": {
-      "type": "string"
     }
   }
 }
