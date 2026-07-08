@@ -7,6 +7,6 @@ process CONCAT_FASTA_FILES {
 
     script:
     """
-    cat ${fasta_files.join(' ')} > CAP${grouping_id}_merged.fasta
+    cat ${fasta_files.join(' ')} > ${grouping_id}_merged.fasta
     """
 }
