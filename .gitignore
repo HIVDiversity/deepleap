@@ -16,3 +16,4 @@ temp
 *.db
 node_modules/
 site
+.worktrees/
