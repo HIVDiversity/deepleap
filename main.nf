@@ -28,6 +28,7 @@ include { PREPROCESS } from "./workflows/preprocess/main"
 include { ALIGN } from "./workflows/align/main"
 include { POSTPROCESS } from "./workflows/postprocess/main"
 include { MULTI_TIMEPOINT_ALIGNMENT } from "./workflows/multi_timepoint_alignment/main"
+include { PHYLOGENY } from "./workflows/phylogeny/main"
 
 
 
@@ -54,6 +55,9 @@ workflow MAIN_WORKFLOW {
     is_nt_aligner
     ch_panel_alignment
     trim_coords
+    build_phylogeny
+    phylogeny_alignment_type
+    phylogeny_baseline_method
 
     main:
 
@@ -144,6 +148,36 @@ workflow MAIN_WORKFLOW {
         ch_multi_timepoint_alignment = MULTI_TIMEPOINT_ALIGNMENT.out.sample_tuples_prof_aln_nt
     }
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // PHYLOGENY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def ch_phylogeny_tree = channel.empty()
+    def ch_phylogeny_baseline = channel.empty()
+    def ch_phylogeny_heatmap = channel.empty()
+    if (build_phylogeny) {
+        def ch_phylogeny_input = channel.empty()
+        if (phylogeny_alignment_type == "NT" || phylogeny_alignment_type == "BOTH") {
+            ch_phylogeny_input = ch_phylogeny_input.mix(
+                ch_postprocess_nt.map { file, meta -> [file, meta + [alignment_type: "NT"]] }
+            )
+        }
+        if (phylogeny_alignment_type == "AA" || phylogeny_alignment_type == "BOTH") {
+            ch_phylogeny_input = ch_phylogeny_input.mix(
+                ALIGN.out.aligned_tuple.map { file, meta -> [file, meta + [alignment_type: "AA"]] }
+            )
+        }
+
+        PHYLOGENY(
+            ch_phylogeny_input,
+            ch_reference_file,
+            phylogeny_baseline_method,
+        )
+
+        ch_phylogeny_tree = PHYLOGENY.out.tree_tuple
+        ch_phylogeny_baseline = PHYLOGENY.out.baseline_tuple
+        ch_phylogeny_heatmap = PHYLOGENY.out.heatmap_tuple
+    }
+
     emit:
     trimmed_nt = ch_pre_process_output
     sample_tuples_aligned_nt = ch_postprocess_nt
@@ -153,6 +187,9 @@ workflow MAIN_WORKFLOW {
     sample_tuples_length_trimmed_nt = PREPROCESS.out.sample_tuples_length_trimmed_nt
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
+    phylogeny_tree = ch_phylogeny_tree
+    phylogeny_baseline = ch_phylogeny_baseline
+    phylogeny_heatmap = ch_phylogeny_heatmap
 }
 
 /*
@@ -205,6 +242,10 @@ workflow {
     functional_filter_method = params.functional_filter_method
     skip_trim = params.skip_trim
     aligner = params.aligner.toUpperCase()
+
+    build_phylogeny = params.build_phylogeny
+    phylogeny_alignment_type = params.phylogeny_alignment_type
+    phylogeny_baseline_method = params.phylogeny_baseline_method
 
     is_nt_aligner = (aligner == "MACSE" | aligner == "VIRULIGN")
 
@@ -287,6 +328,9 @@ workflow {
         is_nt_aligner,
         ch_panel_alignment,
         trim_coords,
+        build_phylogeny,
+        phylogeny_alignment_type,
+        phylogeny_baseline_method,
     )
 
     publish:
@@ -298,6 +342,9 @@ workflow {
     sample_tuples_length_trimmed_nt = MAIN_WORKFLOW.out.sample_tuples_length_trimmed_nt
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
     pipeline_report = MAIN_WORKFLOW.out.pipeline_report
+    phylogeny_tree = MAIN_WORKFLOW.out.phylogeny_tree
+    phylogeny_baseline = MAIN_WORKFLOW.out.phylogeny_baseline
+    phylogeny_heatmap = MAIN_WORKFLOW.out.phylogeny_heatmap
 }
 
 output {
@@ -338,5 +385,20 @@ output {
     }
     pipeline_report {
         path { "execution_report/" }
+    }
+    phylogeny_tree {
+        path { file, meta ->
+            file >> "phylogeny/trees/${meta.sample_id}_${meta.alignment_type}.tree"
+        }
+    }
+    phylogeny_baseline {
+        path { file, meta ->
+            file >> "phylogeny/baseline/${meta.sample_id}_${meta.alignment_type}_baseline.fasta"
+        }
+    }
+    phylogeny_heatmap {
+        path { file, meta ->
+            file >> "phylogeny/heatmaps/${meta.sample_id}_${meta.alignment_type}.png"
+        }
     }
 }
