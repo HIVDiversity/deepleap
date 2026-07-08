@@ -187,6 +187,11 @@
       "description": "How to filter using Kmers",
       "default": "",
       "properties": {
+        "use_kmer_filtering": {
+          "type": "boolean",
+          "description": "Turns on/off the kmer filtering step.",
+          "default": true
+        },
         "match_kmers_start": {
           "type": "string",
           "default": "ATG"
