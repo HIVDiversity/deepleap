@@ -1,0 +1,3 @@
+sample_id,filename,group,skip_trim,skip_filter,cap_name,visit_id,sequencing_pool
+sampleA,sample_a.fasta,grp1,false,false,ABC,0,
+sampleB,sample_b.fa,grp1,false,false,DEF,0,

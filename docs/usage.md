@@ -39,6 +39,23 @@ nextflow run -c nextflow.config main.nf \
 - `-c`: Specifies the path to the Nextflow configuration file. By default, Nextflow looks for a file named `nextflow.config` in the current directory, but the option is specified here for clarity.
 - `-output-dir`: Path to the directory where output files will be saved.
 
+### Optional samplesheet columns for per-file step skipping
+
+The samplesheet accepts three optional columns for finer-grained control:
+
+| Column        | Default       | Meaning                                                      |
+|---------------|---------------|--------------------------------------------------------------|
+| `group`       | `sample_id`   | Files sharing a `group` are merged into a single alignment.  |
+| `skip_trim`   | `false`       | This file bypasses trimming (already trimmed).               |
+| `skip_filter` | `false`       | This file bypasses functional filtering (already filtered).  |
+
+Files that skip a step are merged back with their group's other files before the
+next non-skipped step: skip-trim files rejoin before filtering, skip-filter files
+rejoin before alignment. The global `--skip_trim` / `--skip_functional_filter`
+params force the corresponding skip for **all** files, on top of any per-row flags.
+See `sample_data/samplesheet_grouped.csv` for an example that merges two files into
+one alignment.
+
 ### Outputs
 The outputs of the pipeline will be saved in the directory specified by the `-output-dir` option. The structure of the output directory will be as follows:
 
