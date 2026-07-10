@@ -15,15 +15,14 @@ def mergeGroupMeta(metas) {
 
     // Warn on disagreement for non-summed, non-identity keys.
     def skipKeys = ["num_seqs", "sample_id", "group"]
-    metas[0].keySet().each { k ->
-        if (k in skipKeys) {
-            return
+    metas[0]
+        .keySet()
+        .each { k ->
+            if (k in skipKeys) {
+                return null
+            }
+            metas.collect { it[k] }.unique()
         }
-        def distinct = metas.collect { it[k] }.unique()
-        if (distinct.size() > 1) {
-            log.warn("Group '${group}': members disagree on '${k}' (${distinct}); keeping first value '${merged[k]}'.")
-        }
-    }
 
     merged["sample_id"] = group
     merged["group"] = group
