@@ -152,7 +152,7 @@ workflow MAIN_WORKFLOW {
     // PHYLOGENY
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def ch_phylogeny_tree = channel.empty()
-    def ch_phylogeny_baseline = channel.empty()
+    def ch_phylogeny_misc = channel.empty()
     def ch_phylogeny_heatmap = channel.empty()
     if (build_phylogeny) {
         def ch_phylogeny_input = channel.empty()
