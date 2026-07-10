@@ -367,37 +367,37 @@ workflow {
 output {
     sample_tuples_aligned_nt {
         path { sample, meta ->
-            sample >> "nucleotide_alignments/${meta.sample_id}_aligned_nt.fasta"
+            sample >> "alignments/nucleotide_alignments/${meta.sample_id}_aligned_nt.fasta"
         }
     }
     sample_tuples_aligned_aa {
         path { sample, meta ->
-            sample >> "amino_acid_alignments/${meta.sample_id}_aligned_aa.fasta"
+            sample >> "alignments/amino_acid_alignments/${meta.sample_id}_aligned_aa.fasta"
         }
     }
     functional_filter_reports {
         path { sample, meta ->
-            sample >> "functional_filter/${meta.sample_id}_filter-report.csv"
+            sample >> "functional_filter/reports/${meta.sample_id}_filter-report.csv"
         }
     }
     sample_tuples_rejected_nt {
         path { sample, meta ->
-            sample >> "rejected_sequences/${meta.sample_id}_filter-rejected.fasta"
+            sample >> "functional_filter/rejected_sequences/${meta.sample_id}_filter-rejected.fasta"
         }
     }
     sample_tuples_prof_aln_nt {
         path { sample, meta ->
-            sample >> "profile_alignments/${meta.sample_id}_profile-aligned_nt.fasta"
+            sample >> "alignments/profile_alignments/${meta.sample_id}_profile-aligned_nt.fasta"
         }
     }
     trimmed_sample_tuples_nt {
         path { sample, meta ->
-            sample >> "trimmed_sequences/${meta.sample_id}_trimmed_nt.fasta"
+            sample >> "preprocess/trimmed_sequences/${meta.sample_id}_trimmed_nt.fasta"
         }
     }
     sample_tuples_length_trimmed_nt {
         path { sample, meta ->
-            sample >> "length_filter_trim/${meta.sample_id}_trimmed_to_stop.fasta"
+            sample >> "preprocess/length_filter_trim/${meta.sample_id}_trimmed_to_stop.fasta"
         }
     }
     pipeline_report {
