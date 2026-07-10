@@ -1,5 +1,6 @@
 include { IQTREE } from "../../modules/local/iqtree/main"
 include { GET_CONSENSUS } from "../../modules/local/pipeline_utils_rs/consensus/main"
+include { FILTER_NAME } from "../../modules/local/pipeline_utils_rs/filter_name/main"
 include { MINDIST } from "../../modules/local/pipeline_utils_rs/mindist/main"
 include { DRAW_TREE_HEATMAP } from "../../modules/local/draw_tree_heatmap/main"
 
@@ -10,14 +11,19 @@ workflow PHYLOGENY {
     baseline_method // string param: REFERENCE, CONSENSUS, or MINDIST
 
     main:
-    IQTREE(
-        alignment_tuples
+
+    // Need to remove the reference from the alignment prior to tree construction
+    // TODO: this should really be parameterized
+    FILTER_NAME(
+        alignment_tuples,
+        alignment_tuples.map { _fasta, meta -> meta.ref_seq_name },
     )
 
-    def add_baseline_id = { fasta, meta ->
-        def seq_name = fasta.text.readLines().find { line -> line.startsWith('>') } - '>'
-        [fasta, meta + [baseline_id: seq_name.trim()]]
-    }
+
+    IQTREE(
+        FILTER_NAME.out.filtered_tuples
+    )
+
 
     def ch_baseline
     if (baseline_method == "REFERENCE") {
@@ -25,34 +31,45 @@ workflow PHYLOGENY {
     }
     else if (baseline_method == "CONSENSUS") {
         GET_CONSENSUS(
-            alignment_tuples
+            FILTER_NAME.out.filtered_tuples
         )
-        ch_baseline = GET_CONSENSUS.out.sample_tuple.map(add_baseline_id)
+        ch_baseline = GET_CONSENSUS.out.sample_tuple
     }
     else if (baseline_method == "MINDIST") {
         MINDIST(
-            alignment_tuples
+            FILTER_NAME.out.filtered_tuples
         )
-        ch_baseline = MINDIST.out.sample_tuple.map(add_baseline_id)
+        ch_baseline = MINDIST.out.sample_tuple
     }
     else {
         error("Unrecognized phylogeny_baseline_method: ${baseline_method}")
     }
 
     def ch_tree_keyed = IQTREE.out.tree_tuple.map { tree, meta -> [meta, tree] }
-    def ch_alignment_keyed = alignment_tuples.map { file, meta -> [meta, file] }
+    def ch_alignment_keyed = FILTER_NAME.out.filtered_tuples.map { file, meta -> [meta, file] }
+    def ch_baseline_keyed = ch_baseline.map { file, meta -> [meta, file] }
 
 
     def ch_heatmap_input = ch_tree_keyed
         .join(ch_alignment_keyed)
-        .map { meta, tree, alignment -> [tree, alignment, meta] }
+        .join(ch_baseline_keyed)
+        .map { meta, tree, alignment, baseline -> [tree, alignment, baseline, meta] }
 
-    DRAW_TREE_HEATMAP(
-        ch_heatmap_input
-    )
+    def heatmap_ch
+    if (false) {
+        DRAW_TREE_HEATMAP(
+            ch_heatmap_input
+        )
+
+        heatmap_ch = DRAW_TREE_HEATMAP.out.tree_heatmap_tuple
+    }
+    else {
+        heatmap_ch = channel.empty()
+    }
 
     emit:
     tree_tuple = IQTREE.out.tree_tuple
     baseline_tuple = ch_baseline
-    heatmap_tuple = DRAW_TREE_HEATMAP.out.tree_heatmap_tuple
+    heatmap_tuple = heatmap_ch
+    phylogeny_misc_files = IQTREE.out.iqtree_output
 }

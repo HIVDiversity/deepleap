@@ -10,6 +10,6 @@ process MINDIST {
 
     script:
     """
-    pipeline-utils-rs -i ${aligned_sequences} -o ${meta.sample_id}_mindist.fasta -a first -m exact
+    pipeline-utils-rs get-mindist-seq -i ${aligned_sequences} -o ${meta.sample_id}_mindist.fasta -a first -m exact
     """
 }

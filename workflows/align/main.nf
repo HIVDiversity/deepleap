@@ -11,6 +11,7 @@ include { CLUSTAL_OMEGA } from "../../modules/local/clustal/omega/main"
 include { CLUSTALW } from "../../modules/local/clustal/w/main"
 include { VIRULIGN } from "../../modules/local/virulign/main"
 include { MACSE } from "../../modules/local/macse/main"
+include { FILTER_NAME } from "../../modules/local/pipeline_utils_rs/filter_name/main"
 
 workflow ALIGN {
     take:
@@ -35,7 +36,12 @@ workflow ALIGN {
             reference,
         )
 
-        alignment_output_ch = MAFFT_SEED.out.sample_tuple
+        FILTER_NAME(
+            MAFFT_SEED.out.sample_tuple,
+            channel.value("^_"),
+        )
+
+        alignment_output_ch = FILTER_NAME.out.filtered_tuples
     }
     else if (aligner == "MUSCLE") {
         MUSCLE(

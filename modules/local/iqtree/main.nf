@@ -3,13 +3,14 @@ process IQTREE {
     tuple file(alignment), val(meta)
 
     output:
-    tuple file("*.tree*"), val(meta), emit: tree_tuple
+    tuple file("*.treefile"), val(meta), emit: tree_tuple
+    path ("*.tree*"), emit: iqtree_output
 
     script:
 
     def args = task.ext.args ?: ""
 
     """
-    iqtree2 -s ${alignment} --prefix ${meta.sample_id}.tree -T AUTO -v ${args}
+    iqtree3 -s ${alignment} --prefix ${meta.sample_id}.tree -T AUTO -v ${args}
     """
 }

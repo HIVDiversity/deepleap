@@ -174,7 +174,7 @@ workflow MAIN_WORKFLOW {
         )
 
         ch_phylogeny_tree = PHYLOGENY.out.tree_tuple
-        ch_phylogeny_baseline = PHYLOGENY.out.baseline_tuple
+        ch_phylogeny_misc = PHYLOGENY.out.phylogeny_misc_files
         ch_phylogeny_heatmap = PHYLOGENY.out.heatmap_tuple
     }
 
@@ -188,7 +188,7 @@ workflow MAIN_WORKFLOW {
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
     phylogeny_tree = ch_phylogeny_tree
-    phylogeny_baseline = ch_phylogeny_baseline
+    phylogeny_misc_files = ch_phylogeny_misc
     phylogeny_heatmap = ch_phylogeny_heatmap
 }
 
@@ -360,7 +360,7 @@ workflow {
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
     pipeline_report = MAIN_WORKFLOW.out.pipeline_report
     phylogeny_tree = MAIN_WORKFLOW.out.phylogeny_tree
-    phylogeny_baseline = MAIN_WORKFLOW.out.phylogeny_baseline
+    phylogeny_misc_files = MAIN_WORKFLOW.out.phylogeny_misc_files
     phylogeny_heatmap = MAIN_WORKFLOW.out.phylogeny_heatmap
 }
 
@@ -408,9 +408,9 @@ output {
             file >> "phylogeny/trees/${meta.sample_id}_${meta.alignment_type}.tree"
         }
     }
-    phylogeny_baseline {
-        path { file, meta ->
-            file >> "phylogeny/baseline/${meta.sample_id}_${meta.alignment_type}_baseline.fasta"
+    phylogeny_misc_files {
+        path { file ->
+            file >> "phylogeny/iqtree_files/"
         }
     }
     phylogeny_heatmap {

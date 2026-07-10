@@ -3,14 +3,17 @@ process DRAW_TREE_HEATMAP {
     label "py_uv"
 
     input:
-    tuple path(tree), path(msa), val(meta)
+    tuple path(tree), path(msa), path(baseline), val(meta)
 
     output:
     tuple path("*.png"), val(meta), emit: tree_heatmap_tuple
 
     script:
 
+
+
     """
-    tree_highlighter_plot.py ${tree} ${msa} ${meta.baseline_id} ${meta.sample_id}_tree_highlighter.png --plot-title ${meta.sample_id}
+    SEQ_NAME=\$(grep "^>" "${baseline}" | head -n 1 | sed 's/^>//')
+    tree_highplot ${tree} ${msa} ${meta.sample_id}_tree_highlighter.png \$SEQ_NAME --plot-title ${meta.sample_id}
     """
 }
