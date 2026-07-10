@@ -309,13 +309,14 @@ workflow {
     sample_tuples = parseSampleSheet(samplesheet, sampleBaseDir, additionalMetadata)
 
 
-    ch_input_files = channel.fromList(sample_tuples).map { f, meta ->
-        def eff = meta + [
-            skip_trim: (meta.skip_trim ?: false) || params.skip_trim,
-            skip_filter: (meta.skip_filter ?: false) || params.skip_functional_filter,
-        ]
-        [f, eff]
-    }
+    ch_input_files = channel.fromList(sample_tuples)
+        .map { f, meta ->
+            def eff = meta + [
+                skip_trim: (meta.skip_trim ?: false) || params.skip_trim,
+                skip_filter: (meta.skip_filter ?: false) || params.skip_functional_filter,
+            ]
+            [f, eff]
+        }
     ch_reference_file = channel.value(file(params.reference_file))
 
     if (aligner == "MAFFT-SEED") {
