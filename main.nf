@@ -185,6 +185,7 @@ workflow MAIN_WORKFLOW {
     functional_filter_reports = PREPROCESS.out.filter_report
     sample_tuples_rejected_nt = PREPROCESS.out.sample_tuples_rejected_nt
     sample_tuples_length_trimmed_nt = PREPROCESS.out.sample_tuples_length_trimmed_nt
+    sample_tuples_filter_passed_nt = PREPROCESS.out.sample_tuples_filter_passed_nt
     sample_tuples_prof_aln_nt = ch_multi_timepoint_alignment
     pipeline_report = ch_pipeline_report
     phylogeny_tree = ch_phylogeny_tree
@@ -357,6 +358,7 @@ workflow {
     functional_filter_reports = MAIN_WORKFLOW.out.functional_filter_reports
     sample_tuples_rejected_nt = MAIN_WORKFLOW.out.sample_tuples_rejected_nt
     sample_tuples_length_trimmed_nt = MAIN_WORKFLOW.out.sample_tuples_length_trimmed_nt
+    sample_tuples_filter_passed_nt = MAIN_WORKFLOW.out.sample_tuples_filter_passed_nt
     sample_tuples_prof_aln_nt = MAIN_WORKFLOW.out.sample_tuples_prof_aln_nt
     pipeline_report = MAIN_WORKFLOW.out.pipeline_report
     phylogeny_tree = MAIN_WORKFLOW.out.phylogeny_tree
@@ -376,13 +378,21 @@ output {
         }
     }
     functional_filter_reports {
+        // LENGTH_BASED_FILTERING tags records with meta.filter_stage ("length"/"kmer") so
+        // both stages' reports can be published side by side; ELLPACA has a single stage
+        // and publishes directly into reports/ as before.
         path { sample, meta ->
-            sample >> "functional_filter/reports/${meta.sample_id}_filter-report.csv"
+            sample >> "functional_filter/reports/${meta.filter_stage ? meta.filter_stage + '/' : ''}${meta.sample_id}_${meta.filter_stage ? meta.filter_stage + '-' : ''}filter-report.csv"
         }
     }
     sample_tuples_rejected_nt {
         path { sample, meta ->
-            sample >> "functional_filter/rejected_sequences/${meta.sample_id}_filter-rejected.fasta"
+            sample >> "functional_filter/rejected_sequences/${meta.filter_stage ? meta.filter_stage + '/' : ''}${meta.sample_id}_${meta.filter_stage ? meta.filter_stage + '-' : ''}filter-rejected.fasta"
+        }
+    }
+    sample_tuples_filter_passed_nt {
+        path { sample, meta ->
+            sample >> "functional_filter/passed_sequences/${meta.sample_id}_filter-passed.fasta"
         }
     }
     sample_tuples_prof_aln_nt {
@@ -397,7 +407,7 @@ output {
     }
     sample_tuples_length_trimmed_nt {
         path { sample, meta ->
-            sample >> "preprocess/length_filter_trim/${meta.sample_id}_trimmed_to_stop.fasta"
+            sample >> "functional_filter/trim_stop/${meta.sample_id}_trimmed_to_stop.fasta"
         }
     }
     pipeline_report {

@@ -15,7 +15,7 @@ workflow {
     )
 
     LENGTH_BASED_FILTERING.out.trimmed_to_stop_nt.view()
-    LENGTH_BASED_FILTERING.out.length_filtered_tuples.view()
-    LENGTH_BASED_FILTERING.out.length_rejected_records.view()
-    LENGTH_BASED_FILTERING.out.length_filter_report.view()
+    LENGTH_BASED_FILTERING.out.filtered_tuples.view()
+    LENGTH_BASED_FILTERING.out.rejected_records.view()
+    LENGTH_BASED_FILTERING.out.filter_reports.view()
 }

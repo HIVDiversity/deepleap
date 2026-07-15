@@ -63,19 +63,11 @@ workflow PREPROCESS {
     }
     else if (functional_filter_method == "LENGTH_BASED_FILTERING") {
         LENGTH_BASED_FILTERING(ch_to_filter_merged, use_kmer_filtering)
-        // When kmer filtering is on it runs AFTER length filtering, so the kmer emits
-        // are the fully-filtered output. Selecting the length emits here would silently
-        // discard kmer filtering.
-        if (use_kmer_filtering["use_kmer_filtering"]) {
-            ch_functional_filter_out = LENGTH_BASED_FILTERING.out.kmer_filtered_tuples
-            ch_ff_report = LENGTH_BASED_FILTERING.out.kmer_filter_report
-            ch_ff_rejected = LENGTH_BASED_FILTERING.out.kmer_rejected_records
-        }
-        else {
-            ch_functional_filter_out = LENGTH_BASED_FILTERING.out.length_filtered_tuples
-            ch_ff_report = LENGTH_BASED_FILTERING.out.length_filter_report
-            ch_ff_rejected = LENGTH_BASED_FILTERING.out.length_rejected_records
-        }
+        // The subworkflow resolves internally which stage's output is final
+        // (kmer if enabled, since it runs after length filtering; length otherwise).
+        ch_functional_filter_out = LENGTH_BASED_FILTERING.out.filtered_tuples
+        ch_ff_report = LENGTH_BASED_FILTERING.out.filter_reports
+        ch_ff_rejected = LENGTH_BASED_FILTERING.out.rejected_records
         ch_ff_trimmed_to_stop = LENGTH_BASED_FILTERING.out.trimmed_to_stop_nt
     }
     else {
@@ -105,4 +97,5 @@ workflow PREPROCESS {
     sample_tuples_rejected_nt = ch_ff_rejected
     filter_report = ch_ff_report
     sample_tuples_length_trimmed_nt = ch_ff_trimmed_to_stop
+    sample_tuples_filter_passed_nt = ch_functional_filter_out
 }
