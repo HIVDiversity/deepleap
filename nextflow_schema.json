@@ -132,8 +132,8 @@
       },
       "required": ["region_of_interest"]
     },
-    "new_group_1": {
-      "title": "New Group 1",
+    "minimap": {
+      "title": "Minimap",
       "type": "object",
       "description": "Arguments specifying how minimap2 must trim sequences",
       "default": "",
@@ -189,16 +189,15 @@
       "properties": {
         "use_kmer_filtering": {
           "type": "boolean",
-          "description": "Turns on/off the kmer filtering step.",
-          "default": true
+          "description": "Turns on/off the kmer filtering step."
         },
         "match_kmers_start": {
           "type": "string",
-          "default": "ATG"
+          "description": "What kmer(s) to match at the start. Comma-separated if multiple."
         },
         "match_kmers_end": {
           "type": "string",
-          "default": "TGA,TAG,TAA"
+          "description": "What kmer(s) to match at the end. Comma-separated if multiple."
         }
       }
     },
@@ -363,7 +362,7 @@
       "$ref": "#/$defs/aga_preprocess_arguments"
     },
     {
-      "$ref": "#/$defs/new_group_1"
+      "$ref": "#/$defs/minimap"
     },
     {
       "$ref": "#/$defs/filtering_options"
