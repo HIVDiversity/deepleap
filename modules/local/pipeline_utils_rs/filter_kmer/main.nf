@@ -20,7 +20,6 @@ process FILTER_BY_KMER {
     --output-file ${meta.sample_id}_kmer_filtered.fasta \
     --report-file ${meta.sample_id}_kmer_filter_report.csv \
     --rejected-seq-output ${meta.sample_id}_kmer_rejected.fasta \
-    --start-kmers ${start_kmer} \
-    --end-kmers ${end_kmer}
+    ${task.ext.args}
     """
 }
