@@ -2,7 +2,7 @@
 icon: lucide/terminal
 ---
 
-# Usage
+# Running the CLI
 ## Prerequisites
 You need to have installed the pipeline as described in [Installation](installation.md)
 ## First Run
@@ -29,7 +29,7 @@ nextflow run -c nextflow.config main.nf \
 
 ### Parameter explanation
 - `--run_name`: A name for this pipeline run. Is used in logging and report generation.
-- `--samplesheet`: Path to a CSV file containing sample information. See `sample_data/samplesheet.csv` for an example.
+- `--samplesheet`: Path to a CSV file containing sample information. See [Samplesheet Reference](../reference/samplesheet.md).
 - `--reference_file`: Path to a FASTA file containing the reference sequence for alignment.
 - `--aligner`: The alignment tool to use.
 - `--region_of_interest`: The genomic region to focus on. This does not have to be in any format, and is largely present for legacy reasons.
@@ -39,33 +39,32 @@ nextflow run -c nextflow.config main.nf \
 - `-c`: Specifies the path to the Nextflow configuration file. By default, Nextflow looks for a file named `nextflow.config` in the current directory, but the option is specified here for clarity.
 - `-output-dir`: Path to the directory where output files will be saved.
 
-### Optional samplesheet columns for per-file step skipping
+### Samplesheet format
 
-The samplesheet accepts three optional columns for finer-grained control:
-
-| Column        | Default       | Meaning                                                      |
-|---------------|---------------|--------------------------------------------------------------|
-| `group`       | `sample_id`   | Files sharing a `group` are merged into a single alignment.  |
-| `skip_trim`   | `false`       | This file bypasses trimming (already trimmed).               |
-| `skip_filter` | `false`       | This file bypasses functional filtering (already filtered).  |
-
-Files that skip a step are merged back with their group's other files before the
-next non-skipped step: skip-trim files rejoin before filtering, skip-filter files
-rejoin before alignment. The global `--skip_trim` / `--skip_functional_filter`
-params force the corresponding skip for **all** files, on top of any per-row flags.
-See `sample_data/samplesheet_grouped.csv` for an example that merges two files into
-one alignment.
+See the [Samplesheet Reference](../reference/samplesheet.md) for required and optional columns.
 
 ### Outputs
 The outputs of the pipeline will be saved in the directory specified by the `-output-dir` option. The structure of the output directory will be as follows:
 
 ```
 testoutput/
-├── amino_acid_alignments/
-├── execution_report/
-├── functional_filter
+├── alignments/
+│   ├── nucleotide_alignments/
+│   ├── amino_acid_alignments/
+│   └── profile_alignments/    # multi_timepoint_alignment only (deprecated)
+├── functional_filter/
+│   ├── reports/
+│   ├── rejected_sequences/
+│   ├── passed_sequences/
+│   └── trim_stop/             # LENGTH_BASED_FILTERING only
+├── preprocess/
+│   └── trimmed_sequences/     # omitted if --skip_trim
+├── phylogeny/                 # only if --build_phylogeny
+│   ├── trees/
+│   └── iqtree_files/
+├── execution_report/          # legacy, being removed
 ├── logs/
-├── nucleotide_alignments/
-├── rejected_sequences/
-└── trimmed_sequences/
+└── pipeline_info/
 ```
+
+See the [Output Reference](../reference/outputs.md) for what each directory contains.

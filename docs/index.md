@@ -1,14 +1,25 @@
 ---
 icon: lucide/rocket
 ---
-
+```
+ ██████████                               █████       ██████████   █████████   ███████████ 
+░░███░░░░███                             ░░███       ░░███░░░░░█  ███░░░░░███ ░░███░░░░░███
+ ░███   ░░███  ██████   ██████  ████████  ░███        ░███  █ ░  ░███    ░███  ░███    ░███
+ ░███    ░███ ███░░███ ███░░███░░███░░███ ░███        ░██████    ░███████████  ░██████████ 
+ ░███    ░███░███████ ░███████  ░███ ░███ ░███        ░███░░█    ░███░░░░░███  ░███░░░░░░  
+ ░███    ███ ░███░░░  ░███░░░   ░███ ░███ ░███      █ ░███ ░   █ ░███    ░███  ░███        
+ ██████████  ░░██████ ░░██████  ░███████  ███████████ ██████████ █████   █████ █████       
+░░░░░░░░░░    ░░░░░░   ░░░░░░   ░███░░░  ░░░░░░░░░░░ ░░░░░░░░░░ ░░░░░   ░░░░░ ░░░░░        
+                                ░███                                                       
+                                █████                                                      
+                               ░░░░░                                                       
+```
 # Overview
  
 **DeepLEAP** (Deep-sequence Long-read Envelope Alignment Pipeline) is a [Nextflow](https://www.nextflow.io/)
 pipeline for codon-aware multiple sequence alignment of long-read sequencing data. We developed
 it at the [HIV Diversity Laboratory](https://github.com/HIVDiversity) at the University of Cape
-Town primarily for our own internal use, and have made it public in the spirit of open and
-reproducible science.
+Town primarily for our own internal use, but we've made it available here in case it could benefit anyone else.
  
 ## Background
  
@@ -19,13 +30,13 @@ in a way that breaks the codon structure of the sequence. Once codon structure i
 downstream analyses (phylogenetics, selection pressure, protein structure prediction) become
 unreliable.
  
-DeepLEAP handles this through three steps:
+DeepLEAP attempts to handle this through three steps:
  
 1. **Trim** — extract the coding region of interest from quality-filtered reads, handling overlapping
    or complex reading frame structures
 2. **Filter** — screen out "non-functional" sequences: those carrying early stop codons that
    would prevent the production of a viable viral protein
-3. **Align** — produce a codon-aware multiple sequence alignment via "_backtranslation_" using your choice of aligner
+3. **Align** — produce a codon-aware multiple sequence alignment via "_backtranslation_" using one of a few different aligners.
 
 Although DeepLEAP was built and validated around HIV envelope sequences, the pipeline is
 general enough to be applied to other viral coding sequences. Users working outside of HIV
@@ -39,17 +50,13 @@ should treat it as experimental and validate outputs carefully.
 </figure>
 ### Stage 1 — Preprocessing (Trim)
  
-Input sequences are quality-filtered reads provided as FASTA files (not raw FASTQ). They are
+Input sequences are quality-filtered reads provided as FASTA files. They are
 mapped to a reference sequence and trimmed to the region of interest. The
-default and recommended method is **MINIMAP2**, which is fast and accurate for the majority of
+default and recommended method is [minimap2](https://github.com/lh3/minimap2), which is fast and accurate for the majority of
 use cases. An alternative method, **AGA**, is available for sequences with particularly complex
 overlapping reading frame structures, but is slower and experimental — it should only be used
 if you have a specific reason to do so.
  
-!!! tip "Which preprocessing method should I use?"
-    For most users and datasets, the answer is MINIMAP2. AGA is only worth considering if
-    your sequences contain nested or overlapping ORFs that MINIMAP2 handles poorly. If you
-    are unsure, start with MINIMAP2.
  
 ### Stage 2 — Functional Filtering
  
@@ -96,7 +103,7 @@ a wide range of aligners:
 | PAGAN | Phylogeny-aware progressive aligner |
  
 A dedicated guide to choosing an aligner for your dataset is available in the
-[reference section](../reference/parameters.md).
+[Aligner Reference](reference/aligners.md).
  
 ## Key Features
  
@@ -134,7 +141,9 @@ These docs are written for two audiences. If you're not sure which path is right
     Start with [Installation](user-guide/installation.md) and [Running the CLI](user-guide/running-cli.md),
     then consult the [Parameter Reference](reference/parameters.md) for full configuration options.
     The [Developer Guide](developer-guide/architecture.md) covers the pipeline internals,
-    how to add a site-specific compute profile, and how to contribute.
+    how to add a site-specific compute profile, and how to contribute. If you want the
+    biological and algorithmic reasoning behind the pipeline's design, see
+    [Background](background/index.md).
  
 ## Known Limitations
  
